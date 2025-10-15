@@ -206,64 +206,30 @@
         <div id="imam-tab" class="tab-content fade-in">
             <!-- Control Buttons -->
             <div class="mb-6 flex gap-4">
-                <button onclick="toggleImamForm()" id="toggleImamFormBtn" class="btn-primary text-white px-6 py-3 rounded-xl font-medium">
-                    ➕ Daftar Imam Baru
+                <button onclick="loadImamDataFromSheet()" class="btn-primary text-white px-6 py-3 rounded-xl font-medium">
+                    🔄 Muat Semula Data Imam
                 </button>
                 <button onclick="toggleImamList()" id="toggleImamListBtn" class="btn-secondary text-white px-6 py-3 rounded-xl font-medium">
                     📋 Lihat Senarai Imam
                 </button>
             </div>
 
-            <div class="grid lg:grid-cols-3 gap-8">
-                <!-- Form Pendaftaran -->
-                <div id="imamFormSection" class="lg:col-span-1 hidden">
-                    <div class="card-hover rounded-2xl p-6 shadow-xl">
-                        <h2 class="text-2xl font-bold text-gray-800 mb-6 flex items-center">
-                            <span class="text-2xl mr-3">🕌</span>
-                            Daftar Imam
-                        </h2>
-                        <form id="imamForm" class="space-y-4">
-                            <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-2">Nama Imam</label>
-                                <input type="text" id="namaImam" required class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all">
-                            </div>
-                            <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-2">No. K/P</label>
-                                <input type="text" id="nokpImam" required class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all">
-                            </div>
-                            <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-2">No. Gaji</label>
-                                <input type="text" id="noGajiImam" required class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all" placeholder="Contoh: G001234">
-                            </div>
-                            <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-2">No. Akaun BSN</label>
-                                <input type="text" id="noAkaunImam" required class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all" placeholder="Contoh: 1234567890">
-                            </div>
-                            <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-2">Pekerjaan</label>
-                                <input type="text" id="pekerjaanImam" required class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all" placeholder="Contoh: Guru Agama">
-                            </div>
-                            <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-2">Alamat</label>
-                                <textarea id="alamatImam" required rows="3" class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"></textarea>
-                            </div>
-                            <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-2">No. Tel</label>
-                                <input type="tel" id="telefonImam" required class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all">
-                            </div>
-                            <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-2">Mula Khidmat</label>
-                                <input type="date" id="mulaKhidmatImam" required class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all">
-                            </div>
-                            <button type="submit" class="w-full btn-primary text-white py-3 px-6 rounded-xl font-medium">
-                                ✅ Daftar Imam
-                            </button>
-                        </form>
+            <div class="mb-6">
+                <div class="card-hover rounded-2xl p-6 shadow-xl bg-blue-50 border-l-4 border-blue-500">
+                    <div class="flex items-center">
+                        <span class="text-2xl mr-3">📊</span>
+                        <div>
+                            <h3 class="text-lg font-semibold text-blue-800">Data Imam dari Google Sheets</h3>
+                            <p class="text-blue-600 text-sm">Data imam diambil secara automatik dari Google Sheets. Klik "Muat Semula Data Imam" untuk mendapatkan data terkini.</p>
+                        </div>
                     </div>
                 </div>
+            </div>
+
+            <div class="grid lg:grid-cols-1 gap-8">
 
                 <!-- Senarai Imam -->
-                <div id="imamListSection" class="lg:col-span-3 hidden">
+                <div id="imamListSection" class="lg:col-span-1 hidden">
                     <div class="card-hover rounded-2xl p-6 shadow-xl">
                         <div class="flex justify-between items-center mb-6">
                             <h2 class="text-2xl font-bold text-gray-800 flex items-center">
@@ -288,7 +254,8 @@
                             <table class="w-full">
                                 <thead>
                                     <tr class="bg-gray-50 border-b">
-                                        <th class="text-left py-3 px-4 font-semibold text-gray-700">Bil</th>
+                                        <th class="text-left py-3 px-4 font-semibold text-gray-700">Masjid</th>
+                                        <th class="text-left py-3 px-4 font-semibold text-gray-700">Daerah</th>
                                         <th class="text-left py-3 px-4 font-semibold text-gray-700">Nama Imam</th>
                                         <th class="text-left py-3 px-4 font-semibold text-gray-700">No. K/P</th>
                                         <th class="text-left py-3 px-4 font-semibold text-gray-700">No. Gaji</th>
@@ -296,7 +263,9 @@
                                         <th class="text-left py-3 px-4 font-semibold text-gray-700">Pekerjaan</th>
                                         <th class="text-left py-3 px-4 font-semibold text-gray-700">Alamat</th>
                                         <th class="text-left py-3 px-4 font-semibold text-gray-700">No. Tel</th>
+                                        <th class="text-left py-3 px-4 font-semibold text-gray-700">Umur</th>
                                         <th class="text-left py-3 px-4 font-semibold text-gray-700">Mula Khidmat</th>
+                                        <th class="text-left py-3 px-4 font-semibold text-gray-700">Catatan</th>
                                         <th class="text-left py-3 px-4 font-semibold text-gray-700">Tindakan</th>
                                     </tr>
                                 </thead>
@@ -365,6 +334,14 @@
                                 <input type="tel" id="telefonBilal" required class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all">
                             </div>
                             <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Masjid</label>
+                                <input type="text" id="masjidBilal" required class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all" placeholder="Contoh: Masjid Al-Hidayah">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Daerah</label>
+                                <input type="text" id="daerahBilal" required class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all" placeholder="Contoh: Kuala Lumpur">
+                            </div>
+                            <div>
                                 <label class="block text-sm font-medium text-gray-700 mb-2">Mula Khidmat</label>
                                 <input type="date" id="mulaKhidmatBilal" required class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all">
                             </div>
@@ -409,6 +386,8 @@
                                         <th class="text-left py-3 px-4 font-semibold text-gray-700">Pekerjaan</th>
                                         <th class="text-left py-3 px-4 font-semibold text-gray-700">Alamat</th>
                                         <th class="text-left py-3 px-4 font-semibold text-gray-700">No. Tel</th>
+                                        <th class="text-left py-3 px-4 font-semibold text-gray-700">Masjid</th>
+                                        <th class="text-left py-3 px-4 font-semibold text-gray-700">Daerah</th>
                                         <th class="text-left py-3 px-4 font-semibold text-gray-700">Mula Khidmat</th>
                                         <th class="text-left py-3 px-4 font-semibold text-gray-700">Tindakan</th>
                                     </tr>
@@ -478,6 +457,14 @@
                                 <input type="tel" id="telefonSiak" required class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all">
                             </div>
                             <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Masjid</label>
+                                <input type="text" id="masjidSiak" required class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all" placeholder="Contoh: Masjid Al-Hidayah">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Daerah</label>
+                                <input type="text" id="daerahSiak" required class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all" placeholder="Contoh: Kuala Lumpur">
+                            </div>
+                            <div>
                                 <label class="block text-sm font-medium text-gray-700 mb-2">Mula Khidmat</label>
                                 <input type="date" id="mulaKhidmatSiak" required class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all">
                             </div>
@@ -522,6 +509,8 @@
                                         <th class="text-left py-3 px-4 font-semibold text-gray-700">Pekerjaan</th>
                                         <th class="text-left py-3 px-4 font-semibold text-gray-700">Alamat</th>
                                         <th class="text-left py-3 px-4 font-semibold text-gray-700">No. Tel</th>
+                                        <th class="text-left py-3 px-4 font-semibold text-gray-700">Masjid</th>
+                                        <th class="text-left py-3 px-4 font-semibold text-gray-700">Daerah</th>
                                         <th class="text-left py-3 px-4 font-semibold text-gray-700">Mula Khidmat</th>
                                         <th class="text-left py-3 px-4 font-semibold text-gray-700">Tindakan</th>
                                     </tr>
@@ -736,14 +725,129 @@
         </div>
     </div>
 
+    <!-- Modal untuk PDF Preview -->
+    <div id="pdfPreviewModal" class="fixed inset-0 modal-backdrop hidden items-center justify-center z-50">
+        <div class="bg-white rounded-2xl p-6 max-w-6xl w-full mx-4 shadow-2xl" style="height: 90vh;">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="text-xl font-bold" id="pdfModalTitle">Pratonton Laporan PDF</h3>
+                <button onclick="closePDFModal()" class="text-gray-500 hover:text-gray-700 text-2xl">
+                    ✕
+                </button>
+            </div>
+            <div class="mb-4 flex gap-3">
+                <button onclick="downloadCurrentPDF()" class="btn-primary text-white px-6 py-2 rounded-lg font-medium">
+                    📥 Muat Turun PDF
+                </button>
+                <button onclick="printCurrentPDF()" class="btn-success text-white px-6 py-2 rounded-lg font-medium">
+                    🖨️ Cetak PDF
+                </button>
+                <button onclick="closePDFModal()" class="btn-secondary text-white px-6 py-2 rounded-lg font-medium">
+                    ❌ Tutup
+                </button>
+            </div>
+            <div class="border border-gray-300 rounded-lg overflow-hidden" style="height: calc(100% - 120px);">
+                <iframe id="pdfViewer" class="w-full h-full" frameborder="0"></iframe>
+            </div>
+        </div>
+    </div>
+
     <script>
         // Data storage
-        let imamData = JSON.parse(localStorage.getItem('imamData')) || [];
+        let imamData = []; // Will be loaded from Google Sheets
         let bilalData = JSON.parse(localStorage.getItem('bilalData')) || [];
         let siakData = JSON.parse(localStorage.getItem('siakData')) || [];
         let peletakanData = JSON.parse(localStorage.getItem('peletakanData')) || [];
         let currentEditType = '';
         let currentEditIndex = -1;
+
+        // Google Sheets CSV URL for Imam data
+        const IMAM_SHEET_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTMdVbauPNjDdm5PjpJ9757hQAjohDd0rtXxHUfzFOZwbVovFSD6P8x41wsjfzxjw/pub?gid=1151842269&single=true&output=csv';
+
+        // Function to load Imam data from Google Sheets
+        async function loadImamDataFromSheet() {
+            try {
+                const response = await fetch(IMAM_SHEET_URL);
+                const csvText = await response.text();
+                
+                // Parse CSV data
+                const lines = csvText.split('\n');
+                const headers = lines[0].split(',').map(h => h.trim().replace(/"/g, ''));
+                
+                imamData = [];
+                
+                for (let i = 1; i < lines.length; i++) {
+                    const line = lines[i].trim();
+                    if (line) {
+                        const values = parseCSVLine(line);
+                        if (values.length >= 12) { // Ensure we have at least 12 columns (A-M)
+                            const imam = {
+                                id: Date.now() + i,
+                                bil: values[0] || (i), // Column A: BIL
+                                masjid: values[1] || '', // Column B: MASJID
+                                daerah: values[2] || '', // Column C: DAERAH
+                                nama: values[3] || '', // Column D: NAMA IMAM
+                                nokp: values[4] || '', // Column E: NO. K/P
+                                noGaji: values[5] || '', // Column F: NO. GAJI
+                                noAkaun: values[6] || '', // Column G: NO. AKAUN BSN
+                                pekerjaan: values[7] || '', // Column H: PEKERJAAN
+                                alamat: values[8] || '', // Column I: ALAMAT
+                                telefon: values[9] || '', // Column J: NO.TEL
+                                umur: values[10] || '', // Column K: UMUR
+                                mulaKhidmat: values[11] || new Date().toISOString().split('T')[0], // Column L: MULA KHIDMAT
+                                catatan: values[12] || '' // Column M: CATATAN
+                            };
+                            imamData.push(imam);
+                        }
+                    }
+                }
+                
+                displayImam();
+                updateStatistics();
+                updatePeletakanDropdowns();
+                
+                console.log(`✅ Berjaya memuat ${imamData.length} data imam dari Google Sheets`);
+                
+            } catch (error) {
+                console.error('❌ Ralat memuat data imam:', error);
+                // Show user-friendly error message
+                const tbody = document.getElementById('imamList');
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="13" class="text-center py-8 text-red-500">
+                            <div class="text-4xl mb-2">⚠️</div>
+                            <p class="font-semibold">Ralat memuat data imam dari Google Sheets</p>
+                            <p class="text-sm mt-2">Sila semak sambungan internet dan cuba lagi</p>
+                            <button onclick="loadImamDataFromSheet()" class="mt-3 bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600">
+                                🔄 Cuba Lagi
+                            </button>
+                        </td>
+                    </tr>
+                `;
+            }
+        }
+
+        // Function to parse CSV line properly (handles commas within quotes)
+        function parseCSVLine(line) {
+            const result = [];
+            let current = '';
+            let inQuotes = false;
+            
+            for (let i = 0; i < line.length; i++) {
+                const char = line[i];
+                
+                if (char === '"') {
+                    inQuotes = !inQuotes;
+                } else if (char === ',' && !inQuotes) {
+                    result.push(current.trim().replace(/"/g, ''));
+                    current = '';
+                } else {
+                    current += char;
+                }
+            }
+            
+            result.push(current.trim().replace(/"/g, ''));
+            return result;
+        }
 
 
 
@@ -788,15 +892,17 @@
             // Rest of initialization code...
             updateDateTime();
             setInterval(updateDateTime, 1000);
-            displayImam();
+            
+            // Load Imam data from Google Sheets
+            loadImamDataFromSheet();
+            
             displayBilal();
             displaySiak();
             displayPeletakan();
             updateStatistics();
             updatePeletakanDropdowns();
             
-            // Set default date to today
-            document.getElementById('mulaKhidmatImam').value = new Date().toISOString().split('T')[0];
+            // Set default date to today for other forms
             document.getElementById('mulaKhidmatBilal').value = new Date().toISOString().split('T')[0];
             document.getElementById('mulaKhidmatSiak').value = new Date().toISOString().split('T')[0];
             
@@ -814,33 +920,8 @@
             });
         });
 
-        // Imam form submission
-        document.getElementById('imamForm').addEventListener('submit', function(e) {
-            e.preventDefault();
-            
-            const imam = {
-                id: Date.now(),
-                nama: document.getElementById('namaImam').value,
-                nokp: document.getElementById('nokpImam').value,
-                noGaji: document.getElementById('noGajiImam').value,
-                noAkaun: document.getElementById('noAkaunImam').value,
-                pekerjaan: document.getElementById('pekerjaanImam').value,
-                alamat: document.getElementById('alamatImam').value,
-                telefon: document.getElementById('telefonImam').value,
-                mulaKhidmat: document.getElementById('mulaKhidmatImam').value
-            };
-            
-            imamData.push(imam);
-            localStorage.setItem('imamData', JSON.stringify(imamData));
-            
-            this.reset();
-            document.getElementById('mulaKhidmatImam').value = new Date().toISOString().split('T')[0];
-            displayImam();
-            updateStatistics();
-            updatePeletakanDropdowns();
-            
-            alert('✅ Imam berjaya didaftarkan!');
-        });
+        // Load Imam data on page load
+        // Note: Imam form has been removed as data comes from Google Sheets
 
         // Bilal form submission
         document.getElementById('bilalForm').addEventListener('submit', function(e) {
@@ -855,6 +936,8 @@
                 pekerjaan: document.getElementById('pekerjaanBilal').value,
                 alamat: document.getElementById('alamatBilal').value,
                 telefon: document.getElementById('telefonBilal').value,
+                masjid: document.getElementById('masjidBilal').value,
+                daerah: document.getElementById('daerahBilal').value,
                 mulaKhidmat: document.getElementById('mulaKhidmatBilal').value
             };
             
@@ -883,6 +966,8 @@
                 pekerjaan: document.getElementById('pekerjaanSiak').value,
                 alamat: document.getElementById('alamatSiak').value,
                 telefon: document.getElementById('telefonSiak').value,
+                masjid: document.getElementById('masjidSiak').value,
+                daerah: document.getElementById('daerahSiak').value,
                 mulaKhidmat: document.getElementById('mulaKhidmatSiak').value
             };
             
@@ -905,7 +990,7 @@
             if (imamData.length === 0) {
                 tbody.innerHTML = `
                     <tr>
-                        <td colspan="10" class="text-center py-8 text-gray-500">
+                        <td colspan="13" class="text-center py-8 text-gray-500">
                             <div class="text-4xl mb-2">🕌</div>
                             Tiada imam didaftarkan lagi
                         </td>
@@ -916,7 +1001,8 @@
             
             tbody.innerHTML = imamData.map((imam, index) => `
                 <tr class="table-row border-b hover:bg-blue-50 transition-colors">
-                    <td class="py-3 px-4">${index + 1}</td>
+                    <td class="py-3 px-4">${imam.masjid}</td>
+                    <td class="py-3 px-4">${imam.daerah}</td>
                     <td class="py-3 px-4 font-medium">${imam.nama}</td>
                     <td class="py-3 px-4">${imam.nokp}</td>
                     <td class="py-3 px-4">${imam.noGaji}</td>
@@ -924,7 +1010,9 @@
                     <td class="py-3 px-4">${imam.pekerjaan}</td>
                     <td class="py-3 px-4">${imam.alamat}</td>
                     <td class="py-3 px-4">${imam.telefon}</td>
+                    <td class="py-3 px-4">${imam.umur}</td>
                     <td class="py-3 px-4">${new Date(imam.mulaKhidmat).toLocaleDateString('ms-MY')}</td>
+                    <td class="py-3 px-4">${imam.catatan || '-'}</td>
                     <td class="py-3 px-4">
                         <div class="flex gap-2">
                             <button onclick="editItem('imam', ${index})" class="text-blue-600 hover:text-blue-800 text-sm">
@@ -965,6 +1053,8 @@
                     <td class="py-3 px-4">${bilal.pekerjaan}</td>
                     <td class="py-3 px-4">${bilal.alamat}</td>
                     <td class="py-3 px-4">${bilal.telefon}</td>
+                    <td class="py-3 px-4">${bilal.masjid}</td>
+                    <td class="py-3 px-4">${bilal.daerah}</td>
                     <td class="py-3 px-4">${new Date(bilal.mulaKhidmat).toLocaleDateString('ms-MY')}</td>
                     <td class="py-3 px-4">
                         <div class="flex gap-2">
@@ -1006,6 +1096,8 @@
                     <td class="py-3 px-4">${siak.pekerjaan}</td>
                     <td class="py-3 px-4">${siak.alamat}</td>
                     <td class="py-3 px-4">${siak.telefon}</td>
+                    <td class="py-3 px-4">${siak.masjid}</td>
+                    <td class="py-3 px-4">${siak.daerah}</td>
                     <td class="py-3 px-4">${new Date(siak.mulaKhidmat).toLocaleDateString('ms-MY')}</td>
                     <td class="py-3 px-4">
                         <div class="flex gap-2">
@@ -1042,53 +1134,19 @@
 
         // Edit functionality
         function editItem(type, index) {
+            if (type === 'imam') {
+                alert('⚠️ Data imam tidak boleh diedit kerana diambil dari Google Sheets. Sila kemaskini data di Google Sheets dan muat semula.');
+                return;
+            }
+            
             currentEditType = type;
             currentEditIndex = index;
             
-            const data = type === 'imam' ? imamData[index] : 
-                        type === 'bilal' ? bilalData[index] : 
-                        siakData[index];
+            const data = type === 'bilal' ? bilalData[index] : siakData[index];
             
             let modalContent = '';
             
-            if (type === 'imam') {
-                modalContent = `
-                    <div class="space-y-4">
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-1">Nama Imam</label>
-                            <input type="text" id="editNama" value="${data.nama}" class="w-full px-3 py-2 border border-gray-300 rounded-lg">
-                        </div>
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-1">No. K/P</label>
-                            <input type="text" id="editNokp" value="${data.nokp}" class="w-full px-3 py-2 border border-gray-300 rounded-lg">
-                        </div>
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-1">No. Gaji</label>
-                            <input type="text" id="editNoGaji" value="${data.noGaji}" class="w-full px-3 py-2 border border-gray-300 rounded-lg">
-                        </div>
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-1">No. Akaun BSN</label>
-                            <input type="text" id="editNoAkaun" value="${data.noAkaun}" class="w-full px-3 py-2 border border-gray-300 rounded-lg">
-                        </div>
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-1">Pekerjaan</label>
-                            <input type="text" id="editPekerjaan" value="${data.pekerjaan}" class="w-full px-3 py-2 border border-gray-300 rounded-lg">
-                        </div>
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-1">Alamat</label>
-                            <textarea id="editAlamat" rows="2" class="w-full px-3 py-2 border border-gray-300 rounded-lg">${data.alamat}</textarea>
-                        </div>
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-1">No. Tel</label>
-                            <input type="tel" id="editTelefon" value="${data.telefon}" class="w-full px-3 py-2 border border-gray-300 rounded-lg">
-                        </div>
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-1">Mula Khidmat</label>
-                            <input type="date" id="editMulaKhidmat" value="${data.mulaKhidmat}" class="w-full px-3 py-2 border border-gray-300 rounded-lg">
-                        </div>
-                    </div>
-                `;
-            } else if (type === 'bilal') {
+            if (type === 'bilal') {
                 modalContent = `
                     <div class="space-y-4">
                         <div>
@@ -1118,6 +1176,14 @@
                         <div>
                             <label class="block text-sm font-medium text-gray-700 mb-1">No. Tel</label>
                             <input type="tel" id="editTelefon" value="${data.telefon}" class="w-full px-3 py-2 border border-gray-300 rounded-lg">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Masjid</label>
+                            <input type="text" id="editMasjid" value="${data.masjid}" class="w-full px-3 py-2 border border-gray-300 rounded-lg">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Daerah</label>
+                            <input type="text" id="editDaerah" value="${data.daerah}" class="w-full px-3 py-2 border border-gray-300 rounded-lg">
                         </div>
                         <div>
                             <label class="block text-sm font-medium text-gray-700 mb-1">Mula Khidmat</label>
@@ -1157,6 +1223,14 @@
                             <input type="tel" id="editTelefon" value="${data.telefon}" class="w-full px-3 py-2 border border-gray-300 rounded-lg">
                         </div>
                         <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Masjid</label>
+                            <input type="text" id="editMasjid" value="${data.masjid}" class="w-full px-3 py-2 border border-gray-300 rounded-lg">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Daerah</label>
+                            <input type="text" id="editDaerah" value="${data.daerah}" class="w-full px-3 py-2 border border-gray-300 rounded-lg">
+                        </div>
+                        <div>
                             <label class="block text-sm font-medium text-gray-700 mb-1">Mula Khidmat</label>
                             <input type="date" id="editMulaKhidmat" value="${data.mulaKhidmat}" class="w-full px-3 py-2 border border-gray-300 rounded-lg">
                         </div>
@@ -1172,21 +1246,7 @@
 
         // Save edit
         function saveEdit() {
-            if (currentEditType === 'imam') {
-                imamData[currentEditIndex] = {
-                    ...imamData[currentEditIndex],
-                    nama: document.getElementById('editNama').value,
-                    nokp: document.getElementById('editNokp').value,
-                    noGaji: document.getElementById('editNoGaji').value,
-                    noAkaun: document.getElementById('editNoAkaun').value,
-                    pekerjaan: document.getElementById('editPekerjaan').value,
-                    alamat: document.getElementById('editAlamat').value,
-                    telefon: document.getElementById('editTelefon').value,
-                    mulaKhidmat: document.getElementById('editMulaKhidmat').value
-                };
-                localStorage.setItem('imamData', JSON.stringify(imamData));
-                displayImam();
-            } else if (currentEditType === 'bilal') {
+            if (currentEditType === 'bilal') {
                 bilalData[currentEditIndex] = {
                     ...bilalData[currentEditIndex],
                     nama: document.getElementById('editNama').value,
@@ -1196,6 +1256,8 @@
                     pekerjaan: document.getElementById('editPekerjaan').value,
                     alamat: document.getElementById('editAlamat').value,
                     telefon: document.getElementById('editTelefon').value,
+                    masjid: document.getElementById('editMasjid').value,
+                    daerah: document.getElementById('editDaerah').value,
                     mulaKhidmat: document.getElementById('editMulaKhidmat').value
                 };
                 localStorage.setItem('bilalData', JSON.stringify(bilalData));
@@ -1210,6 +1272,8 @@
                     pekerjaan: document.getElementById('editPekerjaan').value,
                     alamat: document.getElementById('editAlamat').value,
                     telefon: document.getElementById('editTelefon').value,
+                    masjid: document.getElementById('editMasjid').value,
+                    daerah: document.getElementById('editDaerah').value,
                     mulaKhidmat: document.getElementById('editMulaKhidmat').value
                 };
                 localStorage.setItem('siakData', JSON.stringify(siakData));
@@ -1229,12 +1293,13 @@
 
         // Delete item
         function deleteItem(type, index) {
+            if (type === 'imam') {
+                alert('⚠️ Data imam tidak boleh dihapus kerana diambil dari Google Sheets. Sila kemaskini data di Google Sheets dan muat semula.');
+                return;
+            }
+            
             if (confirm('Adakah anda pasti ingin menghapus data ini?')) {
-                if (type === 'imam') {
-                    imamData.splice(index, 1);
-                    localStorage.setItem('imamData', JSON.stringify(imamData));
-                    displayImam();
-                } else if (type === 'bilal') {
+                if (type === 'bilal') {
                     bilalData.splice(index, 1);
                     localStorage.setItem('bilalData', JSON.stringify(bilalData));
                     displayBilal();
@@ -1251,12 +1316,14 @@
 
         // Clear all data
         function clearAllData(type) {
+            if (type === 'imam') {
+                alert('⚠️ Data imam tidak boleh dikosongkan kerana diambil dari Google Sheets. Data akan dimuat semula dari sumber asal.');
+                loadImamDataFromSheet();
+                return;
+            }
+            
             if (confirm(`Adakah anda pasti ingin mengosongkan semua data ${type}? Tindakan ini tidak boleh dibatalkan.`)) {
-                if (type === 'imam') {
-                    imamData = [];
-                    localStorage.setItem('imamData', JSON.stringify(imamData));
-                    displayImam();
-                } else if (type === 'bilal') {
+                if (type === 'bilal') {
                     bilalData = [];
                     localStorage.setItem('bilalData', JSON.stringify(bilalData));
                     displayBilal();
@@ -1274,7 +1341,7 @@
         // Export to PDF
         function exportToPDF(type) {
             const { jsPDF } = window.jspdf;
-            const doc = new jsPDF();
+            const doc = new jsPDF('landscape'); // Set to landscape orientation
             
             // Add title
             doc.setFontSize(20);
@@ -1288,9 +1355,10 @@
             let headers = [];
             
             if (type === 'imam') {
-                headers = ['Bil', 'Nama Imam', 'No. K/P', 'No. Gaji', 'No. Akaun BSN', 'Pekerjaan', 'Alamat', 'No. Tel', 'Mula Khidmat'];
+                headers = ['Masjid', 'Daerah', 'Nama Imam', 'No. K/P', 'No. Gaji', 'No. Akaun BSN', 'Pekerjaan', 'Alamat', 'No. Tel', 'Umur', 'Mula Khidmat', 'Catatan'];
                 tableData = imamData.map((imam, index) => [
-                    index + 1,
+                    imam.masjid,
+                    imam.daerah,
                     imam.nama,
                     imam.nokp,
                     imam.noGaji,
@@ -1298,7 +1366,9 @@
                     imam.pekerjaan,
                     imam.alamat,
                     imam.telefon,
-                    new Date(imam.mulaKhidmat).toLocaleDateString('ms-MY')
+                    imam.umur,
+                    new Date(imam.mulaKhidmat).toLocaleDateString('ms-MY'),
+                    imam.catatan || '-'
                 ]);
             } else if (type === 'bilal') {
                 headers = ['Bil', 'Nama Bilal', 'No. K/P', 'No. Gaji', 'No. Akaun BSN', 'Pekerjaan', 'Alamat', 'No. Tel', 'Mula Khidmat'];
@@ -1343,6 +1413,109 @@
             });
             
             doc.save(`laporan-${type}-${new Date().toISOString().split('T')[0]}.pdf`);
+        }
+
+        // Generate and preview PDF report
+        function generateReport(type) {
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF('landscape'); // Set to landscape orientation
+            
+            // Add title
+            doc.setFontSize(20);
+            doc.text(`Laporan ${type.charAt(0).toUpperCase() + type.slice(1)}`, 20, 20);
+            
+            // Add date and time
+            doc.setFontSize(12);
+            doc.text(`Tarikh: ${new Date().toLocaleDateString('ms-MY')}`, 20, 35);
+            doc.text(`Masa: ${new Date().toLocaleTimeString('ms-MY')}`, 20, 45);
+            
+            let tableData = [];
+            let headers = [];
+            let totalCount = 0;
+            
+            if (type === 'imam') {
+                headers = ['Masjid', 'Daerah', 'Nama Imam', 'No. K/P', 'No. Gaji', 'No. Akaun BSN', 'Pekerjaan', 'Alamat', 'No. Tel', 'Umur', 'Mula Khidmat', 'Catatan'];
+                tableData = imamData.map((imam, index) => [
+                    imam.masjid,
+                    imam.daerah,
+                    imam.nama,
+                    imam.nokp,
+                    imam.noGaji,
+                    imam.noAkaun,
+                    imam.pekerjaan,
+                    imam.alamat,
+                    imam.telefon,
+                    imam.umur,
+                    new Date(imam.mulaKhidmat).toLocaleDateString('ms-MY'),
+                    imam.catatan || '-'
+                ]);
+                totalCount = imamData.length;
+            } else if (type === 'bilal') {
+                headers = ['Bil', 'Nama Bilal', 'No. K/P', 'No. Gaji', 'No. Akaun BSN', 'Pekerjaan', 'Alamat', 'No. Tel', 'Mula Khidmat'];
+                tableData = bilalData.map((bilal, index) => [
+                    index + 1,
+                    bilal.nama,
+                    bilal.nokp,
+                    bilal.noGaji,
+                    bilal.noAkaun,
+                    bilal.pekerjaan,
+                    bilal.alamat,
+                    bilal.telefon,
+                    new Date(bilal.mulaKhidmat).toLocaleDateString('ms-MY')
+                ]);
+                totalCount = bilalData.length;
+            } else {
+                headers = ['Bil', 'Nama Siak', 'No. K/P', 'No. Gaji', 'No. Akaun BSN', 'Pekerjaan', 'Alamat', 'No. Tel', 'Mula Khidmat'];
+                tableData = siakData.map((siak, index) => [
+                    index + 1,
+                    siak.nama,
+                    siak.nokp,
+                    siak.noGaji,
+                    siak.noAkaun,
+                    siak.pekerjaan,
+                    siak.alamat,
+                    siak.telefon,
+                    new Date(siak.mulaKhidmat).toLocaleDateString('ms-MY')
+                ]);
+                totalCount = siakData.length;
+            }
+            
+            // Add total count
+            doc.text(`Jumlah ${type.charAt(0).toUpperCase() + type.slice(1)}: ${totalCount} orang`, 20, 55);
+            
+            doc.autoTable({
+                head: [headers],
+                body: tableData,
+                startY: 65,
+                styles: {
+                    fontSize: 9,
+                    cellPadding: 2
+                },
+                headStyles: {
+                    fillColor: [30, 41, 59],
+                    textColor: 255,
+                    fontSize: 10,
+                    fontStyle: 'bold'
+                },
+                columnStyles: {
+                    0: { cellWidth: 15 }, // Bil
+                    1: { cellWidth: 40 }, // Nama
+                    2: { cellWidth: 35 }, // No. K/P
+                    3: { cellWidth: 25 }, // No. Gaji
+                    4: { cellWidth: 30 }, // No. Akaun BSN
+                    5: { cellWidth: 30 }, // Pekerjaan
+                    6: { cellWidth: 50 }, // Alamat
+                    7: { cellWidth: 30 }, // No. Tel
+                    8: { cellWidth: 25 }  // Mula Khidmat
+                }
+            });
+            
+            // Convert PDF to blob and show preview
+            const pdfBlob = doc.output('blob');
+            const pdfUrl = URL.createObjectURL(pdfBlob);
+            
+            // Show PDF preview modal
+            showPDFPreview(pdfUrl, type);
         }
 
         // Generate report
@@ -1530,7 +1703,7 @@
         // Export perletakan to PDF
         function exportPeletakanToPDF() {
             const { jsPDF } = window.jspdf;
-            const doc = new jsPDF();
+            const doc = new jsPDF('landscape'); // Set to landscape orientation
             
             // Add title
             doc.setFontSize(20);
@@ -1566,6 +1739,61 @@
             });
             
             doc.save(`laporan-perletakan-${new Date().toISOString().split('T')[0]}.pdf`);
+        }
+
+        // PDF Preview Functions
+        let currentPDFBlob = null;
+        let currentPDFType = '';
+
+        function showPDFPreview(pdfUrl, type) {
+            document.getElementById('pdfModalTitle').textContent = `Pratonton Laporan ${type.charAt(0).toUpperCase() + type.slice(1)}`;
+            document.getElementById('pdfViewer').src = pdfUrl;
+            document.getElementById('pdfPreviewModal').classList.remove('hidden');
+            document.getElementById('pdfPreviewModal').classList.add('flex');
+            
+            // Store current PDF info for download/print
+            currentPDFType = type;
+            
+            // Convert URL to blob for download
+            fetch(pdfUrl)
+                .then(response => response.blob())
+                .then(blob => {
+                    currentPDFBlob = blob;
+                });
+        }
+
+        function closePDFModal() {
+            document.getElementById('pdfPreviewModal').classList.add('hidden');
+            document.getElementById('pdfPreviewModal').classList.remove('flex');
+            document.getElementById('pdfViewer').src = '';
+            
+            // Clean up blob URL
+            if (currentPDFBlob) {
+                URL.revokeObjectURL(document.getElementById('pdfViewer').src);
+                currentPDFBlob = null;
+            }
+        }
+
+        function downloadCurrentPDF() {
+            if (currentPDFBlob) {
+                const url = URL.createObjectURL(currentPDFBlob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `laporan-${currentPDFType}-${new Date().toISOString().split('T')[0]}.pdf`;
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                URL.revokeObjectURL(url);
+            }
+        }
+
+        function printCurrentPDF() {
+            if (document.getElementById('pdfViewer').src) {
+                const printWindow = window.open(document.getElementById('pdfViewer').src, '_blank');
+                printWindow.onload = function() {
+                    printWindow.print();
+                };
+            }
         }
 
         // Global search functionality
@@ -1641,13 +1869,17 @@
                                 </div>
                                 <h4 class="text-lg font-semibold text-gray-800 mb-1">${result.data.nama}</h4>
                                 <div class="grid grid-cols-2 gap-4 text-sm text-gray-600">
+                                    <div><strong>Masjid:</strong> ${result.data.masjid}</div>
+                                    <div><strong>Daerah:</strong> ${result.data.daerah}</div>
                                     <div><strong>No. K/P:</strong> ${result.data.nokp}</div>
                                     <div><strong>No. Gaji:</strong> ${result.data.noGaji}</div>
                                     <div><strong>No. Akaun BSN:</strong> ${result.data.noAkaun}</div>
                                     <div><strong>Pekerjaan:</strong> ${result.data.pekerjaan}</div>
                                     <div class="col-span-2"><strong>Alamat:</strong> ${result.data.alamat}</div>
                                     <div><strong>No. Tel:</strong> ${result.data.telefon}</div>
+                                    <div><strong>Umur:</strong> ${result.data.umur || '-'}</div>
                                     <div><strong>Mula Khidmat:</strong> ${new Date(result.data.mulaKhidmat).toLocaleDateString('ms-MY')}</div>
+                                    <div class="col-span-2"><strong>Catatan:</strong> ${result.data.catatan || '-'}</div>
                                 </div>
                             </div>
                             <div class="flex flex-col gap-2 ml-4">
@@ -1680,45 +1912,16 @@
             document.getElementById(type + '-tab').scrollIntoView({ behavior: 'smooth', block: 'start' });
         }
 
-        // Toggle functions for forms and lists
-        function toggleImamForm() {
-            const formSection = document.getElementById('imamFormSection');
-            const listSection = document.getElementById('imamListSection');
-            const formBtn = document.getElementById('toggleImamFormBtn');
-            const listBtn = document.getElementById('toggleImamListBtn');
-            
-            if (formSection.classList.contains('hidden')) {
-                formSection.classList.remove('hidden');
-                listSection.classList.add('hidden');
-                formBtn.classList.remove('btn-primary');
-                formBtn.classList.add('btn-secondary');
-                formBtn.innerHTML = '❌ Tutup Borang';
-                listBtn.classList.remove('btn-secondary');
-                listBtn.classList.add('btn-primary');
-                listBtn.innerHTML = '📋 Lihat Senarai Imam';
-            } else {
-                formSection.classList.add('hidden');
-                formBtn.classList.remove('btn-secondary');
-                formBtn.classList.add('btn-primary');
-                formBtn.innerHTML = '➕ Daftar Imam Baru';
-            }
-        }
-        
+        // Toggle functions for forms and lists        
         function toggleImamList() {
-            const formSection = document.getElementById('imamFormSection');
             const listSection = document.getElementById('imamListSection');
-            const formBtn = document.getElementById('toggleImamFormBtn');
             const listBtn = document.getElementById('toggleImamListBtn');
             
             if (listSection.classList.contains('hidden')) {
                 listSection.classList.remove('hidden');
-                formSection.classList.add('hidden');
                 listBtn.classList.remove('btn-secondary');
                 listBtn.classList.add('btn-primary');
                 listBtn.innerHTML = '❌ Tutup Senarai';
-                formBtn.classList.remove('btn-secondary');
-                formBtn.classList.add('btn-primary');
-                formBtn.innerHTML = '➕ Daftar Imam Baru';
             } else {
                 listSection.classList.add('hidden');
                 listBtn.classList.remove('btn-primary');
@@ -1826,5 +2029,5 @@
             }
         });
     </script>
-<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'98ecc3108751a319',t:'MTc2MDUwNDUyMi4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'98edd8058061a319',t:'MTc2MDUxNTg2Ni4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>
