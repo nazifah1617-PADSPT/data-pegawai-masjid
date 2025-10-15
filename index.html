@@ -175,7 +175,12 @@
                     </button>
                 </div>
                 <div id="globalSearchResults" class="mt-4 hidden">
-                    <h3 class="text-lg font-semibold text-gray-800 mb-3">Keputusan Carian:</h3>
+                    <div class="flex justify-between items-center mb-3">
+                        <h3 class="text-lg font-semibold text-gray-800">Keputusan Carian:</h3>
+                        <button onclick="exportSearchResultsToPDF()" id="exportSearchBtn" class="btn-purple text-white px-4 py-2 rounded-lg font-medium text-sm hidden">
+                            📄 Cetak PDF Hasil Carian
+                        </button>
+                    </div>
                     <div id="searchResultsContent" class="space-y-3"></div>
                 </div>
             </div>
@@ -214,17 +219,7 @@
                 </button>
             </div>
 
-            <div class="mb-6">
-                <div class="card-hover rounded-2xl p-6 shadow-xl bg-blue-50 border-l-4 border-blue-500">
-                    <div class="flex items-center">
-                        <span class="text-2xl mr-3">📊</span>
-                        <div>
-                            <h3 class="text-lg font-semibold text-blue-800">Data Imam dari Google Sheets</h3>
-                            <p class="text-blue-600 text-sm">Data imam diambil secara automatik dari Google Sheets. Klik "Muat Semula Data Imam" untuk mendapatkan data terkini.</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
+
 
             <div class="grid lg:grid-cols-1 gap-8">
 
@@ -763,6 +758,37 @@
         // Google Sheets CSV URL for Imam data
         const IMAM_SHEET_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTMdVbauPNjDdm5PjpJ9757hQAjohDd0rtXxHUfzFOZwbVovFSD6P8x41wsjfzxjw/pub?gid=1151842269&single=true&output=csv';
 
+        // Function to calculate age from Malaysian IC number
+        function calculateAgeFromIC(nokp) {
+            if (!nokp || nokp.length < 6) return '-';
+            
+            try {
+                // Extract birth date from IC (first 6 digits: YYMMDD)
+                const yearDigits = nokp.substring(0, 2);
+                const month = nokp.substring(2, 4);
+                const day = nokp.substring(4, 6);
+                
+                // Determine century (if year > 30, assume 19xx, else 20xx)
+                const year = parseInt(yearDigits) > 30 ? `19${yearDigits}` : `20${yearDigits}`;
+                
+                // Create birth date
+                const birthDate = new Date(`${year}-${month}-${day}`);
+                const today = new Date();
+                
+                // Calculate age
+                let age = today.getFullYear() - birthDate.getFullYear();
+                const monthDiff = today.getMonth() - birthDate.getMonth();
+                
+                if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) {
+                    age--;
+                }
+                
+                return age > 0 && age < 150 ? age : '-';
+            } catch (error) {
+                return '-';
+            }
+        }
+
         // Function to load Imam data from Google Sheets
         async function loadImamDataFromSheet() {
             try {
@@ -780,19 +806,22 @@
                     if (line) {
                         const values = parseCSVLine(line);
                         if (values.length >= 12) { // Ensure we have at least 12 columns (A-M)
+                            const nokp = values[4] || ''; // Column E: NO. K/P
+                            const calculatedAge = calculateAgeFromIC(nokp);
+                            
                             const imam = {
                                 id: Date.now() + i,
                                 bil: values[0] || (i), // Column A: BIL
                                 masjid: values[1] || '', // Column B: MASJID
                                 daerah: values[2] || '', // Column C: DAERAH
                                 nama: values[3] || '', // Column D: NAMA IMAM
-                                nokp: values[4] || '', // Column E: NO. K/P
+                                nokp: nokp, // Column E: NO. K/P
                                 noGaji: values[5] || '', // Column F: NO. GAJI
                                 noAkaun: values[6] || '', // Column G: NO. AKAUN BSN
                                 pekerjaan: values[7] || '', // Column H: PEKERJAAN
                                 alamat: values[8] || '', // Column I: ALAMAT
                                 telefon: values[9] || '', // Column J: NO.TEL
-                                umur: values[10] || '', // Column K: UMUR
+                                umur: calculatedAge, // Calculated from IC number
                                 mulaKhidmat: values[11] || new Date().toISOString().split('T')[0], // Column L: MULA KHIDMAT
                                 catatan: values[12] || '' // Column M: CATATAN
                             };
@@ -893,7 +922,7 @@
             updateDateTime();
             setInterval(updateDateTime, 1000);
             
-            // Load Imam data from Google Sheets
+            // Load Imam data from Google Sheets in background
             loadImamDataFromSheet();
             
             displayBilal();
@@ -1846,9 +1875,18 @@
             displayGlobalSearchResults(results, searchTerm);
         }
         
+        // Store search results globally for PDF export
+        let currentSearchResults = [];
+        let currentSearchTerm = '';
+
         function displayGlobalSearchResults(results, searchTerm) {
             const resultsContainer = document.getElementById('globalSearchResults');
             const resultsContent = document.getElementById('searchResultsContent');
+            const exportBtn = document.getElementById('exportSearchBtn');
+            
+            // Store results for PDF export
+            currentSearchResults = results;
+            currentSearchTerm = searchTerm;
             
             if (results.length === 0) {
                 resultsContent.innerHTML = `
@@ -1858,6 +1896,7 @@
                         <p class="text-sm mt-2">Cuba cari menggunakan nama penuh atau no. K/P yang tepat</p>
                     </div>
                 `;
+                exportBtn.classList.add('hidden');
             } else {
                 resultsContent.innerHTML = results.map(result => `
                     <div class="bg-white border border-gray-200 rounded-xl p-4 shadow-sm hover:shadow-md transition-shadow">
@@ -1893,6 +1932,7 @@
                         </div>
                     </div>
                 `).join('');
+                exportBtn.classList.remove('hidden');
             }
             
             resultsContainer.classList.remove('hidden');
@@ -1900,10 +1940,129 @@
             // Scroll to results
             resultsContainer.scrollIntoView({ behavior: 'smooth', block: 'start' });
         }
+
+        // Export search results to PDF
+        function exportSearchResultsToPDF() {
+            if (currentSearchResults.length === 0) {
+                alert('Tiada hasil carian untuk dicetak!');
+                return;
+            }
+
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF('landscape'); // Landscape orientation
+            
+            // Add title
+            doc.setFontSize(20);
+            doc.text('Laporan Hasil Carian Pegawai Masjid', 20, 20);
+            
+            // Add search term
+            doc.setFontSize(14);
+            doc.text(`Kata Kunci Carian: "${currentSearchTerm}"`, 20, 35);
+            
+            // Add date and time
+            doc.setFontSize(12);
+            doc.text(`Tarikh: ${new Date().toLocaleDateString('ms-MY')}`, 20, 45);
+            doc.text(`Masa: ${new Date().toLocaleTimeString('ms-MY')}`, 20, 55);
+            doc.text(`Jumlah Keputusan: ${currentSearchResults.length} rekod`, 20, 65);
+            
+            // Prepare table data
+            const headers = ['Bil', 'Jenis', 'Nama', 'No. K/P', 'No. Gaji', 'No. Akaun BSN', 'Pekerjaan', 'Masjid', 'Daerah', 'No. Tel', 'Mula Khidmat'];
+            const tableData = currentSearchResults.map((result, index) => [
+                index + 1,
+                result.type,
+                result.data.nama,
+                result.data.nokp,
+                result.data.noGaji,
+                result.data.noAkaun,
+                result.data.pekerjaan,
+                result.data.masjid,
+                result.data.daerah,
+                result.data.telefon,
+                new Date(result.data.mulaKhidmat).toLocaleDateString('ms-MY')
+            ]);
+            
+            doc.autoTable({
+                head: [headers],
+                body: tableData,
+                startY: 75,
+                styles: {
+                    fontSize: 9,
+                    cellPadding: 2
+                },
+                headStyles: {
+                    fillColor: [30, 41, 59],
+                    textColor: 255,
+                    fontSize: 10,
+                    fontStyle: 'bold'
+                },
+                columnStyles: {
+                    0: { cellWidth: 15 }, // Bil
+                    1: { cellWidth: 20 }, // Jenis
+                    2: { cellWidth: 40 }, // Nama
+                    3: { cellWidth: 35 }, // No. K/P
+                    4: { cellWidth: 25 }, // No. Gaji
+                    5: { cellWidth: 30 }, // No. Akaun BSN
+                    6: { cellWidth: 30 }, // Pekerjaan
+                    7: { cellWidth: 35 }, // Masjid
+                    8: { cellWidth: 25 }, // Daerah
+                    9: { cellWidth: 25 }, // No. Tel
+                    10: { cellWidth: 25 } // Mula Khidmat
+                }
+            });
+            
+            // Add detailed information on new page if needed
+            if (currentSearchResults.length <= 10) {
+                doc.addPage();
+                doc.setFontSize(16);
+                doc.text('Maklumat Terperinci', 20, 20);
+                
+                let yPosition = 35;
+                currentSearchResults.forEach((result, index) => {
+                    if (yPosition > 180) {
+                        doc.addPage();
+                        yPosition = 20;
+                    }
+                    
+                    doc.setFontSize(12);
+                    doc.setFont(undefined, 'bold');
+                    doc.text(`${index + 1}. ${result.data.nama} (${result.type})`, 20, yPosition);
+                    
+                    doc.setFont(undefined, 'normal');
+                    doc.setFontSize(10);
+                    yPosition += 8;
+                    
+                    const details = [
+                        `Masjid: ${result.data.masjid}`,
+                        `Daerah: ${result.data.daerah}`,
+                        `No. K/P: ${result.data.nokp}`,
+                        `No. Gaji: ${result.data.noGaji}`,
+                        `No. Akaun BSN: ${result.data.noAkaun}`,
+                        `Pekerjaan: ${result.data.pekerjaan}`,
+                        `Alamat: ${result.data.alamat}`,
+                        `No. Tel: ${result.data.telefon}`,
+                        `Umur: ${result.data.umur || '-'}`,
+                        `Mula Khidmat: ${new Date(result.data.mulaKhidmat).toLocaleDateString('ms-MY')}`,
+                        `Catatan: ${result.data.catatan || '-'}`
+                    ];
+                    
+                    details.forEach(detail => {
+                        doc.text(detail, 25, yPosition);
+                        yPosition += 5;
+                    });
+                    
+                    yPosition += 5; // Extra space between records
+                });
+            }
+            
+            doc.save(`hasil-carian-${currentSearchTerm.replace(/\s+/g, '-')}-${new Date().toISOString().split('T')[0]}.pdf`);
+        }
         
         function clearGlobalSearch() {
             document.getElementById('globalSearch').value = '';
             document.getElementById('globalSearchResults').classList.add('hidden');
+            document.getElementById('exportSearchBtn').classList.add('hidden');
+            currentSearchResults = [];
+            currentSearchTerm = '';
         }
         
         function goToTab(type) {
@@ -2029,5 +2188,5 @@
             }
         });
     </script>
-<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'98edd8058061a319',t:'MTc2MDUxNTg2Ni4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'98ee2532605da319',t:'MTc2MDUxOTAyNy4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>
