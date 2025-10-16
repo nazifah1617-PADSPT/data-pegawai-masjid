@@ -1,13 +1,13 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="ms">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sistem Maklumat Kariah & Masjid</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://unpkg.com/jspdf@latest/dist/jspdf.umd.min.js"></script>
-    <script src="https://unpkg.com/jspdf-autotable@latest/dist/jspdf.plugin.autotable.min.js"></script>
-    <style>
+ <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sistem Maklumat Kariah &amp; Masjid</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/jspdf@latest/dist/jspdf.umd.min.js"></script>
+  <script src="https://unpkg.com/jspdf-autotable@latest/dist/jspdf.plugin.autotable.min.js"></script>
+  <style>
         @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap');
         body { 
             font-family: 'Poppins', sans-serif; 
@@ -133,630 +133,356 @@
             backdrop-filter: blur(5px);
         }
     </style>
-</head>
-<body>
-    <!-- Header -->
-    <header class="gradient-bg text-white shadow-2xl relative z-10">
-        <div class="container mx-auto px-6 py-8">
-            <div class="flex items-center justify-between">
-                <div class="flex items-center space-x-4">
-                    <div class="text-4xl mosque-icon">🕌</div>
-                    <div>
-                        <h1 class="text-3xl font-bold">Sistem Maklumat Pegawai Masjid</h1>
-                        <p class="text-slate-300 text-sm">Pengurusan Pegawai Imam, Bilal & Siak</p>
-                    </div>
-                </div>
-                <div class="text-right">
-                    <p class="text-sm text-slate-300">Tarikh: <span id="currentDate"></span></p>
-                    <p class="text-sm text-slate-300">Masa: <span id="currentTime"></span></p>
-                </div>
-            </div>
-        </div>
-    </header>
-
-    <!-- Main Content -->
-    <main class="container mx-auto px-6 py-8">
-        <!-- Global Search -->
-        <div class="mb-6">
-            <div class="card-hover rounded-2xl p-6 shadow-xl">
-                <h2 class="text-xl font-bold text-gray-800 mb-4 flex items-center">
-                    <span class="text-2xl mr-3">🔍</span>
-                    Carian Pegawai Masjid
-                </h2>
-                <div class="flex gap-4">
-                    <div class="flex-1">
-                        <input type="text" id="globalSearch" placeholder="🔍 Cari menggunakan nama atau no. K/P..." class="search-input w-full px-4 py-3 border border-gray-300 rounded-xl">
-                    </div>
-                    <button onclick="performGlobalSearch()" class="btn-primary text-white px-6 py-3 rounded-xl font-medium">
-                        🔍 Cari
-                    </button>
-                    <button onclick="clearGlobalSearch()" class="btn-secondary text-white px-6 py-3 rounded-xl font-medium">
-                        🗑️ Kosongkan
-                    </button>
-                </div>
-                <div id="globalSearchResults" class="mt-4 hidden">
-                    <div class="flex justify-between items-center mb-3">
-                        <h3 class="text-lg font-semibold text-gray-800">Keputusan Carian:</h3>
-                        <button onclick="exportSearchResultsToPDF()" id="exportSearchBtn" class="btn-purple text-white px-4 py-2 rounded-lg font-medium text-sm hidden">
-                            📄 Cetak PDF Hasil Carian
-                        </button>
-                    </div>
-                    <div id="searchResultsContent" class="space-y-3"></div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Navigation Tabs -->
-        <div class="mb-8">
-            <div class="flex flex-wrap gap-2 bg-white/80 backdrop-blur-sm p-2 rounded-2xl shadow-lg">
-                <button onclick="showTab('imam')" id="tab-imam" class="tab-btn btn-primary text-white px-6 py-3 rounded-xl font-medium transition-all">
-                    🕌 Imam
-                </button>
-                <button onclick="showTab('bilal')" id="tab-bilal" class="tab-btn bg-gray-200 text-gray-700 px-6 py-3 rounded-xl font-medium transition-all hover:bg-gray-300">
-                    📢 Bilal
-                </button>
-                <button onclick="showTab('siak')" id="tab-siak" class="tab-btn bg-gray-200 text-gray-700 px-6 py-3 rounded-xl font-medium transition-all hover:bg-gray-300">
-                    📋 Siak
-                </button>
-                <button onclick="showTab('laporan')" id="tab-laporan" class="tab-btn bg-gray-200 text-gray-700 px-6 py-3 rounded-xl font-medium transition-all hover:bg-gray-300">
-                    📊 Laporan
-                </button>
-                <button onclick="showTab('peletakan')" id="tab-peletakan" class="tab-btn bg-gray-200 text-gray-700 px-6 py-3 rounded-xl font-medium transition-all hover:bg-gray-300">
-                    📍 Laporan Perletakan Pegawai Masjid
-                </button>
-            </div>
-        </div>
-
-        <!-- Imam Tab -->
-        <div id="imam-tab" class="tab-content fade-in">
-            <!-- Control Buttons -->
-            <div class="mb-6 flex gap-4">
-                <button onclick="loadImamDataFromSheet()" class="btn-primary text-white px-6 py-3 rounded-xl font-medium">
-                    🔄 Muat Semula Data Imam
-                </button>
-                <button onclick="toggleImamList()" id="toggleImamListBtn" class="btn-secondary text-white px-6 py-3 rounded-xl font-medium">
-                    📋 Lihat Senarai Imam
-                </button>
-            </div>
-
-
-
-            <div class="grid lg:grid-cols-1 gap-8">
-
-                <!-- Senarai Imam -->
-                <div id="imamListSection" class="lg:col-span-1 hidden">
-                    <div class="card-hover rounded-2xl p-6 shadow-xl">
-                        <div class="flex justify-between items-center mb-6">
-                            <h2 class="text-2xl font-bold text-gray-800 flex items-center">
-                                <span class="text-2xl mr-3">🕌</span>
-                                Senarai Imam
-                            </h2>
-                            <div class="flex gap-2">
-                                <button onclick="exportToPDF('imam')" class="btn-purple text-white px-4 py-2 rounded-lg font-medium text-sm">
-                                    📄 Export PDF
-                                </button>
-                                <button onclick="clearAllData('imam')" class="btn-danger text-white px-4 py-2 rounded-lg font-medium text-sm">
-                                    🗑️ Kosongkan
-                                </button>
-                            </div>
-                        </div>
-                        
-                        <div class="mb-4">
-                            <input type="text" id="searchImam" placeholder="🔍 Cari imam..." class="search-input w-full px-4 py-3 border border-gray-300 rounded-xl">
-                        </div>
-
-                        <div class="overflow-x-auto">
-                            <table class="w-full">
-                                <thead>
-                                    <tr class="bg-gray-50 border-b">
-                                        <th class="text-left py-3 px-4 font-semibold text-gray-700">Masjid</th>
-                                        <th class="text-left py-3 px-4 font-semibold text-gray-700">Daerah</th>
-                                        <th class="text-left py-3 px-4 font-semibold text-gray-700">Nama Imam</th>
-                                        <th class="text-left py-3 px-4 font-semibold text-gray-700">No. K/P</th>
-                                        <th class="text-left py-3 px-4 font-semibold text-gray-700">No. Gaji</th>
-                                        <th class="text-left py-3 px-4 font-semibold text-gray-700">No. Akaun BSN</th>
-                                        <th class="text-left py-3 px-4 font-semibold text-gray-700">Pekerjaan</th>
-                                        <th class="text-left py-3 px-4 font-semibold text-gray-700">Alamat</th>
-                                        <th class="text-left py-3 px-4 font-semibold text-gray-700">No. Tel</th>
-                                        <th class="text-left py-3 px-4 font-semibold text-gray-700">Umur</th>
-                                        <th class="text-left py-3 px-4 font-semibold text-gray-700">Mula Khidmat</th>
-                                        <th class="text-left py-3 px-4 font-semibold text-gray-700">Catatan</th>
-                                        <th class="text-left py-3 px-4 font-semibold text-gray-700">Tindakan</th>
-                                    </tr>
-                                </thead>
-                                <tbody id="imamList">
-                                    <tr>
-                                        <td colspan="10" class="text-center py-8 text-gray-500">
-                                            <div class="text-4xl mb-2">🕌</div>
-                                            Tiada imam didaftarkan lagi
-                                        </td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Bilal Tab -->
-        <div id="bilal-tab" class="tab-content hidden">
-            <!-- Control Buttons -->
-            <div class="mb-6 flex gap-4">
-                <button onclick="toggleBilalForm()" id="toggleBilalFormBtn" class="btn-success text-white px-6 py-3 rounded-xl font-medium">
-                    ➕ Daftar Bilal Baru
-                </button>
-                <button onclick="toggleBilalList()" id="toggleBilalListBtn" class="btn-secondary text-white px-6 py-3 rounded-xl font-medium">
-                    📋 Lihat Senarai Bilal
-                </button>
-            </div>
-
-            <div class="grid lg:grid-cols-3 gap-8">
-                <!-- Form Bilal -->
-                <div id="bilalFormSection" class="lg:col-span-1 hidden">
-                    <div class="card-hover rounded-2xl p-6 shadow-xl">
-                        <h2 class="text-2xl font-bold text-gray-800 mb-6 flex items-center">
-                            <span class="text-2xl mr-3">📢</span>
-                            Daftar Bilal
-                        </h2>
-                        <form id="bilalForm" class="space-y-4">
-                            <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-2">Nama Bilal</label>
-                                <input type="text" id="namaBilal" required class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all">
-                            </div>
-                            <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-2">No. K/P</label>
-                                <input type="text" id="nokpBilal" required class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all">
-                            </div>
-                            <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-2">No. Gaji</label>
-                                <input type="text" id="noGajiBilal" required class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all" placeholder="Contoh: G001234">
-                            </div>
-                            <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-2">No. Akaun BSN</label>
-                                <input type="text" id="noAkaunBilal" required class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all" placeholder="Contoh: 1234567890">
-                            </div>
-                            <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-2">Pekerjaan</label>
-                                <input type="text" id="pekerjaanBilal" required class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all" placeholder="Contoh: Guru Agama">
-                            </div>
-                            <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-2">Alamat</label>
-                                <textarea id="alamatBilal" required rows="3" class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"></textarea>
-                            </div>
-                            <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-2">No. Tel</label>
-                                <input type="tel" id="telefonBilal" required class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all">
-                            </div>
-                            <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-2">Masjid</label>
-                                <input type="text" id="masjidBilal" required class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all" placeholder="Contoh: Masjid Al-Hidayah">
-                            </div>
-                            <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-2">Daerah</label>
-                                <input type="text" id="daerahBilal" required class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all" placeholder="Contoh: Kuala Lumpur">
-                            </div>
-                            <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-2">Mula Khidmat</label>
-                                <input type="date" id="mulaKhidmatBilal" required class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all">
-                            </div>
-                            <button type="submit" class="w-full btn-success text-white py-3 px-6 rounded-xl font-medium">
-                                ✅ Daftar Bilal
-                            </button>
-                        </form>
-                    </div>
-                </div>
-
-                <!-- Senarai Bilal -->
-                <div id="bilalListSection" class="lg:col-span-3 hidden">
-                    <div class="card-hover rounded-2xl p-6 shadow-xl">
-                        <div class="flex justify-between items-center mb-6">
-                            <h2 class="text-2xl font-bold text-gray-800 flex items-center">
-                                <span class="text-2xl mr-3">📢</span>
-                                Senarai Bilal
-                            </h2>
-                            <div class="flex gap-2">
-                                <button onclick="exportToPDF('bilal')" class="btn-purple text-white px-4 py-2 rounded-lg font-medium text-sm">
-                                    📄 Export PDF
-                                </button>
-                                <button onclick="clearAllData('bilal')" class="btn-danger text-white px-4 py-2 rounded-lg font-medium text-sm">
-                                    🗑️ Kosongkan
-                                </button>
-                            </div>
-                        </div>
-
-                        <div class="mb-4">
-                            <input type="text" id="searchBilal" placeholder="🔍 Cari bilal..." class="search-input w-full px-4 py-3 border border-gray-300 rounded-xl">
-                        </div>
-
-                        <div class="overflow-x-auto">
-                            <table class="w-full">
-                                <thead>
-                                    <tr class="bg-gray-50 border-b">
-                                        <th class="text-left py-3 px-4 font-semibold text-gray-700">Bil</th>
-                                        <th class="text-left py-3 px-4 font-semibold text-gray-700">Nama Bilal</th>
-                                        <th class="text-left py-3 px-4 font-semibold text-gray-700">No. K/P</th>
-                                        <th class="text-left py-3 px-4 font-semibold text-gray-700">No. Gaji</th>
-                                        <th class="text-left py-3 px-4 font-semibold text-gray-700">No. Akaun BSN</th>
-                                        <th class="text-left py-3 px-4 font-semibold text-gray-700">Pekerjaan</th>
-                                        <th class="text-left py-3 px-4 font-semibold text-gray-700">Alamat</th>
-                                        <th class="text-left py-3 px-4 font-semibold text-gray-700">No. Tel</th>
-                                        <th class="text-left py-3 px-4 font-semibold text-gray-700">Masjid</th>
-                                        <th class="text-left py-3 px-4 font-semibold text-gray-700">Daerah</th>
-                                        <th class="text-left py-3 px-4 font-semibold text-gray-700">Mula Khidmat</th>
-                                        <th class="text-left py-3 px-4 font-semibold text-gray-700">Tindakan</th>
-                                    </tr>
-                                </thead>
-                                <tbody id="bilalList">
-                                    <tr>
-                                        <td colspan="10" class="text-center py-8 text-gray-500">
-                                            <div class="text-4xl mb-2">📢</div>
-                                            Tiada bilal didaftarkan lagi
-                                        </td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Siak Tab -->
-        <div id="siak-tab" class="tab-content hidden">
-            <!-- Control Buttons -->
-            <div class="mb-6 flex gap-4">
-                <button onclick="toggleSiakForm()" id="toggleSiakFormBtn" class="btn-purple text-white px-6 py-3 rounded-xl font-medium">
-                    ➕ Daftar Siak Baru
-                </button>
-                <button onclick="toggleSiakList()" id="toggleSiakListBtn" class="btn-secondary text-white px-6 py-3 rounded-xl font-medium">
-                    📋 Lihat Senarai Siak
-                </button>
-            </div>
-
-            <div class="grid lg:grid-cols-3 gap-8">
-                <!-- Form Siak -->
-                <div id="siakFormSection" class="lg:col-span-1 hidden">
-                    <div class="card-hover rounded-2xl p-6 shadow-xl">
-                        <h2 class="text-2xl font-bold text-gray-800 mb-6 flex items-center">
-                            <span class="text-2xl mr-3">📋</span>
-                            Daftar Siak
-                        </h2>
-                        <form id="siakForm" class="space-y-4">
-                            <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-2">Nama Siak</label>
-                                <input type="text" id="namaSiak" required class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all">
-                            </div>
-                            <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-2">No. K/P</label>
-                                <input type="text" id="nokpSiak" required class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all">
-                            </div>
-                            <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-2">No. Gaji</label>
-                                <input type="text" id="noGajiSiak" required class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all" placeholder="Contoh: G001234">
-                            </div>
-                            <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-2">No. Akaun BSN</label>
-                                <input type="text" id="noAkaunSiak" required class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all" placeholder="Contoh: 1234567890">
-                            </div>
-                            <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-2">Pekerjaan</label>
-                                <input type="text" id="pekerjaanSiak" required class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all" placeholder="Contoh: Guru Agama">
-                            </div>
-                            <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-2">Alamat</label>
-                                <textarea id="alamatSiak" required rows="3" class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"></textarea>
-                            </div>
-                            <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-2">No. Tel</label>
-                                <input type="tel" id="telefonSiak" required class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all">
-                            </div>
-                            <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-2">Masjid</label>
-                                <input type="text" id="masjidSiak" required class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all" placeholder="Contoh: Masjid Al-Hidayah">
-                            </div>
-                            <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-2">Daerah</label>
-                                <input type="text" id="daerahSiak" required class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all" placeholder="Contoh: Kuala Lumpur">
-                            </div>
-                            <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-2">Mula Khidmat</label>
-                                <input type="date" id="mulaKhidmatSiak" required class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all">
-                            </div>
-                            <button type="submit" class="w-full btn-purple text-white py-3 px-6 rounded-xl font-medium">
-                                ✅ Daftar Siak
-                            </button>
-                        </form>
-                    </div>
-                </div>
-
-                <!-- Senarai Siak -->
-                <div id="siakListSection" class="lg:col-span-3 hidden">
-                    <div class="card-hover rounded-2xl p-6 shadow-xl">
-                        <div class="flex justify-between items-center mb-6">
-                            <h2 class="text-2xl font-bold text-gray-800 flex items-center">
-                                <span class="text-2xl mr-3">📋</span>
-                                Senarai Siak
-                            </h2>
-                            <div class="flex gap-2">
-                                <button onclick="exportToPDF('siak')" class="btn-purple text-white px-4 py-2 rounded-lg font-medium text-sm">
-                                    📄 Export PDF
-                                </button>
-                                <button onclick="clearAllData('siak')" class="btn-danger text-white px-4 py-2 rounded-lg font-medium text-sm">
-                                    🗑️ Kosongkan
-                                </button>
-                            </div>
-                        </div>
-
-                        <div class="mb-4">
-                            <input type="text" id="searchSiak" placeholder="🔍 Cari siak..." class="search-input w-full px-4 py-3 border border-gray-300 rounded-xl">
-                        </div>
-
-                        <div class="overflow-x-auto">
-                            <table class="w-full">
-                                <thead>
-                                    <tr class="bg-gray-50 border-b">
-                                        <th class="text-left py-3 px-4 font-semibold text-gray-700">Bil</th>
-                                        <th class="text-left py-3 px-4 font-semibold text-gray-700">Nama Siak</th>
-                                        <th class="text-left py-3 px-4 font-semibold text-gray-700">No. K/P</th>
-                                        <th class="text-left py-3 px-4 font-semibold text-gray-700">No. Gaji</th>
-                                        <th class="text-left py-3 px-4 font-semibold text-gray-700">No. Akaun BSN</th>
-                                        <th class="text-left py-3 px-4 font-semibold text-gray-700">Pekerjaan</th>
-                                        <th class="text-left py-3 px-4 font-semibold text-gray-700">Alamat</th>
-                                        <th class="text-left py-3 px-4 font-semibold text-gray-700">No. Tel</th>
-                                        <th class="text-left py-3 px-4 font-semibold text-gray-700">Masjid</th>
-                                        <th class="text-left py-3 px-4 font-semibold text-gray-700">Daerah</th>
-                                        <th class="text-left py-3 px-4 font-semibold text-gray-700">Mula Khidmat</th>
-                                        <th class="text-left py-3 px-4 font-semibold text-gray-700">Tindakan</th>
-                                    </tr>
-                                </thead>
-                                <tbody id="siakList">
-                                    <tr>
-                                        <td colspan="10" class="text-center py-8 text-gray-500">
-                                            <div class="text-4xl mb-2">📋</div>
-                                            Tiada siak didaftarkan lagi
-                                        </td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Laporan Perletakan Pegawai Masjid Tab -->
-        <div id="peletakan-tab" class="tab-content hidden">
-            <div class="grid lg:grid-cols-3 gap-8">
-                <!-- Form Peletakan Imam -->
-                <div class="lg:col-span-1">
-                    <div class="card-hover rounded-2xl p-6 shadow-xl">
-                        <h2 class="text-2xl font-bold text-gray-800 mb-6 flex items-center">
-                            <span class="text-2xl mr-3">🕌</span>
-                            Perletakan Jawatan Imam
-                        </h2>
-                        <form id="peletakanImamForm" class="space-y-4">
-                            <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-2">Pilih Imam</label>
-                                <select id="pilihImam" required class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all">
-                                    <option value="">Pilih Imam</option>
-                                </select>
-                            </div>
-                            <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-2">Catatan</label>
-                                <textarea id="catatanImam" rows="3" class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all" placeholder="Masukkan catatan tambahan (pilihan)"></textarea>
-                            </div>
-                            <button type="submit" class="w-full btn-primary text-white py-3 px-6 rounded-xl font-medium">
-                                ✅ Tetapkan Perletakan
-                            </button>
-                        </form>
-                    </div>
-
-                    <!-- Form Peletakan Bilal -->
-                    <div class="card-hover rounded-2xl p-6 shadow-xl mt-6">
-                        <h2 class="text-2xl font-bold text-gray-800 mb-6 flex items-center">
-                            <span class="text-2xl mr-3">📢</span>
-                            Perletakan Jawatan Bilal
-                        </h2>
-                        <form id="peletakanBilalForm" class="space-y-4">
-                            <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-2">Pilih Bilal</label>
-                                <select id="pilihBilal" required class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all">
-                                    <option value="">Pilih Bilal</option>
-                                </select>
-                            </div>
-                            <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-2">Catatan</label>
-                                <textarea id="catatanBilal" rows="3" class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all" placeholder="Masukkan catatan tambahan (pilihan)"></textarea>
-                            </div>
-                            <button type="submit" class="w-full btn-success text-white py-3 px-6 rounded-xl font-medium">
-                                ✅ Tetapkan Perletakan
-                            </button>
-                        </form>
-                    </div>
-
-                    <!-- Form Peletakan Siak -->
-                    <div class="card-hover rounded-2xl p-6 shadow-xl mt-6">
-                        <h2 class="text-2xl font-bold text-gray-800 mb-6 flex items-center">
-                            <span class="text-2xl mr-3">📋</span>
-                            Perletakan Jawatan Siak
-                        </h2>
-                        <form id="peletakanSiakForm" class="space-y-4">
-                            <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-2">Pilih Siak</label>
-                                <select id="pilihSiak" required class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all">
-                                    <option value="">Pilih Siak</option>
-                                </select>
-                            </div>
-                            <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-2">Catatan</label>
-                                <textarea id="catatanSiak" rows="3" class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all" placeholder="Masukkan catatan tambahan (pilihan)"></textarea>
-                            </div>
-                            <button type="submit" class="w-full btn-purple text-white py-3 px-6 rounded-xl font-medium">
-                                ✅ Tetapkan Perletakan
-                            </button>
-                        </form>
-                    </div>
-                </div>
-
-                <!-- Senarai Peletakan -->
-                <div class="lg:col-span-2">
-                    <div class="card-hover rounded-2xl p-6 shadow-xl">
-                        <div class="flex justify-between items-center mb-6">
-                            <h2 class="text-2xl font-bold text-gray-800 flex items-center">
-                                <span class="text-2xl mr-3">📍</span>
-                                Senarai Perletakan Pegawai
-                            </h2>
-                            <div class="flex gap-2">
-                                <button onclick="exportPeletakanToPDF()" class="btn-purple text-white px-4 py-2 rounded-lg font-medium text-sm">
-                                    📄 Export PDF
-                                </button>
-                                <button onclick="clearAllPeletakan()" class="btn-danger text-white px-4 py-2 rounded-lg font-medium text-sm">
-                                    🗑️ Kosongkan
-                                </button>
-                            </div>
-                        </div>
-
-                        <div class="mb-4">
-                            <input type="text" id="searchPeletakan" placeholder="🔍 Cari perletakan..." class="search-input w-full px-4 py-3 border border-gray-300 rounded-xl">
-                        </div>
-
-                        <div class="overflow-x-auto">
-                            <table class="w-full">
-                                <thead>
-                                    <tr class="bg-gray-50 border-b">
-                                        <th class="text-left py-3 px-4 font-semibold text-gray-700">Bil</th>
-                                        <th class="text-left py-3 px-4 font-semibold text-gray-700">Nama</th>
-                                        <th class="text-left py-3 px-4 font-semibold text-gray-700">Jenis</th>
-                                        <th class="text-left py-3 px-4 font-semibold text-gray-700">Perletakan</th>
-                                        <th class="text-left py-3 px-4 font-semibold text-gray-700">Jadual/Bidang</th>
-                                        <th class="text-left py-3 px-4 font-semibold text-gray-700">Masjid</th>
-                                        <th class="text-left py-3 px-4 font-semibold text-gray-700">Catatan</th>
-                                        <th class="text-left py-3 px-4 font-semibold text-gray-700">Tindakan</th>
-                                    </tr>
-                                </thead>
-                                <tbody id="peletakanList">
-                                    <tr>
-                                        <td colspan="8" class="text-center py-8 text-gray-500">
-                                            <div class="text-4xl mb-2">📍</div>
-                                            Tiada perletakan ditetapkan lagi
-                                        </td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Laporan Tab -->
-        <div id="laporan-tab" class="tab-content hidden">
-            <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-                <!-- Statistik Cards -->
-                <div class="card-hover rounded-2xl p-6 shadow-xl text-center">
-                    <div class="text-4xl mb-3">🕌</div>
-                    <h3 class="text-lg font-bold text-gray-800">Jumlah Imam</h3>
-                    <p class="text-3xl font-bold text-blue-600" id="totalImam">0</p>
-                </div>
-                <div class="card-hover rounded-2xl p-6 shadow-xl text-center">
-                    <div class="text-4xl mb-3">📢</div>
-                    <h3 class="text-lg font-bold text-gray-800">Jumlah Bilal</h3>
-                    <p class="text-3xl font-bold text-green-600" id="totalBilal">0</p>
-                </div>
-                <div class="card-hover rounded-2xl p-6 shadow-xl text-center">
-                    <div class="text-4xl mb-3">📋</div>
-                    <h3 class="text-lg font-bold text-gray-800">Jumlah Siak</h3>
-                    <p class="text-3xl font-bold text-purple-600" id="totalSiak">0</p>
-                </div>
-                <div class="card-hover rounded-2xl p-6 shadow-xl text-center">
-                    <div class="text-4xl mb-3">📍</div>
-                    <h3 class="text-lg font-bold text-gray-800">Jumlah Perletakan</h3>
-                    <p class="text-3xl font-bold text-orange-600" id="totalPeletakan">0</p>
-                </div>
-            </div>
-
-            <!-- Laporan Terperinci -->
-            <div class="card-hover rounded-2xl p-6 shadow-xl">
-                <h2 class="text-2xl font-bold text-gray-800 mb-6 flex items-center">
-                    <span class="text-2xl mr-3">📈</span>
-                    Laporan Terperinci
-                </h2>
-                
-                <div class="grid md:grid-cols-3 gap-6">
-                    <button onclick="generateReport('imam')" class="btn-primary text-white p-6 rounded-xl text-center">
-                        <div class="text-3xl mb-2">🕌</div>
-                        <h3 class="font-bold">Laporan Imam</h3>
-                        <p class="text-sm opacity-90">Senarai lengkap imam masjid</p>
-                    </button>
-                    <button onclick="generateReport('bilal')" class="btn-success text-white p-6 rounded-xl text-center">
-                        <div class="text-3xl mb-2">📢</div>
-                        <h3 class="font-bold">Laporan Bilal</h3>
-                        <p class="text-sm opacity-90">Senarai lengkap bilal masjid</p>
-                    </button>
-                    <button onclick="generateReport('siak')" class="btn-purple text-white p-6 rounded-xl text-center">
-                        <div class="text-3xl mb-2">📋</div>
-                        <h3 class="font-bold">Laporan Siak</h3>
-                        <p class="text-sm opacity-90">Senarai lengkap siak masjid</p>
-                    </button>
-                </div>
-            </div>
-        </div>
-    </main>
-
-    <!-- Modal untuk Edit -->
-    <div id="editModal" class="fixed inset-0 modal-backdrop hidden items-center justify-center z-50">
-        <div class="bg-white rounded-2xl p-6 max-w-md w-full mx-4 shadow-2xl">
-            <h3 class="text-xl font-bold mb-4" id="modalTitle">Edit Data</h3>
-            <div id="modalContent"></div>
-            <div class="flex gap-3 mt-6">
-                <button onclick="closeModal()" class="flex-1 btn-secondary text-white py-2 px-4 rounded-lg">
-                    Batal
-                </button>
-                <button onclick="saveEdit()" class="flex-1 btn-primary text-white py-2 px-4 rounded-lg">
-                    Simpan
-                </button>
-            </div>
-        </div>
+  <style>@view-transition { navigation: auto; }</style>
+  <script src="/_sdk/data_sdk.js" type="text/javascript"></script>
+  <script src="/_sdk/element_sdk.js" type="text/javascript"></script>
+ </head>
+ <body><!-- Header -->
+  <header class="gradient-bg text-white shadow-2xl relative z-10">
+   <div class="container mx-auto px-6 py-8">
+    <div class="flex items-center justify-between">
+     <div class="flex items-center space-x-4">
+      <div class="text-4xl mosque-icon">
+       🕌
+      </div>
+      <div>
+       <h1 class="text-3xl font-bold">Sistem Maklumat Pegawai Masjid</h1>
+       <p class="text-slate-300 text-sm">Pengurusan Pegawai Imam, Bilal &amp; Siak</p>
+      </div>
+     </div>
+     <div class="text-right">
+      <p class="text-sm text-slate-300">Tarikh: <span id="currentDate"></span></p>
+      <p class="text-sm text-slate-300">Masa: <span id="currentTime"></span></p>
+     </div>
     </div>
-
-    <!-- Modal untuk PDF Preview -->
-    <div id="pdfPreviewModal" class="fixed inset-0 modal-backdrop hidden items-center justify-center z-50">
-        <div class="bg-white rounded-2xl p-6 max-w-6xl w-full mx-4 shadow-2xl" style="height: 90vh;">
-            <div class="flex justify-between items-center mb-4">
-                <h3 class="text-xl font-bold" id="pdfModalTitle">Pratonton Laporan PDF</h3>
-                <button onclick="closePDFModal()" class="text-gray-500 hover:text-gray-700 text-2xl">
-                    ✕
-                </button>
-            </div>
-            <div class="mb-4 flex gap-3">
-                <button onclick="downloadCurrentPDF()" class="btn-primary text-white px-6 py-2 rounded-lg font-medium">
-                    📥 Muat Turun PDF
-                </button>
-                <button onclick="printCurrentPDF()" class="btn-success text-white px-6 py-2 rounded-lg font-medium">
-                    🖨️ Cetak PDF
-                </button>
-                <button onclick="closePDFModal()" class="btn-secondary text-white px-6 py-2 rounded-lg font-medium">
-                    ❌ Tutup
-                </button>
-            </div>
-            <div class="border border-gray-300 rounded-lg overflow-hidden" style="height: calc(100% - 120px);">
-                <iframe id="pdfViewer" class="w-full h-full" frameborder="0"></iframe>
-            </div>
-        </div>
+   </div>
+  </header><!-- Main Content -->
+  <main class="container mx-auto px-6 py-8"><!-- Global Search -->
+   <div class="mb-6">
+    <div class="card-hover rounded-2xl p-6 shadow-xl">
+     <h2 class="text-xl font-bold text-gray-800 mb-4 flex items-center"><span class="text-2xl mr-3">🔍</span> Carian Pegawai Masjid</h2>
+     <div class="flex gap-4">
+      <div class="flex-1"><input type="text" id="globalSearch" placeholder="🔍 Cari menggunakan nama atau no. K/P..." class="search-input w-full px-4 py-3 border border-gray-300 rounded-xl">
+      </div><button onclick="performGlobalSearch()" class="btn-primary text-white px-6 py-3 rounded-xl font-medium"> 🔍 Cari </button> <button onclick="clearGlobalSearch()" class="btn-secondary text-white px-6 py-3 rounded-xl font-medium"> 🗑️ Kosongkan </button>
+     </div>
+     <div id="globalSearchResults" class="mt-4 hidden">
+      <div class="flex justify-between items-center mb-3">
+       <h3 class="text-lg font-semibold text-gray-800">Keputusan Carian:</h3><button onclick="exportSearchResultsToPDF()" id="exportSearchBtn" class="btn-purple text-white px-4 py-2 rounded-lg font-medium text-sm hidden"> 📄 Cetak PDF Hasil Carian </button>
+      </div>
+      <div id="searchResultsContent" class="space-y-3"></div>
+     </div>
     </div>
-
-    <script>
+   </div><!-- Navigation Tabs -->
+   <div class="mb-8">
+    <div class="flex flex-wrap gap-2 bg-white/80 backdrop-blur-sm p-2 rounded-2xl shadow-lg"><button onclick="showTab('imam')" id="tab-imam" class="tab-btn btn-primary text-white px-6 py-3 rounded-xl font-medium transition-all"> 🕌 Imam </button> <button onclick="showTab('bilal')" id="tab-bilal" class="tab-btn bg-gray-200 text-gray-700 px-6 py-3 rounded-xl font-medium transition-all hover:bg-gray-300"> 📢 Bilal </button> <button onclick="showTab('siak')" id="tab-siak" class="tab-btn bg-gray-200 text-gray-700 px-6 py-3 rounded-xl font-medium transition-all hover:bg-gray-300"> 📋 Siak </button> <button onclick="showTab('laporan')" id="tab-laporan" class="tab-btn bg-gray-200 text-gray-700 px-6 py-3 rounded-xl font-medium transition-all hover:bg-gray-300"> 📊 Laporan </button> <button onclick="showTab('peletakan')" id="tab-peletakan" class="tab-btn bg-gray-200 text-gray-700 px-6 py-3 rounded-xl font-medium transition-all hover:bg-gray-300"> 📍 Laporan Perletakan Pegawai Masjid </button>
+    </div>
+   </div><!-- Imam Tab -->
+   <div id="imam-tab" class="tab-content fade-in"><!-- Control Buttons -->
+    <div class="mb-6 flex gap-4"><button onclick="loadImamDataFromSheet()" class="btn-primary text-white px-6 py-3 rounded-xl font-medium"> 🔄 Muat Semula Data Imam </button> <button onclick="toggleImamList()" id="toggleImamListBtn" class="btn-secondary text-white px-6 py-3 rounded-xl font-medium"> 📋 Lihat Senarai Imam </button>
+    </div>
+    <div class="grid lg:grid-cols-1 gap-8"><!-- Senarai Imam -->
+     <div id="imamListSection" class="lg:col-span-1 hidden">
+      <div class="card-hover rounded-2xl p-6 shadow-xl">
+       <div class="flex justify-between items-center mb-6">
+        <h2 class="text-2xl font-bold text-gray-800 flex items-center"><span class="text-2xl mr-3">🕌</span> Senarai Imam</h2>
+        <div class="flex gap-2"><button onclick="exportToPDF('imam')" class="btn-purple text-white px-4 py-2 rounded-lg font-medium text-sm"> 📄 Export PDF </button> <button onclick="clearAllData('imam')" class="btn-danger text-white px-4 py-2 rounded-lg font-medium text-sm"> 🗑️ Kosongkan </button>
+        </div>
+       </div>
+       <div class="mb-4"><input type="text" id="searchImam" placeholder="🔍 Cari imam..." class="search-input w-full px-4 py-3 border border-gray-300 rounded-xl">
+       </div>
+       <div class="overflow-x-auto">
+        <table class="w-full">
+         <thead>
+          <tr class="bg-gray-50 border-b">
+           <th class="text-left py-3 px-4 font-semibold text-gray-700">Masjid</th>
+           <th class="text-left py-3 px-4 font-semibold text-gray-700">Daerah</th>
+           <th class="text-left py-3 px-4 font-semibold text-gray-700">Nama Imam</th>
+           <th class="text-left py-3 px-4 font-semibold text-gray-700">No. K/P</th>
+           <th class="text-left py-3 px-4 font-semibold text-gray-700">Pekerjaan</th>
+           <th class="text-left py-3 px-4 font-semibold text-gray-700">Alamat</th>
+           <th class="text-left py-3 px-4 font-semibold text-gray-700">No. Tel</th>
+           <th class="text-left py-3 px-4 font-semibold text-gray-700">Umur</th>
+           <th class="text-left py-3 px-4 font-semibold text-gray-700">Mula Khidmat</th>
+           <th class="text-left py-3 px-4 font-semibold text-gray-700">Catatan</th>
+           <th class="text-left py-3 px-4 font-semibold text-gray-700">Tindakan</th>
+          </tr>
+         </thead>
+         <tbody id="imamList">
+          <tr>
+           <td colspan="10" class="text-center py-8 text-gray-500">
+            <div class="text-4xl mb-2">
+             🕌
+            </div> Tiada imam didaftarkan lagi</td>
+          </tr>
+         </tbody>
+        </table>
+       </div>
+      </div>
+     </div>
+    </div>
+   </div><!-- Bilal Tab -->
+   <div id="bilal-tab" class="tab-content hidden"><!-- Control Buttons -->
+    <div class="mb-6 flex gap-4"><button onclick="loadBilalDataFromSheet()" class="btn-primary text-white px-6 py-3 rounded-xl font-medium"> 🔄 Muat Semula Data Bilal </button> <button onclick="toggleBilalList()" id="toggleBilalListBtn" class="btn-secondary text-white px-6 py-3 rounded-xl font-medium"> 📋 Lihat Senarai Bilal </button>
+    </div>
+    <div class="grid lg:grid-cols-1 gap-8"><!-- Senarai Bilal -->
+     <div id="bilalListSection" class="lg:col-span-1 hidden">
+      <div class="card-hover rounded-2xl p-6 shadow-xl">
+       <div class="flex justify-between items-center mb-6">
+        <h2 class="text-2xl font-bold text-gray-800 flex items-center"><span class="text-2xl mr-3">📢</span> Senarai Bilal</h2>
+        <div class="flex gap-2"><button onclick="exportToPDF('bilal')" class="btn-purple text-white px-4 py-2 rounded-lg font-medium text-sm"> 📄 Export PDF </button> <button onclick="clearAllData('bilal')" class="btn-danger text-white px-4 py-2 rounded-lg font-medium text-sm"> 🗑️ Kosongkan </button>
+        </div>
+       </div>
+       <div class="mb-4"><input type="text" id="searchBilal" placeholder="🔍 Cari bilal..." class="search-input w-full px-4 py-3 border border-gray-300 rounded-xl">
+       </div>
+       <div class="overflow-x-auto">
+        <table class="w-full">
+         <thead>
+          <tr class="bg-gray-50 border-b">
+           <th class="text-left py-3 px-4 font-semibold text-gray-700">Masjid</th>
+           <th class="text-left py-3 px-4 font-semibold text-gray-700">Daerah</th>
+           <th class="text-left py-3 px-4 font-semibold text-gray-700">Nama Bilal</th>
+           <th class="text-left py-3 px-4 font-semibold text-gray-700">No. K/P</th>
+           <th class="text-left py-3 px-4 font-semibold text-gray-700">Pekerjaan</th>
+           <th class="text-left py-3 px-4 font-semibold text-gray-700">Alamat</th>
+           <th class="text-left py-3 px-4 font-semibold text-gray-700">No. Tel</th>
+           <th class="text-left py-3 px-4 font-semibold text-gray-700">Umur</th>
+           <th class="text-left py-3 px-4 font-semibold text-gray-700">Mula Khidmat</th>
+           <th class="text-left py-3 px-4 font-semibold text-gray-700">Catatan</th>
+           <th class="text-left py-3 px-4 font-semibold text-gray-700">Tindakan</th>
+          </tr>
+         </thead>
+         <tbody id="bilalList">
+          <tr>
+           <td colspan="10" class="text-center py-8 text-gray-500">
+            <div class="text-4xl mb-2">
+             📢
+            </div> Tiada bilal didaftarkan lagi</td>
+          </tr>
+         </tbody>
+        </table>
+       </div>
+      </div>
+     </div>
+    </div>
+   </div><!-- Siak Tab -->
+   <div id="siak-tab" class="tab-content hidden"><!-- Control Buttons -->
+    <div class="mb-6 flex gap-4"><button onclick="toggleSiakForm()" id="toggleSiakFormBtn" class="btn-purple text-white px-6 py-3 rounded-xl font-medium"> ➕ Daftar Siak Baru </button> <button onclick="toggleSiakList()" id="toggleSiakListBtn" class="btn-secondary text-white px-6 py-3 rounded-xl font-medium"> 📋 Lihat Senarai Siak </button>
+    </div>
+    <div class="grid lg:grid-cols-3 gap-8"><!-- Form Siak -->
+     <div id="siakFormSection" class="lg:col-span-1 hidden">
+      <div class="card-hover rounded-2xl p-6 shadow-xl">
+       <h2 class="text-2xl font-bold text-gray-800 mb-6 flex items-center"><span class="text-2xl mr-3">📋</span> Daftar Siak</h2>
+       <form id="siakForm" class="space-y-4">
+        <div><label class="block text-sm font-medium text-gray-700 mb-2">Nama Siak</label> <input type="text" id="namaSiak" required class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all">
+        </div>
+        <div><label class="block text-sm font-medium text-gray-700 mb-2">No. K/P</label> <input type="text" id="nokpSiak" required class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all">
+        </div>
+        <div><label class="block text-sm font-medium text-gray-700 mb-2">No. Gaji</label> <input type="text" id="noGajiSiak" required class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all" placeholder="Contoh: G001234">
+        </div>
+        <div><label class="block text-sm font-medium text-gray-700 mb-2">No. Akaun BSN</label> <input type="text" id="noAkaunSiak" required class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all" placeholder="Contoh: 1234567890">
+        </div>
+        <div><label class="block text-sm font-medium text-gray-700 mb-2">Pekerjaan</label> <input type="text" id="pekerjaanSiak" required class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all" placeholder="Contoh: Guru Agama">
+        </div>
+        <div><label class="block text-sm font-medium text-gray-700 mb-2">Alamat</label> <textarea id="alamatSiak" required rows="3" class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"></textarea>
+        </div>
+        <div><label class="block text-sm font-medium text-gray-700 mb-2">No. Tel</label> <input type="tel" id="telefonSiak" required class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all">
+        </div>
+        <div><label class="block text-sm font-medium text-gray-700 mb-2">Masjid</label> <input type="text" id="masjidSiak" required class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all" placeholder="Contoh: Masjid Al-Hidayah">
+        </div>
+        <div><label class="block text-sm font-medium text-gray-700 mb-2">Daerah</label> <input type="text" id="daerahSiak" required class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all" placeholder="Contoh: Kuala Lumpur">
+        </div>
+        <div><label class="block text-sm font-medium text-gray-700 mb-2">Mula Khidmat</label> <input type="date" id="mulaKhidmatSiak" required class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all">
+        </div><button type="submit" class="w-full btn-purple text-white py-3 px-6 rounded-xl font-medium"> ✅ Daftar Siak </button>
+       </form>
+      </div>
+     </div><!-- Senarai Siak -->
+     <div id="siakListSection" class="lg:col-span-3 hidden">
+      <div class="card-hover rounded-2xl p-6 shadow-xl">
+       <div class="flex justify-between items-center mb-6">
+        <h2 class="text-2xl font-bold text-gray-800 flex items-center"><span class="text-2xl mr-3">📋</span> Senarai Siak</h2>
+        <div class="flex gap-2"><button onclick="exportToPDF('siak')" class="btn-purple text-white px-4 py-2 rounded-lg font-medium text-sm"> 📄 Export PDF </button> <button onclick="clearAllData('siak')" class="btn-danger text-white px-4 py-2 rounded-lg font-medium text-sm"> 🗑️ Kosongkan </button>
+        </div>
+       </div>
+       <div class="mb-4"><input type="text" id="searchSiak" placeholder="🔍 Cari siak..." class="search-input w-full px-4 py-3 border border-gray-300 rounded-xl">
+       </div>
+       <div class="overflow-x-auto">
+        <table class="w-full">
+         <thead>
+          <tr class="bg-gray-50 border-b">
+           <th class="text-left py-3 px-4 font-semibold text-gray-700">Bil</th>
+           <th class="text-left py-3 px-4 font-semibold text-gray-700">Nama Siak</th>
+           <th class="text-left py-3 px-4 font-semibold text-gray-700">No. K/P</th>
+           <th class="text-left py-3 px-4 font-semibold text-gray-700">No. Gaji</th>
+           <th class="text-left py-3 px-4 font-semibold text-gray-700">No. Akaun BSN</th>
+           <th class="text-left py-3 px-4 font-semibold text-gray-700">Pekerjaan</th>
+           <th class="text-left py-3 px-4 font-semibold text-gray-700">Alamat</th>
+           <th class="text-left py-3 px-4 font-semibold text-gray-700">No. Tel</th>
+           <th class="text-left py-3 px-4 font-semibold text-gray-700">Masjid</th>
+           <th class="text-left py-3 px-4 font-semibold text-gray-700">Daerah</th>
+           <th class="text-left py-3 px-4 font-semibold text-gray-700">Mula Khidmat</th>
+           <th class="text-left py-3 px-4 font-semibold text-gray-700">Tindakan</th>
+          </tr>
+         </thead>
+         <tbody id="siakList">
+          <tr>
+           <td colspan="10" class="text-center py-8 text-gray-500">
+            <div class="text-4xl mb-2">
+             📋
+            </div> Tiada siak didaftarkan lagi</td>
+          </tr>
+         </tbody>
+        </table>
+       </div>
+      </div>
+     </div>
+    </div>
+   </div><!-- Laporan Perletakan Pegawai Masjid Tab -->
+   <div id="peletakan-tab" class="tab-content hidden">
+    <div class="grid lg:grid-cols-3 gap-8"><!-- Form Peletakan Imam -->
+     <div class="lg:col-span-1">
+      <div class="card-hover rounded-2xl p-6 shadow-xl">
+       <h2 class="text-2xl font-bold text-gray-800 mb-6 flex items-center"><span class="text-2xl mr-3">🕌</span> Perletakan Jawatan Imam</h2>
+       <form id="peletakanImamForm" class="space-y-4">
+        <div><label class="block text-sm font-medium text-gray-700 mb-2">Pilih Imam</label> <select id="pilihImam" required class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"> <option value="">Pilih Imam</option> </select>
+        </div>
+        <div><label class="block text-sm font-medium text-gray-700 mb-2">Catatan</label> <textarea id="catatanImam" rows="3" class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all" placeholder="Masukkan catatan tambahan (pilihan)"></textarea>
+        </div><button type="submit" class="w-full btn-primary text-white py-3 px-6 rounded-xl font-medium"> ✅ Tetapkan Perletakan </button>
+       </form>
+      </div><!-- Form Peletakan Bilal -->
+      <div class="card-hover rounded-2xl p-6 shadow-xl mt-6">
+       <h2 class="text-2xl font-bold text-gray-800 mb-6 flex items-center"><span class="text-2xl mr-3">📢</span> Perletakan Jawatan Bilal</h2>
+       <form id="peletakanBilalForm" class="space-y-4">
+        <div><label class="block text-sm font-medium text-gray-700 mb-2">Pilih Bilal</label> <select id="pilihBilal" required class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"> <option value="">Pilih Bilal</option> </select>
+        </div>
+        <div><label class="block text-sm font-medium text-gray-700 mb-2">Catatan</label> <textarea id="catatanBilal" rows="3" class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all" placeholder="Masukkan catatan tambahan (pilihan)"></textarea>
+        </div><button type="submit" class="w-full btn-success text-white py-3 px-6 rounded-xl font-medium"> ✅ Tetapkan Perletakan </button>
+       </form>
+      </div><!-- Form Peletakan Siak -->
+      <div class="card-hover rounded-2xl p-6 shadow-xl mt-6">
+       <h2 class="text-2xl font-bold text-gray-800 mb-6 flex items-center"><span class="text-2xl mr-3">📋</span> Perletakan Jawatan Siak</h2>
+       <form id="peletakanSiakForm" class="space-y-4">
+        <div><label class="block text-sm font-medium text-gray-700 mb-2">Pilih Siak</label> <select id="pilihSiak" required class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"> <option value="">Pilih Siak</option> </select>
+        </div>
+        <div><label class="block text-sm font-medium text-gray-700 mb-2">Catatan</label> <textarea id="catatanSiak" rows="3" class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all" placeholder="Masukkan catatan tambahan (pilihan)"></textarea>
+        </div><button type="submit" class="w-full btn-purple text-white py-3 px-6 rounded-xl font-medium"> ✅ Tetapkan Perletakan </button>
+       </form>
+      </div>
+     </div><!-- Senarai Peletakan -->
+     <div class="lg:col-span-2">
+      <div class="card-hover rounded-2xl p-6 shadow-xl">
+       <div class="flex justify-between items-center mb-6">
+        <h2 class="text-2xl font-bold text-gray-800 flex items-center"><span class="text-2xl mr-3">📍</span> Senarai Perletakan Pegawai</h2>
+        <div class="flex gap-2"><button onclick="exportPeletakanToPDF()" class="btn-purple text-white px-4 py-2 rounded-lg font-medium text-sm"> 📄 Export PDF </button> <button onclick="clearAllPeletakan()" class="btn-danger text-white px-4 py-2 rounded-lg font-medium text-sm"> 🗑️ Kosongkan </button>
+        </div>
+       </div>
+       <div class="mb-4"><input type="text" id="searchPeletakan" placeholder="🔍 Cari perletakan..." class="search-input w-full px-4 py-3 border border-gray-300 rounded-xl">
+       </div>
+       <div class="overflow-x-auto">
+        <table class="w-full">
+         <thead>
+          <tr class="bg-gray-50 border-b">
+           <th class="text-left py-3 px-4 font-semibold text-gray-700">Bil</th>
+           <th class="text-left py-3 px-4 font-semibold text-gray-700">Nama</th>
+           <th class="text-left py-3 px-4 font-semibold text-gray-700">Jenis</th>
+           <th class="text-left py-3 px-4 font-semibold text-gray-700">Perletakan</th>
+           <th class="text-left py-3 px-4 font-semibold text-gray-700">Jadual/Bidang</th>
+           <th class="text-left py-3 px-4 font-semibold text-gray-700">Masjid</th>
+           <th class="text-left py-3 px-4 font-semibold text-gray-700">Catatan</th>
+           <th class="text-left py-3 px-4 font-semibold text-gray-700">Tindakan</th>
+          </tr>
+         </thead>
+         <tbody id="peletakanList">
+          <tr>
+           <td colspan="8" class="text-center py-8 text-gray-500">
+            <div class="text-4xl mb-2">
+             📍
+            </div> Tiada perletakan ditetapkan lagi</td>
+          </tr>
+         </tbody>
+        </table>
+       </div>
+      </div>
+     </div>
+    </div>
+   </div><!-- Laporan Tab -->
+   <div id="laporan-tab" class="tab-content hidden">
+    <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8"><!-- Statistik Cards -->
+     <div class="card-hover rounded-2xl p-6 shadow-xl text-center">
+      <div class="text-4xl mb-3">
+       🕌
+      </div>
+      <h3 class="text-lg font-bold text-gray-800">Jumlah Imam</h3>
+      <p class="text-3xl font-bold text-blue-600" id="totalImam">0</p>
+     </div>
+     <div class="card-hover rounded-2xl p-6 shadow-xl text-center">
+      <div class="text-4xl mb-3">
+       📢
+      </div>
+      <h3 class="text-lg font-bold text-gray-800">Jumlah Bilal</h3>
+      <p class="text-3xl font-bold text-green-600" id="totalBilal">0</p>
+     </div>
+     <div class="card-hover rounded-2xl p-6 shadow-xl text-center">
+      <div class="text-4xl mb-3">
+       📋
+      </div>
+      <h3 class="text-lg font-bold text-gray-800">Jumlah Siak</h3>
+      <p class="text-3xl font-bold text-purple-600" id="totalSiak">0</p>
+     </div>
+     <div class="card-hover rounded-2xl p-6 shadow-xl text-center">
+      <div class="text-4xl mb-3">
+       📍
+      </div>
+      <h3 class="text-lg font-bold text-gray-800">Jumlah Perletakan</h3>
+      <p class="text-3xl font-bold text-orange-600" id="totalPeletakan">0</p>
+     </div>
+    </div><!-- Laporan Terperinci -->
+    <div class="card-hover rounded-2xl p-6 shadow-xl">
+     <h2 class="text-2xl font-bold text-gray-800 mb-6 flex items-center"><span class="text-2xl mr-3">📈</span> Laporan Terperinci</h2>
+     <div class="grid md:grid-cols-3 gap-6"><button onclick="generateReport('imam')" class="btn-primary text-white p-6 rounded-xl text-center">
+       <div class="text-3xl mb-2">
+        🕌
+       </div><h3 class="font-bold">Laporan Imam</h3><p class="text-sm opacity-90">Senarai lengkap imam masjid</p></button> <button onclick="generateReport('bilal')" class="btn-success text-white p-6 rounded-xl text-center">
+       <div class="text-3xl mb-2">
+        📢
+       </div><h3 class="font-bold">Laporan Bilal</h3><p class="text-sm opacity-90">Senarai lengkap bilal masjid</p></button> <button onclick="generateReport('siak')" class="btn-purple text-white p-6 rounded-xl text-center">
+       <div class="text-3xl mb-2">
+        📋
+       </div><h3 class="font-bold">Laporan Siak</h3><p class="text-sm opacity-90">Senarai lengkap siak masjid</p></button>
+     </div>
+    </div>
+   </div>
+  </main><!-- Modal untuk Edit -->
+  <div id="editModal" class="fixed inset-0 modal-backdrop hidden items-center justify-center z-50">
+   <div class="bg-white rounded-2xl p-6 max-w-md w-full mx-4 shadow-2xl">
+    <h3 class="text-xl font-bold mb-4" id="modalTitle">Edit Data</h3>
+    <div id="modalContent"></div>
+    <div class="flex gap-3 mt-6"><button onclick="closeModal()" class="flex-1 btn-secondary text-white py-2 px-4 rounded-lg"> Batal </button> <button onclick="saveEdit()" class="flex-1 btn-primary text-white py-2 px-4 rounded-lg"> Simpan </button>
+    </div>
+   </div>
+  </div><!-- Modal untuk PDF Preview -->
+  <div id="pdfPreviewModal" class="fixed inset-0 modal-backdrop hidden items-center justify-center z-50">
+   <div class="bg-white rounded-2xl p-6 max-w-6xl w-full mx-4 shadow-2xl" style="height: 90vh;">
+    <div class="flex justify-between items-center mb-4">
+     <h3 class="text-xl font-bold" id="pdfModalTitle">Pratonton Laporan PDF</h3><button onclick="closePDFModal()" class="text-gray-500 hover:text-gray-700 text-2xl"> ✕ </button>
+    </div>
+    <div class="mb-4 flex gap-3"><button onclick="downloadCurrentPDF()" class="btn-primary text-white px-6 py-2 rounded-lg font-medium"> 📥 Muat Turun PDF </button> <button onclick="printCurrentPDF()" class="btn-success text-white px-6 py-2 rounded-lg font-medium"> 🖨️ Cetak PDF </button> <button onclick="closePDFModal()" class="btn-secondary text-white px-6 py-2 rounded-lg font-medium"> ❌ Tutup </button>
+    </div>
+    <div class="border border-gray-300 rounded-lg overflow-hidden" style="height: calc(100% - 120px);"><iframe id="pdfViewer" class="w-full h-full" frameborder="0"></iframe>
+    </div>
+   </div>
+  </div>
+  <script>
         // Data storage
         let imamData = []; // Will be loaded from Google Sheets
-        let bilalData = JSON.parse(localStorage.getItem('bilalData')) || [];
+        let bilalData = []; // Will be loaded from Google Sheets
         let siakData = JSON.parse(localStorage.getItem('siakData')) || [];
         let peletakanData = JSON.parse(localStorage.getItem('peletakanData')) || [];
         let currentEditType = '';
         let currentEditIndex = -1;
 
-        // Google Sheets CSV URL for Imam data
+        // Google Sheets CSV URLs
         const IMAM_SHEET_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTMdVbauPNjDdm5PjpJ9757hQAjohDd0rtXxHUfzFOZwbVovFSD6P8x41wsjfzxjw/pub?gid=1151842269&single=true&output=csv';
+        const BILAL_SHEET_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTMdVbauPNjDdm5PjpJ9757hQAjohDd0rtXxHUfzFOZwbVovFSD6P8x41wsjfzxjw/pub?gid=668558288&single=true&output=csv';
 
         // Function to calculate age from Malaysian IC number
         function calculateAgeFromIC(nokp) {
@@ -805,25 +531,23 @@
                     const line = lines[i].trim();
                     if (line) {
                         const values = parseCSVLine(line);
-                        if (values.length >= 12) { // Ensure we have at least 12 columns (A-M)
+                        if (values.length >= 11) { // Ensure we have at least 11 columns (A-K)
                             const nokp = values[4] || ''; // Column E: NO. K/P
                             const calculatedAge = calculateAgeFromIC(nokp);
                             
                             const imam = {
                                 id: Date.now() + i,
-                                bil: values[0] || (i), // Column A: BIL
+                                bil: values[0] || (i), // Column A: BIL (hidden from display)
                                 masjid: values[1] || '', // Column B: MASJID
                                 daerah: values[2] || '', // Column C: DAERAH
                                 nama: values[3] || '', // Column D: NAMA IMAM
                                 nokp: nokp, // Column E: NO. K/P
-                                noGaji: values[5] || '', // Column F: NO. GAJI
-                                noAkaun: values[6] || '', // Column G: NO. AKAUN BSN
-                                pekerjaan: values[7] || '', // Column H: PEKERJAAN
-                                alamat: values[8] || '', // Column I: ALAMAT
-                                telefon: values[9] || '', // Column J: NO.TEL
-                                umur: calculatedAge, // Calculated from IC number
-                                mulaKhidmat: values[11] || new Date().toISOString().split('T')[0], // Column L: MULA KHIDMAT
-                                catatan: values[12] || '' // Column M: CATATAN
+                                pekerjaan: values[5] || '', // Column F: PEKERJAAN
+                                alamat: values[6] || '', // Column G: ALAMAT
+                                telefon: values[7] || '', // Column H: NO.TEL
+                                umur: values[8] || calculatedAge, // Column I: UMUR (use sheet value or calculated)
+                                mulaKhidmat: values[9] || new Date().toISOString().split('T')[0], // Column J: MULA KHIDMAT
+                                catatan: values[10] || '' // Column K: CATATAN
                             };
                             imamData.push(imam);
                         }
@@ -842,11 +566,75 @@
                 const tbody = document.getElementById('imamList');
                 tbody.innerHTML = `
                     <tr>
-                        <td colspan="13" class="text-center py-8 text-red-500">
+                        <td colspan="10" class="text-center py-8 text-red-500">
                             <div class="text-4xl mb-2">⚠️</div>
                             <p class="font-semibold">Ralat memuat data imam dari Google Sheets</p>
                             <p class="text-sm mt-2">Sila semak sambungan internet dan cuba lagi</p>
                             <button onclick="loadImamDataFromSheet()" class="mt-3 bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600">
+                                🔄 Cuba Lagi
+                            </button>
+                        </td>
+                    </tr>
+                `;
+            }
+        }
+
+        // Function to load Bilal data from Google Sheets
+        async function loadBilalDataFromSheet() {
+            try {
+                const response = await fetch(BILAL_SHEET_URL);
+                const csvText = await response.text();
+                
+                // Parse CSV data
+                const lines = csvText.split('\n');
+                const headers = lines[0].split(',').map(h => h.trim().replace(/"/g, ''));
+                
+                bilalData = [];
+                
+                for (let i = 1; i < lines.length; i++) {
+                    const line = lines[i].trim();
+                    if (line) {
+                        const values = parseCSVLine(line);
+                        if (values.length >= 11) { // Ensure we have at least 11 columns (A-K)
+                            const nokp = values[4] || ''; // Column E: NO. K/P
+                            const calculatedAge = calculateAgeFromIC(nokp);
+                            
+                            const bilal = {
+                                id: Date.now() + i,
+                                bil: values[0] || (i), // Column A: BIL (hidden from display)
+                                masjid: values[1] || '', // Column B: MASJID
+                                daerah: values[2] || '', // Column C: DAERAH
+                                nama: values[3] || '', // Column D: NAMA BILAL
+                                nokp: nokp, // Column E: NO. K/P
+                                pekerjaan: values[5] || '', // Column F: PEKERJAAN
+                                alamat: values[6] || '', // Column G: ALAMAT
+                                telefon: values[7] || '', // Column H: NO.TEL
+                                umur: values[8] || calculatedAge, // Column I: UMUR (use sheet value or calculated)
+                                mulaKhidmat: values[9] || new Date().toISOString().split('T')[0], // Column J: MULA KHIDMAT
+                                catatan: values[10] || '' // Column K: CATATAN
+                            };
+                            bilalData.push(bilal);
+                        }
+                    }
+                }
+                
+                displayBilal();
+                updateStatistics();
+                updatePeletakanDropdowns();
+                
+                console.log(`✅ Berjaya memuat ${bilalData.length} data bilal dari Google Sheets`);
+                
+            } catch (error) {
+                console.error('❌ Ralat memuat data bilal:', error);
+                // Show user-friendly error message
+                const tbody = document.getElementById('bilalList');
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="10" class="text-center py-8 text-red-500">
+                            <div class="text-4xl mb-2">⚠️</div>
+                            <p class="font-semibold">Ralat memuat data bilal dari Google Sheets</p>
+                            <p class="text-sm mt-2">Sila semak sambungan internet dan cuba lagi</p>
+                            <button onclick="loadBilalDataFromSheet()" class="mt-3 bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600">
                                 🔄 Cuba Lagi
                             </button>
                         </td>
@@ -922,17 +710,16 @@
             updateDateTime();
             setInterval(updateDateTime, 1000);
             
-            // Load Imam data from Google Sheets in background
+            // Load data from Google Sheets in background
             loadImamDataFromSheet();
+            loadBilalDataFromSheet();
             
-            displayBilal();
             displaySiak();
             displayPeletakan();
             updateStatistics();
             updatePeletakanDropdowns();
             
             // Set default date to today for other forms
-            document.getElementById('mulaKhidmatBilal').value = new Date().toISOString().split('T')[0];
             document.getElementById('mulaKhidmatSiak').value = new Date().toISOString().split('T')[0];
             
             // Search functionality
@@ -949,38 +736,8 @@
             });
         });
 
-        // Load Imam data on page load
-        // Note: Imam form has been removed as data comes from Google Sheets
-
-        // Bilal form submission
-        document.getElementById('bilalForm').addEventListener('submit', function(e) {
-            e.preventDefault();
-            
-            const bilal = {
-                id: Date.now(),
-                nama: document.getElementById('namaBilal').value,
-                nokp: document.getElementById('nokpBilal').value,
-                noGaji: document.getElementById('noGajiBilal').value,
-                noAkaun: document.getElementById('noAkaunBilal').value,
-                pekerjaan: document.getElementById('pekerjaanBilal').value,
-                alamat: document.getElementById('alamatBilal').value,
-                telefon: document.getElementById('telefonBilal').value,
-                masjid: document.getElementById('masjidBilal').value,
-                daerah: document.getElementById('daerahBilal').value,
-                mulaKhidmat: document.getElementById('mulaKhidmatBilal').value
-            };
-            
-            bilalData.push(bilal);
-            localStorage.setItem('bilalData', JSON.stringify(bilalData));
-            
-            this.reset();
-            document.getElementById('mulaKhidmatBilal').value = new Date().toISOString().split('T')[0];
-            displayBilal();
-            updateStatistics();
-            updatePeletakanDropdowns();
-            
-            alert('✅ Bilal berjaya didaftarkan!');
-        });
+        // Load data on page load
+        // Note: Imam and Bilal forms have been removed as data comes from Google Sheets
 
         // Siak form submission
         document.getElementById('siakForm').addEventListener('submit', function(e) {
@@ -1019,7 +776,7 @@
             if (imamData.length === 0) {
                 tbody.innerHTML = `
                     <tr>
-                        <td colspan="13" class="text-center py-8 text-gray-500">
+                        <td colspan="11" class="text-center py-8 text-gray-500">
                             <div class="text-4xl mb-2">🕌</div>
                             Tiada imam didaftarkan lagi
                         </td>
@@ -1034,8 +791,6 @@
                     <td class="py-3 px-4">${imam.daerah}</td>
                     <td class="py-3 px-4 font-medium">${imam.nama}</td>
                     <td class="py-3 px-4">${imam.nokp}</td>
-                    <td class="py-3 px-4">${imam.noGaji}</td>
-                    <td class="py-3 px-4">${imam.noAkaun}</td>
                     <td class="py-3 px-4">${imam.pekerjaan}</td>
                     <td class="py-3 px-4">${imam.alamat}</td>
                     <td class="py-3 px-4">${imam.telefon}</td>
@@ -1063,7 +818,7 @@
             if (bilalData.length === 0) {
                 tbody.innerHTML = `
                     <tr>
-                        <td colspan="10" class="text-center py-8 text-gray-500">
+                        <td colspan="11" class="text-center py-8 text-gray-500">
                             <div class="text-4xl mb-2">📢</div>
                             Tiada bilal didaftarkan lagi
                         </td>
@@ -1074,17 +829,16 @@
             
             tbody.innerHTML = bilalData.map((bilal, index) => `
                 <tr class="table-row border-b hover:bg-blue-50 transition-colors">
-                    <td class="py-3 px-4">${index + 1}</td>
+                    <td class="py-3 px-4">${bilal.masjid}</td>
+                    <td class="py-3 px-4">${bilal.daerah}</td>
                     <td class="py-3 px-4 font-medium">${bilal.nama}</td>
                     <td class="py-3 px-4">${bilal.nokp}</td>
-                    <td class="py-3 px-4">${bilal.noGaji}</td>
-                    <td class="py-3 px-4">${bilal.noAkaun}</td>
                     <td class="py-3 px-4">${bilal.pekerjaan}</td>
                     <td class="py-3 px-4">${bilal.alamat}</td>
                     <td class="py-3 px-4">${bilal.telefon}</td>
-                    <td class="py-3 px-4">${bilal.masjid}</td>
-                    <td class="py-3 px-4">${bilal.daerah}</td>
+                    <td class="py-3 px-4">${bilal.umur}</td>
                     <td class="py-3 px-4">${new Date(bilal.mulaKhidmat).toLocaleDateString('ms-MY')}</td>
+                    <td class="py-3 px-4">${bilal.catatan || '-'}</td>
                     <td class="py-3 px-4">
                         <div class="flex gap-2">
                             <button onclick="editItem('bilal', ${index})" class="text-blue-600 hover:text-blue-800 text-sm">
@@ -1163,64 +917,17 @@
 
         // Edit functionality
         function editItem(type, index) {
-            if (type === 'imam') {
-                alert('⚠️ Data imam tidak boleh diedit kerana diambil dari Google Sheets. Sila kemaskini data di Google Sheets dan muat semula.');
+            if (type === 'imam' || type === 'bilal') {
+                alert(`⚠️ Data ${type} tidak boleh diedit kerana diambil dari Google Sheets. Sila kemaskini data di Google Sheets dan muat semula.`);
                 return;
             }
             
             currentEditType = type;
             currentEditIndex = index;
             
-            const data = type === 'bilal' ? bilalData[index] : siakData[index];
+            const data = siakData[index];
             
             let modalContent = '';
-            
-            if (type === 'bilal') {
-                modalContent = `
-                    <div class="space-y-4">
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-1">Nama Bilal</label>
-                            <input type="text" id="editNama" value="${data.nama}" class="w-full px-3 py-2 border border-gray-300 rounded-lg">
-                        </div>
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-1">No. K/P</label>
-                            <input type="text" id="editNokp" value="${data.nokp}" class="w-full px-3 py-2 border border-gray-300 rounded-lg">
-                        </div>
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-1">No. Gaji</label>
-                            <input type="text" id="editNoGaji" value="${data.noGaji}" class="w-full px-3 py-2 border border-gray-300 rounded-lg">
-                        </div>
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-1">No. Akaun BSN</label>
-                            <input type="text" id="editNoAkaun" value="${data.noAkaun}" class="w-full px-3 py-2 border border-gray-300 rounded-lg">
-                        </div>
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-1">Pekerjaan</label>
-                            <input type="text" id="editPekerjaan" value="${data.pekerjaan}" class="w-full px-3 py-2 border border-gray-300 rounded-lg">
-                        </div>
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-1">Alamat</label>
-                            <textarea id="editAlamat" rows="2" class="w-full px-3 py-2 border border-gray-300 rounded-lg">${data.alamat}</textarea>
-                        </div>
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-1">No. Tel</label>
-                            <input type="tel" id="editTelefon" value="${data.telefon}" class="w-full px-3 py-2 border border-gray-300 rounded-lg">
-                        </div>
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-1">Masjid</label>
-                            <input type="text" id="editMasjid" value="${data.masjid}" class="w-full px-3 py-2 border border-gray-300 rounded-lg">
-                        </div>
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-1">Daerah</label>
-                            <input type="text" id="editDaerah" value="${data.daerah}" class="w-full px-3 py-2 border border-gray-300 rounded-lg">
-                        </div>
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-1">Mula Khidmat</label>
-                            <input type="date" id="editMulaKhidmat" value="${data.mulaKhidmat}" class="w-full px-3 py-2 border border-gray-300 rounded-lg">
-                        </div>
-                    </div>
-                `;
-            } else {
                 modalContent = `
                     <div class="space-y-4">
                         <div>
@@ -1275,39 +982,21 @@
 
         // Save edit
         function saveEdit() {
-            if (currentEditType === 'bilal') {
-                bilalData[currentEditIndex] = {
-                    ...bilalData[currentEditIndex],
-                    nama: document.getElementById('editNama').value,
-                    nokp: document.getElementById('editNokp').value,
-                    noGaji: document.getElementById('editNoGaji').value,
-                    noAkaun: document.getElementById('editNoAkaun').value,
-                    pekerjaan: document.getElementById('editPekerjaan').value,
-                    alamat: document.getElementById('editAlamat').value,
-                    telefon: document.getElementById('editTelefon').value,
-                    masjid: document.getElementById('editMasjid').value,
-                    daerah: document.getElementById('editDaerah').value,
-                    mulaKhidmat: document.getElementById('editMulaKhidmat').value
-                };
-                localStorage.setItem('bilalData', JSON.stringify(bilalData));
-                displayBilal();
-            } else {
-                siakData[currentEditIndex] = {
-                    ...siakData[currentEditIndex],
-                    nama: document.getElementById('editNama').value,
-                    nokp: document.getElementById('editNokp').value,
-                    noGaji: document.getElementById('editNoGaji').value,
-                    noAkaun: document.getElementById('editNoAkaun').value,
-                    pekerjaan: document.getElementById('editPekerjaan').value,
-                    alamat: document.getElementById('editAlamat').value,
-                    telefon: document.getElementById('editTelefon').value,
-                    masjid: document.getElementById('editMasjid').value,
-                    daerah: document.getElementById('editDaerah').value,
-                    mulaKhidmat: document.getElementById('editMulaKhidmat').value
-                };
-                localStorage.setItem('siakData', JSON.stringify(siakData));
-                displaySiak();
-            }
+            siakData[currentEditIndex] = {
+                ...siakData[currentEditIndex],
+                nama: document.getElementById('editNama').value,
+                nokp: document.getElementById('editNokp').value,
+                noGaji: document.getElementById('editNoGaji').value,
+                noAkaun: document.getElementById('editNoAkaun').value,
+                pekerjaan: document.getElementById('editPekerjaan').value,
+                alamat: document.getElementById('editAlamat').value,
+                telefon: document.getElementById('editTelefon').value,
+                masjid: document.getElementById('editMasjid').value,
+                daerah: document.getElementById('editDaerah').value,
+                mulaKhidmat: document.getElementById('editMulaKhidmat').value
+            };
+            localStorage.setItem('siakData', JSON.stringify(siakData));
+            displaySiak();
             
             updateStatistics();
             closeModal();
@@ -1322,21 +1011,15 @@
 
         // Delete item
         function deleteItem(type, index) {
-            if (type === 'imam') {
-                alert('⚠️ Data imam tidak boleh dihapus kerana diambil dari Google Sheets. Sila kemaskini data di Google Sheets dan muat semula.');
+            if (type === 'imam' || type === 'bilal') {
+                alert(`⚠️ Data ${type} tidak boleh dihapus kerana diambil dari Google Sheets. Sila kemaskini data di Google Sheets dan muat semula.`);
                 return;
             }
             
             if (confirm('Adakah anda pasti ingin menghapus data ini?')) {
-                if (type === 'bilal') {
-                    bilalData.splice(index, 1);
-                    localStorage.setItem('bilalData', JSON.stringify(bilalData));
-                    displayBilal();
-                } else {
-                    siakData.splice(index, 1);
-                    localStorage.setItem('siakData', JSON.stringify(siakData));
-                    displaySiak();
-                }
+                siakData.splice(index, 1);
+                localStorage.setItem('siakData', JSON.stringify(siakData));
+                displaySiak();
                 
                 updateStatistics();
                 alert('✅ Data berjaya dihapus!');
@@ -1351,16 +1034,16 @@
                 return;
             }
             
+            if (type === 'bilal') {
+                alert('⚠️ Data bilal tidak boleh dikosongkan kerana diambil dari Google Sheets. Data akan dimuat semula dari sumber asal.');
+                loadBilalDataFromSheet();
+                return;
+            }
+            
             if (confirm(`Adakah anda pasti ingin mengosongkan semua data ${type}? Tindakan ini tidak boleh dibatalkan.`)) {
-                if (type === 'bilal') {
-                    bilalData = [];
-                    localStorage.setItem('bilalData', JSON.stringify(bilalData));
-                    displayBilal();
-                } else {
-                    siakData = [];
-                    localStorage.setItem('siakData', JSON.stringify(siakData));
-                    displaySiak();
-                }
+                siakData = [];
+                localStorage.setItem('siakData', JSON.stringify(siakData));
+                displaySiak();
                 
                 updateStatistics();
                 alert('✅ Semua data telah dikosongkan!');
@@ -1384,14 +1067,12 @@
             let headers = [];
             
             if (type === 'imam') {
-                headers = ['Masjid', 'Daerah', 'Nama Imam', 'No. K/P', 'No. Gaji', 'No. Akaun BSN', 'Pekerjaan', 'Alamat', 'No. Tel', 'Umur', 'Mula Khidmat', 'Catatan'];
+                headers = ['Masjid', 'Daerah', 'Nama Imam', 'No. K/P', 'Pekerjaan', 'Alamat', 'No. Tel', 'Umur', 'Mula Khidmat', 'Catatan'];
                 tableData = imamData.map((imam, index) => [
                     imam.masjid,
                     imam.daerah,
                     imam.nama,
                     imam.nokp,
-                    imam.noGaji,
-                    imam.noAkaun,
                     imam.pekerjaan,
                     imam.alamat,
                     imam.telefon,
@@ -1400,17 +1081,18 @@
                     imam.catatan || '-'
                 ]);
             } else if (type === 'bilal') {
-                headers = ['Bil', 'Nama Bilal', 'No. K/P', 'No. Gaji', 'No. Akaun BSN', 'Pekerjaan', 'Alamat', 'No. Tel', 'Mula Khidmat'];
+                headers = ['Masjid', 'Daerah', 'Nama Bilal', 'No. K/P', 'Pekerjaan', 'Alamat', 'No. Tel', 'Umur', 'Mula Khidmat', 'Catatan'];
                 tableData = bilalData.map((bilal, index) => [
-                    index + 1,
+                    bilal.masjid,
+                    bilal.daerah,
                     bilal.nama,
                     bilal.nokp,
-                    bilal.noGaji,
-                    bilal.noAkaun,
                     bilal.pekerjaan,
                     bilal.alamat,
                     bilal.telefon,
-                    new Date(bilal.mulaKhidmat).toLocaleDateString('ms-MY')
+                    bilal.umur,
+                    new Date(bilal.mulaKhidmat).toLocaleDateString('ms-MY'),
+                    bilal.catatan || '-'
                 ]);
             } else {
                 headers = ['Bil', 'Nama Siak', 'No. K/P', 'No. Gaji', 'No. Akaun BSN', 'Pekerjaan', 'Alamat', 'No. Tel', 'Mula Khidmat'];
@@ -1463,14 +1145,12 @@
             let totalCount = 0;
             
             if (type === 'imam') {
-                headers = ['Masjid', 'Daerah', 'Nama Imam', 'No. K/P', 'No. Gaji', 'No. Akaun BSN', 'Pekerjaan', 'Alamat', 'No. Tel', 'Umur', 'Mula Khidmat', 'Catatan'];
+                headers = ['Masjid', 'Daerah', 'Nama Imam', 'No. K/P', 'Pekerjaan', 'Alamat', 'No. Tel', 'Umur', 'Mula Khidmat', 'Catatan'];
                 tableData = imamData.map((imam, index) => [
                     imam.masjid,
                     imam.daerah,
                     imam.nama,
                     imam.nokp,
-                    imam.noGaji,
-                    imam.noAkaun,
                     imam.pekerjaan,
                     imam.alamat,
                     imam.telefon,
@@ -1480,17 +1160,18 @@
                 ]);
                 totalCount = imamData.length;
             } else if (type === 'bilal') {
-                headers = ['Bil', 'Nama Bilal', 'No. K/P', 'No. Gaji', 'No. Akaun BSN', 'Pekerjaan', 'Alamat', 'No. Tel', 'Mula Khidmat'];
+                headers = ['Masjid', 'Daerah', 'Nama Bilal', 'No. K/P', 'Pekerjaan', 'Alamat', 'No. Tel', 'Umur', 'Mula Khidmat', 'Catatan'];
                 tableData = bilalData.map((bilal, index) => [
-                    index + 1,
+                    bilal.masjid,
+                    bilal.daerah,
                     bilal.nama,
                     bilal.nokp,
-                    bilal.noGaji,
-                    bilal.noAkaun,
                     bilal.pekerjaan,
                     bilal.alamat,
                     bilal.telefon,
-                    new Date(bilal.mulaKhidmat).toLocaleDateString('ms-MY')
+                    bilal.umur,
+                    new Date(bilal.mulaKhidmat).toLocaleDateString('ms-MY'),
+                    bilal.catatan || '-'
                 ]);
                 totalCount = bilalData.length;
             } else {
@@ -1911,8 +1592,7 @@
                                     <div><strong>Masjid:</strong> ${result.data.masjid}</div>
                                     <div><strong>Daerah:</strong> ${result.data.daerah}</div>
                                     <div><strong>No. K/P:</strong> ${result.data.nokp}</div>
-                                    <div><strong>No. Gaji:</strong> ${result.data.noGaji}</div>
-                                    <div><strong>No. Akaun BSN:</strong> ${result.data.noAkaun}</div>
+
                                     <div><strong>Pekerjaan:</strong> ${result.data.pekerjaan}</div>
                                     <div class="col-span-2"><strong>Alamat:</strong> ${result.data.alamat}</div>
                                     <div><strong>No. Tel:</strong> ${result.data.telefon}</div>
@@ -1966,18 +1646,17 @@
             doc.text(`Jumlah Keputusan: ${currentSearchResults.length} rekod`, 20, 65);
             
             // Prepare table data
-            const headers = ['Bil', 'Jenis', 'Nama', 'No. K/P', 'No. Gaji', 'No. Akaun BSN', 'Pekerjaan', 'Masjid', 'Daerah', 'No. Tel', 'Mula Khidmat'];
+            const headers = ['Bil', 'Jenis', 'Nama', 'No. K/P', 'Pekerjaan', 'Masjid', 'Daerah', 'No. Tel', 'Umur', 'Mula Khidmat'];
             const tableData = currentSearchResults.map((result, index) => [
                 index + 1,
                 result.type,
                 result.data.nama,
                 result.data.nokp,
-                result.data.noGaji,
-                result.data.noAkaun,
                 result.data.pekerjaan,
                 result.data.masjid,
                 result.data.daerah,
                 result.data.telefon,
+                result.data.umur || '-',
                 new Date(result.data.mulaKhidmat).toLocaleDateString('ms-MY')
             ]);
             
@@ -2031,12 +1710,10 @@
                     doc.setFontSize(10);
                     yPosition += 8;
                     
-                    const details = [
+                    let details = [
                         `Masjid: ${result.data.masjid}`,
                         `Daerah: ${result.data.daerah}`,
                         `No. K/P: ${result.data.nokp}`,
-                        `No. Gaji: ${result.data.noGaji}`,
-                        `No. Akaun BSN: ${result.data.noAkaun}`,
                         `Pekerjaan: ${result.data.pekerjaan}`,
                         `Alamat: ${result.data.alamat}`,
                         `No. Tel: ${result.data.telefon}`,
@@ -2044,6 +1721,12 @@
                         `Mula Khidmat: ${new Date(result.data.mulaKhidmat).toLocaleDateString('ms-MY')}`,
                         `Catatan: ${result.data.catatan || '-'}`
                     ];
+                    
+                    // Add specific fields for Bilal and Siak
+                    if (result.type === 'Bilal' || result.type === 'Siak') {
+                        details.splice(3, 0, `No. Gaji: ${result.data.noGaji}`);
+                        details.splice(4, 0, `No. Akaun BSN: ${result.data.noAkaun}`);
+                    }
                     
                     details.forEach(detail => {
                         doc.text(detail, 25, yPosition);
@@ -2089,47 +1772,18 @@
             }
         }
         
-        function toggleBilalForm() {
-            const formSection = document.getElementById('bilalFormSection');
-            const listSection = document.getElementById('bilalListSection');
-            const formBtn = document.getElementById('toggleBilalFormBtn');
-            const listBtn = document.getElementById('toggleBilalListBtn');
-            
-            if (formSection.classList.contains('hidden')) {
-                formSection.classList.remove('hidden');
-                listSection.classList.add('hidden');
-                formBtn.classList.remove('btn-success');
-                formBtn.classList.add('btn-secondary');
-                formBtn.innerHTML = '❌ Tutup Borang';
-                listBtn.classList.remove('btn-secondary');
-                listBtn.classList.add('btn-success');
-                listBtn.innerHTML = '📋 Lihat Senarai Bilal';
-            } else {
-                formSection.classList.add('hidden');
-                formBtn.classList.remove('btn-secondary');
-                formBtn.classList.add('btn-success');
-                formBtn.innerHTML = '➕ Daftar Bilal Baru';
-            }
-        }
-        
         function toggleBilalList() {
-            const formSection = document.getElementById('bilalFormSection');
             const listSection = document.getElementById('bilalListSection');
-            const formBtn = document.getElementById('toggleBilalFormBtn');
             const listBtn = document.getElementById('toggleBilalListBtn');
             
             if (listSection.classList.contains('hidden')) {
                 listSection.classList.remove('hidden');
-                formSection.classList.add('hidden');
                 listBtn.classList.remove('btn-secondary');
-                listBtn.classList.add('btn-success');
+                listBtn.classList.add('btn-primary');
                 listBtn.innerHTML = '❌ Tutup Senarai';
-                formBtn.classList.remove('btn-secondary');
-                formBtn.classList.add('btn-success');
-                formBtn.innerHTML = '➕ Daftar Bilal Baru';
             } else {
                 listSection.classList.add('hidden');
-                listBtn.classList.remove('btn-success');
+                listBtn.classList.remove('btn-primary');
                 listBtn.classList.add('btn-secondary');
                 listBtn.innerHTML = '📋 Lihat Senarai Bilal';
             }
@@ -2188,5 +1842,5 @@
             }
         });
     </script>
-<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'98ee2532605da319',t:'MTc2MDUxOTAyNy4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+ <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'98f48f7fc7c9e454',t:'MTc2MDU4NjI5Ni4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>
