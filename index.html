@@ -3,7 +3,7 @@
  <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Sistem Maklumat Kariah &amp; Masjid</title>
+  <title>Sistem Carian Maklumat Pegawai Masjid</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://unpkg.com/jspdf@latest/dist/jspdf.umd.min.js"></script>
   <script src="https://unpkg.com/jspdf-autotable@latest/dist/jspdf.plugin.autotable.min.js"></script>
@@ -146,7 +146,7 @@
        🕌
       </div>
       <div>
-       <h1 class="text-3xl font-bold">Sistem Maklumat Pegawai Masjid</h1>
+       <h1 class="text-3xl font-bold">Sistem Carian Maklumat Pegawai Masjid</h1>
        <p class="text-slate-300 text-sm">Pengurusan Pegawai Imam, Bilal &amp; Siak</p>
       </div>
      </div>
@@ -161,9 +161,15 @@
    <div class="mb-6">
     <div class="card-hover rounded-2xl p-6 shadow-xl">
      <h2 class="text-xl font-bold text-gray-800 mb-4 flex items-center"><span class="text-2xl mr-3">🔍</span> Carian Pegawai Masjid</h2>
-     <div class="flex gap-4">
-      <div class="flex-1"><input type="text" id="globalSearch" placeholder="🔍 Cari menggunakan nama atau no. K/P..." class="search-input w-full px-4 py-3 border border-gray-300 rounded-xl">
-      </div><button onclick="performGlobalSearch()" class="btn-primary text-white px-6 py-3 rounded-xl font-medium"> 🔍 Cari </button> <button onclick="clearGlobalSearch()" class="btn-secondary text-white px-6 py-3 rounded-xl font-medium"> 🗑️ Kosongkan </button>
+     <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+      <div><label class="block text-sm font-medium text-gray-700 mb-2">Pilih Masjid</label> <select id="filterMasjid" class="search-input w-full px-4 py-3 border border-gray-300 rounded-xl"> <option value="">Semua Masjid</option> </select>
+      </div>
+      <div><label class="block text-sm font-medium text-gray-700 mb-2">Pilih Jawatan</label> <select id="filterJawatan" class="search-input w-full px-4 py-3 border border-gray-300 rounded-xl"> <option value="">Semua Jawatan</option> <option value="imam">Imam</option> <option value="bilal">Bilal</option> <option value="siak">Siak</option> </select>
+      </div>
+      <div class="md:col-span-1"><label class="block text-sm font-medium text-gray-700 mb-2">Carian (Nama atau No. K/P)</label> <input type="text" id="globalSearch" placeholder="🔍 Cari nama atau no. K/P..." class="search-input w-full px-4 py-3 border border-gray-300 rounded-xl">
+      </div>
+     </div>
+     <div class="flex gap-4"><button onclick="performGlobalSearch()" class="btn-primary text-white px-6 py-3 rounded-xl font-medium"> 🔍 Cari </button> <button onclick="clearGlobalSearch()" class="btn-secondary text-white px-6 py-3 rounded-xl font-medium"> 🗑️ Kosongkan </button>
      </div>
      <div id="globalSearchResults" class="mt-4 hidden">
       <div class="flex justify-between items-center mb-3">
@@ -174,21 +180,19 @@
     </div>
    </div><!-- Navigation Tabs -->
    <div class="mb-8">
-    <div class="flex flex-wrap gap-2 bg-white/80 backdrop-blur-sm p-2 rounded-2xl shadow-lg"><button onclick="showTab('imam')" id="tab-imam" class="tab-btn btn-primary text-white px-6 py-3 rounded-xl font-medium transition-all"> 🕌 Imam </button> <button onclick="showTab('bilal')" id="tab-bilal" class="tab-btn bg-gray-200 text-gray-700 px-6 py-3 rounded-xl font-medium transition-all hover:bg-gray-300"> 📢 Bilal </button> <button onclick="showTab('siak')" id="tab-siak" class="tab-btn bg-gray-200 text-gray-700 px-6 py-3 rounded-xl font-medium transition-all hover:bg-gray-300"> 📋 Siak </button> <button onclick="showTab('laporan')" id="tab-laporan" class="tab-btn bg-gray-200 text-gray-700 px-6 py-3 rounded-xl font-medium transition-all hover:bg-gray-300"> 📊 Laporan </button> <button onclick="showTab('peletakan')" id="tab-peletakan" class="tab-btn bg-gray-200 text-gray-700 px-6 py-3 rounded-xl font-medium transition-all hover:bg-gray-300"> 📍 Laporan Perletakan Pegawai Masjid </button>
+    <div class="flex flex-wrap gap-2 bg-white/80 backdrop-blur-sm p-2 rounded-2xl shadow-lg"><button onclick="showTab('imam')" id="tab-imam" class="tab-btn btn-primary text-white px-6 py-3 rounded-xl font-medium transition-all"> 🕌 Imam </button> <button onclick="showTab('bilal')" id="tab-bilal" class="tab-btn bg-gray-200 text-gray-700 px-6 py-3 rounded-xl font-medium transition-all hover:bg-gray-300"> 📢 Bilal </button> <button onclick="showTab('siak')" id="tab-siak" class="tab-btn bg-gray-200 text-gray-700 px-6 py-3 rounded-xl font-medium transition-all hover:bg-gray-300"> 📋 Siak </button> <button onclick="showTab('laporan')" id="tab-laporan" class="tab-btn bg-gray-200 text-gray-700 px-6 py-3 rounded-xl font-medium transition-all hover:bg-gray-300"> 📊 Laporan </button>
     </div>
    </div><!-- Imam Tab -->
    <div id="imam-tab" class="tab-content fade-in"><!-- Control Buttons -->
-    <div class="mb-6 flex gap-4"><button onclick="loadImamDataFromSheet()" class="btn-primary text-white px-6 py-3 rounded-xl font-medium"> 🔄 Muat Semula Data Imam </button> <button onclick="toggleImamList()" id="toggleImamListBtn" class="btn-secondary text-white px-6 py-3 rounded-xl font-medium"> 📋 Lihat Senarai Imam </button>
+    <div class="mb-6 flex gap-4"><button onclick="toggleImamList()" id="toggleImamListBtn" class="btn-secondary text-white px-6 py-3 rounded-xl font-medium"> 📋 Lihat Senarai Imam </button>
     </div>
     <div class="grid lg:grid-cols-1 gap-8"><!-- Senarai Imam -->
      <div id="imamListSection" class="lg:col-span-1 hidden">
       <div class="card-hover rounded-2xl p-6 shadow-xl">
        <div class="flex justify-between items-center mb-6">
         <h2 class="text-2xl font-bold text-gray-800 flex items-center"><span class="text-2xl mr-3">🕌</span> Senarai Imam</h2>
-        <div class="flex gap-2"><button onclick="exportToPDF('imam')" class="btn-purple text-white px-4 py-2 rounded-lg font-medium text-sm"> 📄 Export PDF </button> <button onclick="clearAllData('imam')" class="btn-danger text-white px-4 py-2 rounded-lg font-medium text-sm"> 🗑️ Kosongkan </button>
+        <div class="flex gap-2"><button onclick="exportToPDF('imam')" class="btn-purple text-white px-4 py-2 rounded-lg font-medium text-sm"> 📄 Export PDF </button>
         </div>
-       </div>
-       <div class="mb-4"><input type="text" id="searchImam" placeholder="🔍 Cari imam..." class="search-input w-full px-4 py-3 border border-gray-300 rounded-xl">
        </div>
        <div class="overflow-x-auto">
         <table class="w-full">
@@ -204,7 +208,6 @@
            <th class="text-left py-3 px-4 font-semibold text-gray-700">Umur</th>
            <th class="text-left py-3 px-4 font-semibold text-gray-700">Mula Khidmat</th>
            <th class="text-left py-3 px-4 font-semibold text-gray-700">Catatan</th>
-           <th class="text-left py-3 px-4 font-semibold text-gray-700">Tindakan</th>
           </tr>
          </thead>
          <tbody id="imamList">
@@ -222,17 +225,15 @@
     </div>
    </div><!-- Bilal Tab -->
    <div id="bilal-tab" class="tab-content hidden"><!-- Control Buttons -->
-    <div class="mb-6 flex gap-4"><button onclick="loadBilalDataFromSheet()" class="btn-primary text-white px-6 py-3 rounded-xl font-medium"> 🔄 Muat Semula Data Bilal </button> <button onclick="toggleBilalList()" id="toggleBilalListBtn" class="btn-secondary text-white px-6 py-3 rounded-xl font-medium"> 📋 Lihat Senarai Bilal </button>
+    <div class="mb-6 flex gap-4"><button onclick="toggleBilalList()" id="toggleBilalListBtn" class="btn-secondary text-white px-6 py-3 rounded-xl font-medium"> 📋 Lihat Senarai Bilal </button>
     </div>
     <div class="grid lg:grid-cols-1 gap-8"><!-- Senarai Bilal -->
      <div id="bilalListSection" class="lg:col-span-1 hidden">
       <div class="card-hover rounded-2xl p-6 shadow-xl">
        <div class="flex justify-between items-center mb-6">
         <h2 class="text-2xl font-bold text-gray-800 flex items-center"><span class="text-2xl mr-3">📢</span> Senarai Bilal</h2>
-        <div class="flex gap-2"><button onclick="exportToPDF('bilal')" class="btn-purple text-white px-4 py-2 rounded-lg font-medium text-sm"> 📄 Export PDF </button> <button onclick="clearAllData('bilal')" class="btn-danger text-white px-4 py-2 rounded-lg font-medium text-sm"> 🗑️ Kosongkan </button>
+        <div class="flex gap-2"><button onclick="exportToPDF('bilal')" class="btn-purple text-white px-4 py-2 rounded-lg font-medium text-sm"> 📄 Export PDF </button>
         </div>
-       </div>
-       <div class="mb-4"><input type="text" id="searchBilal" placeholder="🔍 Cari bilal..." class="search-input w-full px-4 py-3 border border-gray-300 rounded-xl">
        </div>
        <div class="overflow-x-auto">
         <table class="w-full">
@@ -248,7 +249,6 @@
            <th class="text-left py-3 px-4 font-semibold text-gray-700">Umur</th>
            <th class="text-left py-3 px-4 font-semibold text-gray-700">Mula Khidmat</th>
            <th class="text-left py-3 px-4 font-semibold text-gray-700">Catatan</th>
-           <th class="text-left py-3 px-4 font-semibold text-gray-700">Tindakan</th>
           </tr>
          </thead>
          <tbody id="bilalList">
@@ -325,7 +325,7 @@
          </thead>
          <tbody id="siakList">
           <tr>
-           <td colspan="10" class="text-center py-8 text-gray-500">
+           <td colspan="12" class="text-center py-8 text-gray-500">
             <div class="text-4xl mb-2">
              📋
             </div> Tiada siak didaftarkan lagi</td>
@@ -336,77 +336,9 @@
       </div>
      </div>
     </div>
-   </div><!-- Laporan Perletakan Pegawai Masjid Tab -->
-   <div id="peletakan-tab" class="tab-content hidden">
-    <div class="grid lg:grid-cols-3 gap-8"><!-- Form Peletakan Imam -->
-     <div class="lg:col-span-1">
-      <div class="card-hover rounded-2xl p-6 shadow-xl">
-       <h2 class="text-2xl font-bold text-gray-800 mb-6 flex items-center"><span class="text-2xl mr-3">🕌</span> Perletakan Jawatan Imam</h2>
-       <form id="peletakanImamForm" class="space-y-4">
-        <div><label class="block text-sm font-medium text-gray-700 mb-2">Pilih Imam</label> <select id="pilihImam" required class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"> <option value="">Pilih Imam</option> </select>
-        </div>
-        <div><label class="block text-sm font-medium text-gray-700 mb-2">Catatan</label> <textarea id="catatanImam" rows="3" class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all" placeholder="Masukkan catatan tambahan (pilihan)"></textarea>
-        </div><button type="submit" class="w-full btn-primary text-white py-3 px-6 rounded-xl font-medium"> ✅ Tetapkan Perletakan </button>
-       </form>
-      </div><!-- Form Peletakan Bilal -->
-      <div class="card-hover rounded-2xl p-6 shadow-xl mt-6">
-       <h2 class="text-2xl font-bold text-gray-800 mb-6 flex items-center"><span class="text-2xl mr-3">📢</span> Perletakan Jawatan Bilal</h2>
-       <form id="peletakanBilalForm" class="space-y-4">
-        <div><label class="block text-sm font-medium text-gray-700 mb-2">Pilih Bilal</label> <select id="pilihBilal" required class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"> <option value="">Pilih Bilal</option> </select>
-        </div>
-        <div><label class="block text-sm font-medium text-gray-700 mb-2">Catatan</label> <textarea id="catatanBilal" rows="3" class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all" placeholder="Masukkan catatan tambahan (pilihan)"></textarea>
-        </div><button type="submit" class="w-full btn-success text-white py-3 px-6 rounded-xl font-medium"> ✅ Tetapkan Perletakan </button>
-       </form>
-      </div><!-- Form Peletakan Siak -->
-      <div class="card-hover rounded-2xl p-6 shadow-xl mt-6">
-       <h2 class="text-2xl font-bold text-gray-800 mb-6 flex items-center"><span class="text-2xl mr-3">📋</span> Perletakan Jawatan Siak</h2>
-       <form id="peletakanSiakForm" class="space-y-4">
-        <div><label class="block text-sm font-medium text-gray-700 mb-2">Pilih Siak</label> <select id="pilihSiak" required class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"> <option value="">Pilih Siak</option> </select>
-        </div>
-        <div><label class="block text-sm font-medium text-gray-700 mb-2">Catatan</label> <textarea id="catatanSiak" rows="3" class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all" placeholder="Masukkan catatan tambahan (pilihan)"></textarea>
-        </div><button type="submit" class="w-full btn-purple text-white py-3 px-6 rounded-xl font-medium"> ✅ Tetapkan Perletakan </button>
-       </form>
-      </div>
-     </div><!-- Senarai Peletakan -->
-     <div class="lg:col-span-2">
-      <div class="card-hover rounded-2xl p-6 shadow-xl">
-       <div class="flex justify-between items-center mb-6">
-        <h2 class="text-2xl font-bold text-gray-800 flex items-center"><span class="text-2xl mr-3">📍</span> Senarai Perletakan Pegawai</h2>
-        <div class="flex gap-2"><button onclick="exportPeletakanToPDF()" class="btn-purple text-white px-4 py-2 rounded-lg font-medium text-sm"> 📄 Export PDF </button> <button onclick="clearAllPeletakan()" class="btn-danger text-white px-4 py-2 rounded-lg font-medium text-sm"> 🗑️ Kosongkan </button>
-        </div>
-       </div>
-       <div class="mb-4"><input type="text" id="searchPeletakan" placeholder="🔍 Cari perletakan..." class="search-input w-full px-4 py-3 border border-gray-300 rounded-xl">
-       </div>
-       <div class="overflow-x-auto">
-        <table class="w-full">
-         <thead>
-          <tr class="bg-gray-50 border-b">
-           <th class="text-left py-3 px-4 font-semibold text-gray-700">Bil</th>
-           <th class="text-left py-3 px-4 font-semibold text-gray-700">Nama</th>
-           <th class="text-left py-3 px-4 font-semibold text-gray-700">Jenis</th>
-           <th class="text-left py-3 px-4 font-semibold text-gray-700">Perletakan</th>
-           <th class="text-left py-3 px-4 font-semibold text-gray-700">Jadual/Bidang</th>
-           <th class="text-left py-3 px-4 font-semibold text-gray-700">Masjid</th>
-           <th class="text-left py-3 px-4 font-semibold text-gray-700">Catatan</th>
-           <th class="text-left py-3 px-4 font-semibold text-gray-700">Tindakan</th>
-          </tr>
-         </thead>
-         <tbody id="peletakanList">
-          <tr>
-           <td colspan="8" class="text-center py-8 text-gray-500">
-            <div class="text-4xl mb-2">
-             📍
-            </div> Tiada perletakan ditetapkan lagi</td>
-          </tr>
-         </tbody>
-        </table>
-       </div>
-      </div>
-     </div>
-    </div>
    </div><!-- Laporan Tab -->
    <div id="laporan-tab" class="tab-content hidden">
-    <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8"><!-- Statistik Cards -->
+    <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8"><!-- Statistik Cards -->
      <div class="card-hover rounded-2xl p-6 shadow-xl text-center">
       <div class="text-4xl mb-3">
        🕌
@@ -427,13 +359,6 @@
       </div>
       <h3 class="text-lg font-bold text-gray-800">Jumlah Siak</h3>
       <p class="text-3xl font-bold text-purple-600" id="totalSiak">0</p>
-     </div>
-     <div class="card-hover rounded-2xl p-6 shadow-xl text-center">
-      <div class="text-4xl mb-3">
-       📍
-      </div>
-      <h3 class="text-lg font-bold text-gray-800">Jumlah Perletakan</h3>
-      <p class="text-3xl font-bold text-orange-600" id="totalPeletakan">0</p>
      </div>
     </div><!-- Laporan Terperinci -->
     <div class="card-hover rounded-2xl p-6 shadow-xl">
@@ -461,47 +386,42 @@
    </div>
   </div><!-- Modal untuk PDF Preview -->
   <div id="pdfPreviewModal" class="fixed inset-0 modal-backdrop hidden items-center justify-center z-50">
-   <div class="bg-white rounded-2xl p-6 max-w-6xl w-full mx-4 shadow-2xl" style="height: 90vh;">
+   <div class="bg-white rounded-2xl p-6 max-w-4xl w-full mx-4 shadow-2xl max-h-[90vh] overflow-hidden">
     <div class="flex justify-between items-center mb-4">
-     <h3 class="text-xl font-bold" id="pdfModalTitle">Pratonton Laporan PDF</h3><button onclick="closePDFModal()" class="text-gray-500 hover:text-gray-700 text-2xl"> ✕ </button>
+     <h3 class="text-xl font-bold" id="pdfPreviewTitle">Pratonton Laporan</h3><button onclick="closePdfPreview()" class="text-gray-500 hover:text-gray-700 text-2xl">×</button>
     </div>
-    <div class="mb-4 flex gap-3"><button onclick="downloadCurrentPDF()" class="btn-primary text-white px-6 py-2 rounded-lg font-medium"> 📥 Muat Turun PDF </button> <button onclick="printCurrentPDF()" class="btn-success text-white px-6 py-2 rounded-lg font-medium"> 🖨️ Cetak PDF </button> <button onclick="closePDFModal()" class="btn-secondary text-white px-6 py-2 rounded-lg font-medium"> ❌ Tutup </button>
+    <div id="pdfPreviewContent" class="overflow-y-auto max-h-[60vh] mb-6 border border-gray-200 rounded-lg p-4 bg-gray-50"><!-- Preview content will be inserted here -->
     </div>
-    <div class="border border-gray-300 rounded-lg overflow-hidden" style="height: calc(100% - 120px);"><iframe id="pdfViewer" class="w-full h-full" frameborder="0"></iframe>
+    <div class="flex gap-3"><button onclick="closePdfPreview()" class="flex-1 btn-secondary text-white py-2 px-4 rounded-lg"> Tutup </button> <button onclick="confirmPdfDownload()" class="flex-1 btn-primary text-white py-2 px-4 rounded-lg"> 📄 Muat Turun PDF </button>
     </div>
    </div>
   </div>
   <script>
         // Data storage
-        let imamData = []; // Will be loaded from Google Sheets
-        let bilalData = []; // Will be loaded from Google Sheets
-        let siakData = JSON.parse(localStorage.getItem('siakData')) || [];
-        let peletakanData = JSON.parse(localStorage.getItem('peletakanData')) || [];
+        let imamData = [];
+        let bilalData = [];
+        let siakData = [];
         let currentEditType = '';
         let currentEditIndex = -1;
 
         // Google Sheets CSV URLs
         const IMAM_SHEET_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTMdVbauPNjDdm5PjpJ9757hQAjohDd0rtXxHUfzFOZwbVovFSD6P8x41wsjfzxjw/pub?gid=1151842269&single=true&output=csv';
-        const BILAL_SHEET_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTMdVbauPNjDdm5PjpJ9757hQAjohDd0rtXxHUfzFOZwbVovFSD6P8x41wsjfzxjw/pub?gid=668558288&single=true&output=csv';
+        const BILAL_SHEET_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQ9-yKvr5cPnPV6iTD0RSRph69RGm1J7rwR6dwVaKHR0mG6Eb3wZMXeJu9O4-mgIg/pub?output=csv';
 
         // Function to calculate age from Malaysian IC number
         function calculateAgeFromIC(nokp) {
             if (!nokp || nokp.length < 6) return '-';
             
             try {
-                // Extract birth date from IC (first 6 digits: YYMMDD)
                 const yearDigits = nokp.substring(0, 2);
                 const month = nokp.substring(2, 4);
                 const day = nokp.substring(4, 6);
                 
-                // Determine century (if year > 30, assume 19xx, else 20xx)
                 const year = parseInt(yearDigits) > 30 ? `19${yearDigits}` : `20${yearDigits}`;
                 
-                // Create birth date
                 const birthDate = new Date(`${year}-${month}-${day}`);
                 const today = new Date();
                 
-                // Calculate age
                 let age = today.getFullYear() - birthDate.getFullYear();
                 const monthDiff = today.getMonth() - birthDate.getMonth();
                 
@@ -517,13 +437,27 @@
 
         // Function to load Imam data from Google Sheets
         async function loadImamDataFromSheet() {
+            console.log('🔄 Memuat data imam dari Google Sheets...');
+            showNotification('🔄 Sedang memuat data imam dari Google Sheets...', 'info');
+            
             try {
-                const response = await fetch(IMAM_SHEET_URL);
-                const csvText = await response.text();
+                const response = await fetch(IMAM_SHEET_URL, {
+                    method: 'GET',
+                    mode: 'cors',
+                    headers: {
+                        'Accept': 'text/csv,text/plain,*/*'
+                    }
+                });
                 
-                // Parse CSV data
-                const lines = csvText.split('\n');
-                const headers = lines[0].split(',').map(h => h.trim().replace(/"/g, ''));
+                if (!response.ok) {
+                    throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                }
+                
+                const csvText = await response.text();
+                console.log('📄 CSV data received:', csvText.substring(0, 200) + '...');
+                
+                const lines = csvText.split('\n').filter(line => line.trim());
+                console.log(`📊 Found ${lines.length} lines in CSV`);
                 
                 imamData = [];
                 
@@ -531,63 +465,69 @@
                     const line = lines[i].trim();
                     if (line) {
                         const values = parseCSVLine(line);
-                        if (values.length >= 11) { // Ensure we have at least 11 columns (A-K)
-                            const nokp = values[4] || ''; // Column E: NO. K/P
+                        console.log(`Row ${i}:`, values);
+                        
+                        if (values.length >= 8) {
+                            const nokp = values[4] || '';
                             const calculatedAge = calculateAgeFromIC(nokp);
                             
                             const imam = {
                                 id: Date.now() + i,
-                                bil: values[0] || (i), // Column A: BIL (hidden from display)
-                                masjid: values[1] || '', // Column B: MASJID
-                                daerah: values[2] || '', // Column C: DAERAH
-                                nama: values[3] || '', // Column D: NAMA IMAM
-                                nokp: nokp, // Column E: NO. K/P
-                                pekerjaan: values[5] || '', // Column F: PEKERJAAN
-                                alamat: values[6] || '', // Column G: ALAMAT
-                                telefon: values[7] || '', // Column H: NO.TEL
-                                umur: values[8] || calculatedAge, // Column I: UMUR (use sheet value or calculated)
-                                mulaKhidmat: values[9] || new Date().toISOString().split('T')[0], // Column J: MULA KHIDMAT
-                                catatan: values[10] || '' // Column K: CATATAN
+                                bil: values[0] || i,
+                                masjid: values[1] || '',
+                                daerah: values[2] || '',
+                                nama: values[3] || '',
+                                nokp: nokp,
+                                pekerjaan: values[5] || '',
+                                alamat: values[6] || '',
+                                telefon: values[7] || '',
+                                umur: values[8] || calculatedAge,
+                                mulaKhidmat: values[9] || new Date().toISOString().split('T')[0],
+                                catatan: values[10] || ''
                             };
                             imamData.push(imam);
                         }
                     }
                 }
                 
+                console.log(`✅ Berjaya memuat ${imamData.length} data imam`);
                 displayImam();
                 updateStatistics();
-                updatePeletakanDropdowns();
+                updateFilterDropdowns();
                 
-                console.log(`✅ Berjaya memuat ${imamData.length} data imam dari Google Sheets`);
+                if (imamData.length > 0) {
+                    showNotification(`✅ Berjaya memuat ${imamData.length} data imam dari Google Sheets`, 'success');
+                }
                 
             } catch (error) {
                 console.error('❌ Ralat memuat data imam:', error);
-                // Show user-friendly error message
-                const tbody = document.getElementById('imamList');
-                tbody.innerHTML = `
-                    <tr>
-                        <td colspan="10" class="text-center py-8 text-red-500">
-                            <div class="text-4xl mb-2">⚠️</div>
-                            <p class="font-semibold">Ralat memuat data imam dari Google Sheets</p>
-                            <p class="text-sm mt-2">Sila semak sambungan internet dan cuba lagi</p>
-                            <button onclick="loadImamDataFromSheet()" class="mt-3 bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600">
-                                🔄 Cuba Lagi
-                            </button>
-                        </td>
-                    </tr>
-                `;
+                showNotification(`⚠️ Sambungan Google Sheets gagal: ${error.message}. Sila cuba lagi.`, 'warning');
             }
         }
 
         // Function to load Bilal data from Google Sheets
         async function loadBilalDataFromSheet() {
+            console.log('🔄 Memuat data bilal dari Google Sheets...');
+            showNotification('🔄 Sedang memuat data bilal dari Google Sheets...', 'info');
+            
             try {
-                const response = await fetch(BILAL_SHEET_URL);
-                const csvText = await response.text();
+                const response = await fetch(BILAL_SHEET_URL, {
+                    method: 'GET',
+                    mode: 'cors',
+                    headers: {
+                        'Accept': 'text/csv,text/plain,*/*'
+                    }
+                });
                 
-                // Parse CSV data
-                const lines = csvText.split('\n');
-                const headers = lines[0].split(',').map(h => h.trim().replace(/"/g, ''));
+                if (!response.ok) {
+                    throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                }
+                
+                const csvText = await response.text();
+                console.log('📄 CSV data received:', csvText.substring(0, 200) + '...');
+                
+                const lines = csvText.split('\n').filter(line => line.trim());
+                console.log(`📊 Found ${lines.length} lines in CSV`);
                 
                 bilalData = [];
                 
@@ -595,55 +535,47 @@
                     const line = lines[i].trim();
                     if (line) {
                         const values = parseCSVLine(line);
-                        if (values.length >= 11) { // Ensure we have at least 11 columns (A-K)
-                            const nokp = values[4] || ''; // Column E: NO. K/P
+                        console.log(`Row ${i}:`, values);
+                        
+                        if (values.length >= 8) {
+                            const nokp = values[4] || '';
                             const calculatedAge = calculateAgeFromIC(nokp);
                             
                             const bilal = {
-                                id: Date.now() + i,
-                                bil: values[0] || (i), // Column A: BIL (hidden from display)
-                                masjid: values[1] || '', // Column B: MASJID
-                                daerah: values[2] || '', // Column C: DAERAH
-                                nama: values[3] || '', // Column D: NAMA BILAL
-                                nokp: nokp, // Column E: NO. K/P
-                                pekerjaan: values[5] || '', // Column F: PEKERJAAN
-                                alamat: values[6] || '', // Column G: ALAMAT
-                                telefon: values[7] || '', // Column H: NO.TEL
-                                umur: values[8] || calculatedAge, // Column I: UMUR (use sheet value or calculated)
-                                mulaKhidmat: values[9] || new Date().toISOString().split('T')[0], // Column J: MULA KHIDMAT
-                                catatan: values[10] || '' // Column K: CATATAN
+                                id: Date.now() + i + 1000,
+                                bil: values[0] || i,
+                                masjid: values[1] || '',
+                                daerah: values[2] || '',
+                                nama: values[3] || '',
+                                nokp: nokp,
+                                pekerjaan: values[5] || '',
+                                alamat: values[6] || '',
+                                telefon: values[7] || '',
+                                umur: values[8] || calculatedAge,
+                                mulaKhidmat: values[9] || new Date().toISOString().split('T')[0],
+                                catatan: values[10] || ''
                             };
                             bilalData.push(bilal);
                         }
                     }
                 }
                 
+                console.log(`✅ Berjaya memuat ${bilalData.length} data bilal`);
                 displayBilal();
                 updateStatistics();
-                updatePeletakanDropdowns();
+                updateFilterDropdowns();
                 
-                console.log(`✅ Berjaya memuat ${bilalData.length} data bilal dari Google Sheets`);
+                if (bilalData.length > 0) {
+                    showNotification(`✅ Berjaya memuat ${bilalData.length} data bilal dari Google Sheets`, 'success');
+                }
                 
             } catch (error) {
                 console.error('❌ Ralat memuat data bilal:', error);
-                // Show user-friendly error message
-                const tbody = document.getElementById('bilalList');
-                tbody.innerHTML = `
-                    <tr>
-                        <td colspan="10" class="text-center py-8 text-red-500">
-                            <div class="text-4xl mb-2">⚠️</div>
-                            <p class="font-semibold">Ralat memuat data bilal dari Google Sheets</p>
-                            <p class="text-sm mt-2">Sila semak sambungan internet dan cuba lagi</p>
-                            <button onclick="loadBilalDataFromSheet()" class="mt-3 bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600">
-                                🔄 Cuba Lagi
-                            </button>
-                        </td>
-                    </tr>
-                `;
+                showNotification(`⚠️ Sambungan Google Sheets gagal: ${error.message}. Sila cuba lagi.`, 'warning');
             }
         }
 
-        // Function to parse CSV line properly (handles commas within quotes)
+        // Function to parse CSV line properly
         function parseCSVLine(line) {
             const result = [];
             let current = '';
@@ -666,8 +598,6 @@
             return result;
         }
 
-
-
         // Update date and time
         function updateDateTime() {
             const now = new Date();
@@ -683,15 +613,12 @@
 
         // Tab functionality
         function showTab(tabName) {
-            // Hide all tabs
             document.querySelectorAll('.tab-content').forEach(tab => {
                 tab.classList.add('hidden');
             });
             
-            // Show selected tab
             document.getElementById(tabName + '-tab').classList.remove('hidden');
             
-            // Update tab buttons
             document.querySelectorAll('.tab-btn').forEach(btn => {
                 btn.classList.remove('btn-primary', 'text-white');
                 btn.classList.add('bg-gray-200', 'text-gray-700');
@@ -701,82 +628,128 @@
             document.getElementById('tab-' + tabName).classList.add('btn-primary', 'text-white');
         }
         
-        // Initialize with laporan tab as default
+        // Notification function
+        function showNotification(message, type = 'info') {
+            const notification = document.createElement('div');
+            notification.className = `fixed top-4 right-4 z-50 px-6 py-4 rounded-lg shadow-lg text-white font-medium transform transition-all duration-300 translate-x-full`;
+            
+            switch(type) {
+                case 'success':
+                    notification.classList.add('bg-green-500');
+                    break;
+                case 'warning':
+                    notification.classList.add('bg-yellow-500');
+                    break;
+                case 'error':
+                    notification.classList.add('bg-red-500');
+                    break;
+                default:
+                    notification.classList.add('bg-blue-500');
+            }
+            
+            notification.textContent = message;
+            document.body.appendChild(notification);
+            
+            setTimeout(() => {
+                notification.classList.remove('translate-x-full');
+            }, 100);
+            
+            setTimeout(() => {
+                notification.classList.add('translate-x-full');
+                setTimeout(() => {
+                    if (notification.parentNode) {
+                        notification.parentNode.removeChild(notification);
+                    }
+                }, 300);
+            }, 5000);
+        }
+
+        // Initialize
         document.addEventListener('DOMContentLoaded', function() {
-            // Show laporan tab by default instead of imam
             showTab('laporan');
             
-            // Rest of initialization code...
             updateDateTime();
             setInterval(updateDateTime, 1000);
             
-            // Load data from Google Sheets in background
+            // Load data automatically in background
             loadImamDataFromSheet();
             loadBilalDataFromSheet();
             
             displaySiak();
-            displayPeletakan();
             updateStatistics();
-            updatePeletakanDropdowns();
+            updateFilterDropdowns();
             
-            // Set default date to today for other forms
-            document.getElementById('mulaKhidmatSiak').value = new Date().toISOString().split('T')[0];
+            const mulaKhidmatSiak = document.getElementById('mulaKhidmatSiak');
+            if (mulaKhidmatSiak) {
+                mulaKhidmatSiak.value = new Date().toISOString().split('T')[0];
+            }
             
             // Search functionality
-            document.getElementById('searchImam').addEventListener('input', () => searchTable('imam'));
-            document.getElementById('searchBilal').addEventListener('input', () => searchTable('bilal'));
-            document.getElementById('searchSiak').addEventListener('input', () => searchTable('siak'));
-            document.getElementById('searchPeletakan').addEventListener('input', () => searchTable('peletakan'));
+            const searchSiak = document.getElementById('searchSiak');
+            const globalSearch = document.getElementById('globalSearch');
             
-            // Global search functionality
-            document.getElementById('globalSearch').addEventListener('keypress', function(e) {
-                if (e.key === 'Enter') {
-                    performGlobalSearch();
-                }
-            });
+            if (searchSiak) searchSiak.addEventListener('input', () => searchTable('siak'));
+            
+            if (globalSearch) {
+                globalSearch.addEventListener('keypress', function(e) {
+                    if (e.key === 'Enter') {
+                        performGlobalSearch();
+                    }
+                });
+            }
+            
+            // Form submissions
+            const siakForm = document.getElementById('siakForm');
+            
+            if (siakForm) {
+                siakForm.addEventListener('submit', function(e) {
+                    e.preventDefault();
+                    
+                    const nama = document.getElementById('namaSiak').value.trim();
+                    const nokp = document.getElementById('nokpSiak').value.trim();
+                    const noGaji = document.getElementById('noGajiSiak').value.trim();
+                    const noAkaun = document.getElementById('noAkaunSiak').value.trim();
+                    
+                    if (!nama || !nokp || !noGaji || !noAkaun) {
+                        showNotification('Sila lengkapkan semua maklumat yang diperlukan!', 'warning');
+                        return;
+                    }
+                    
+                    const siak = {
+                        id: Date.now(),
+                        nama: nama,
+                        nokp: nokp,
+                        noGaji: noGaji,
+                        noAkaun: noAkaun,
+                        pekerjaan: document.getElementById('pekerjaanSiak').value.trim(),
+                        alamat: document.getElementById('alamatSiak').value.trim(),
+                        telefon: document.getElementById('telefonSiak').value.trim(),
+                        masjid: document.getElementById('masjidSiak').value.trim(),
+                        daerah: document.getElementById('daerahSiak').value.trim(),
+                        mulaKhidmat: document.getElementById('mulaKhidmatSiak').value
+                    };
+                    
+                    siakData.push(siak);
+                    
+                    this.reset();
+                    document.getElementById('mulaKhidmatSiak').value = new Date().toISOString().split('T')[0];
+                    displaySiak();
+                    updateStatistics();
+                    updateFilterDropdowns();
+                    
+                    showNotification('✅ Siak berjaya didaftarkan!', 'success');
+                });
+            }
         });
 
-        // Load data on page load
-        // Note: Imam and Bilal forms have been removed as data comes from Google Sheets
-
-        // Siak form submission
-        document.getElementById('siakForm').addEventListener('submit', function(e) {
-            e.preventDefault();
-            
-            const siak = {
-                id: Date.now(),
-                nama: document.getElementById('namaSiak').value,
-                nokp: document.getElementById('nokpSiak').value,
-                noGaji: document.getElementById('noGajiSiak').value,
-                noAkaun: document.getElementById('noAkaunSiak').value,
-                pekerjaan: document.getElementById('pekerjaanSiak').value,
-                alamat: document.getElementById('alamatSiak').value,
-                telefon: document.getElementById('telefonSiak').value,
-                masjid: document.getElementById('masjidSiak').value,
-                daerah: document.getElementById('daerahSiak').value,
-                mulaKhidmat: document.getElementById('mulaKhidmatSiak').value
-            };
-            
-            siakData.push(siak);
-            localStorage.setItem('siakData', JSON.stringify(siakData));
-            
-            this.reset();
-            document.getElementById('mulaKhidmatSiak').value = new Date().toISOString().split('T')[0];
-            displaySiak();
-            updateStatistics();
-            updatePeletakanDropdowns();
-            
-            alert('✅ Siak berjaya didaftarkan!');
-        });
-
-        // Display imam
+        // Display imam (without BIL column)
         function displayImam() {
             const tbody = document.getElementById('imamList');
             
             if (imamData.length === 0) {
                 tbody.innerHTML = `
                     <tr>
-                        <td colspan="11" class="text-center py-8 text-gray-500">
+                        <td colspan="10" class="text-center py-8 text-gray-500">
                             <div class="text-4xl mb-2">🕌</div>
                             Tiada imam didaftarkan lagi
                         </td>
@@ -797,28 +770,18 @@
                     <td class="py-3 px-4">${imam.umur}</td>
                     <td class="py-3 px-4">${new Date(imam.mulaKhidmat).toLocaleDateString('ms-MY')}</td>
                     <td class="py-3 px-4">${imam.catatan || '-'}</td>
-                    <td class="py-3 px-4">
-                        <div class="flex gap-2">
-                            <button onclick="editItem('imam', ${index})" class="text-blue-600 hover:text-blue-800 text-sm">
-                                ✏️ Edit
-                            </button>
-                            <button onclick="deleteItem('imam', ${index})" class="text-red-600 hover:text-red-800 text-sm">
-                                🗑️ Hapus
-                            </button>
-                        </div>
-                    </td>
                 </tr>
             `).join('');
         }
 
-        // Display bilal
+        // Display bilal (without BIL column)
         function displayBilal() {
             const tbody = document.getElementById('bilalList');
             
             if (bilalData.length === 0) {
                 tbody.innerHTML = `
                     <tr>
-                        <td colspan="11" class="text-center py-8 text-gray-500">
+                        <td colspan="10" class="text-center py-8 text-gray-500">
                             <div class="text-4xl mb-2">📢</div>
                             Tiada bilal didaftarkan lagi
                         </td>
@@ -839,16 +802,6 @@
                     <td class="py-3 px-4">${bilal.umur}</td>
                     <td class="py-3 px-4">${new Date(bilal.mulaKhidmat).toLocaleDateString('ms-MY')}</td>
                     <td class="py-3 px-4">${bilal.catatan || '-'}</td>
-                    <td class="py-3 px-4">
-                        <div class="flex gap-2">
-                            <button onclick="editItem('bilal', ${index})" class="text-blue-600 hover:text-blue-800 text-sm">
-                                ✏️ Edit
-                            </button>
-                            <button onclick="deleteItem('bilal', ${index})" class="text-red-600 hover:text-red-800 text-sm">
-                                🗑️ Hapus
-                            </button>
-                        </div>
-                    </td>
                 </tr>
             `).join('');
         }
@@ -860,7 +813,7 @@
             if (siakData.length === 0) {
                 tbody.innerHTML = `
                     <tr>
-                        <td colspan="10" class="text-center py-8 text-gray-500">
+                        <td colspan="12" class="text-center py-8 text-gray-500">
                             <div class="text-4xl mb-2">📋</div>
                             Tiada siak didaftarkan lagi
                         </td>
@@ -901,7 +854,25 @@
             document.getElementById('totalImam').textContent = imamData.length;
             document.getElementById('totalBilal').textContent = bilalData.length;
             document.getElementById('totalSiak').textContent = siakData.length;
-            document.getElementById('totalPeletakan').textContent = peletakanData.length;
+        }
+
+        // Update filter dropdowns
+        function updateFilterDropdowns() {
+            const allData = [...imamData, ...bilalData, ...siakData];
+            
+            // Update Masjid filter
+            const masjidSet = new Set();
+            allData.forEach(item => {
+                if (item.masjid) masjidSet.add(item.masjid);
+            });
+            
+            const filterMasjid = document.getElementById('filterMasjid');
+            if (filterMasjid) {
+                filterMasjid.innerHTML = '<option value="">Semua Masjid</option>';
+                Array.from(masjidSet).sort().forEach(masjid => {
+                    filterMasjid.innerHTML += `<option value="${masjid}">${masjid}</option>`;
+                });
+            }
         }
 
         // Search functionality
@@ -917,62 +888,55 @@
 
         // Edit functionality
         function editItem(type, index) {
-            if (type === 'imam' || type === 'bilal') {
-                alert(`⚠️ Data ${type} tidak boleh diedit kerana diambil dari Google Sheets. Sila kemaskini data di Google Sheets dan muat semula.`);
-                return;
-            }
-            
             currentEditType = type;
             currentEditIndex = index;
             
             const data = siakData[index];
             
-            let modalContent = '';
-                modalContent = `
-                    <div class="space-y-4">
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-1">Nama Siak</label>
-                            <input type="text" id="editNama" value="${data.nama}" class="w-full px-3 py-2 border border-gray-300 rounded-lg">
-                        </div>
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-1">No. K/P</label>
-                            <input type="text" id="editNokp" value="${data.nokp}" class="w-full px-3 py-2 border border-gray-300 rounded-lg">
-                        </div>
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-1">No. Gaji</label>
-                            <input type="text" id="editNoGaji" value="${data.noGaji}" class="w-full px-3 py-2 border border-gray-300 rounded-lg">
-                        </div>
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-1">No. Akaun BSN</label>
-                            <input type="text" id="editNoAkaun" value="${data.noAkaun}" class="w-full px-3 py-2 border border-gray-300 rounded-lg">
-                        </div>
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-1">Pekerjaan</label>
-                            <input type="text" id="editPekerjaan" value="${data.pekerjaan}" class="w-full px-3 py-2 border border-gray-300 rounded-lg">
-                        </div>
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-1">Alamat</label>
-                            <textarea id="editAlamat" rows="2" class="w-full px-3 py-2 border border-gray-300 rounded-lg">${data.alamat}</textarea>
-                        </div>
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-1">No. Tel</label>
-                            <input type="tel" id="editTelefon" value="${data.telefon}" class="w-full px-3 py-2 border border-gray-300 rounded-lg">
-                        </div>
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-1">Masjid</label>
-                            <input type="text" id="editMasjid" value="${data.masjid}" class="w-full px-3 py-2 border border-gray-300 rounded-lg">
-                        </div>
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-1">Daerah</label>
-                            <input type="text" id="editDaerah" value="${data.daerah}" class="w-full px-3 py-2 border border-gray-300 rounded-lg">
-                        </div>
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-1">Mula Khidmat</label>
-                            <input type="date" id="editMulaKhidmat" value="${data.mulaKhidmat}" class="w-full px-3 py-2 border border-gray-300 rounded-lg">
-                        </div>
+            let modalContent = `
+                <div class="space-y-4">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Nama Siak</label>
+                        <input type="text" id="editNama" value="${data.nama}" class="w-full px-3 py-2 border border-gray-300 rounded-lg">
                     </div>
-                `;
-            }
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">No. K/P</label>
+                        <input type="text" id="editNokp" value="${data.nokp}" class="w-full px-3 py-2 border border-gray-300 rounded-lg">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">No. Gaji</label>
+                        <input type="text" id="editNoGaji" value="${data.noGaji}" class="w-full px-3 py-2 border border-gray-300 rounded-lg">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">No. Akaun BSN</label>
+                        <input type="text" id="editNoAkaun" value="${data.noAkaun}" class="w-full px-3 py-2 border border-gray-300 rounded-lg">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Pekerjaan</label>
+                        <input type="text" id="editPekerjaan" value="${data.pekerjaan}" class="w-full px-3 py-2 border border-gray-300 rounded-lg">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Alamat</label>
+                        <textarea id="editAlamat" rows="2" class="w-full px-3 py-2 border border-gray-300 rounded-lg">${data.alamat}</textarea>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">No. Tel</label>
+                        <input type="tel" id="editTelefon" value="${data.telefon}" class="w-full px-3 py-2 border border-gray-300 rounded-lg">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Masjid</label>
+                        <input type="text" id="editMasjid" value="${data.masjid}" class="w-full px-3 py-2 border border-gray-300 rounded-lg">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Daerah</label>
+                        <input type="text" id="editDaerah" value="${data.daerah}" class="w-full px-3 py-2 border border-gray-300 rounded-lg">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Mula Khidmat</label>
+                        <input type="date" id="editMulaKhidmat" value="${data.mulaKhidmat}" class="w-full px-3 py-2 border border-gray-300 rounded-lg">
+                    </div>
+                </div>
+            `;
             
             document.getElementById('modalTitle').textContent = `Edit ${type.charAt(0).toUpperCase() + type.slice(1)}`;
             document.getElementById('modalContent').innerHTML = modalContent;
@@ -995,12 +959,12 @@
                 daerah: document.getElementById('editDaerah').value,
                 mulaKhidmat: document.getElementById('editMulaKhidmat').value
             };
-            localStorage.setItem('siakData', JSON.stringify(siakData));
-            displaySiak();
             
+            displaySiak();
             updateStatistics();
+            updateFilterDropdowns();
             closeModal();
-            alert('✅ Data berjaya dikemaskini!');
+            showNotification('✅ Data berjaya dikemaskini!', 'success');
         }
 
         // Close modal
@@ -1011,140 +975,78 @@
 
         // Delete item
         function deleteItem(type, index) {
-            if (type === 'imam' || type === 'bilal') {
-                alert(`⚠️ Data ${type} tidak boleh dihapus kerana diambil dari Google Sheets. Sila kemaskini data di Google Sheets dan muat semula.`);
-                return;
-            }
-            
-            if (confirm('Adakah anda pasti ingin menghapus data ini?')) {
-                siakData.splice(index, 1);
-                localStorage.setItem('siakData', JSON.stringify(siakData));
-                displaySiak();
-                
-                updateStatistics();
-                alert('✅ Data berjaya dihapus!');
-            }
+            const confirmDelete = document.createElement('div');
+            confirmDelete.className = 'fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50';
+            confirmDelete.innerHTML = `
+                <div class="bg-white rounded-lg p-6 max-w-sm mx-4">
+                    <h3 class="text-lg font-bold mb-4">Pengesahan Hapus</h3>
+                    <p class="text-gray-600 mb-6">Adakah anda pasti ingin menghapus data ini?</p>
+                    <div class="flex gap-3">
+                        <button onclick="this.closest('.fixed').remove()" class="flex-1 bg-gray-300 text-gray-700 py-2 px-4 rounded-lg hover:bg-gray-400">
+                            Batal
+                        </button>
+                        <button onclick="confirmDeleteAction(${index}); this.closest('.fixed').remove()" class="flex-1 bg-red-500 text-white py-2 px-4 rounded-lg hover:bg-red-600">
+                            Hapus
+                        </button>
+                    </div>
+                </div>
+            `;
+            document.body.appendChild(confirmDelete);
+        }
+        
+        function confirmDeleteAction(index) {
+            siakData.splice(index, 1);
+            displaySiak();
+            updateStatistics();
+            updateFilterDropdowns();
+            showNotification('✅ Data berjaya dihapus!', 'success');
         }
 
         // Clear all data
         function clearAllData(type) {
-            if (type === 'imam') {
-                alert('⚠️ Data imam tidak boleh dikosongkan kerana diambil dari Google Sheets. Data akan dimuat semula dari sumber asal.');
-                loadImamDataFromSheet();
-                return;
-            }
-            
-            if (type === 'bilal') {
-                alert('⚠️ Data bilal tidak boleh dikosongkan kerana diambil dari Google Sheets. Data akan dimuat semula dari sumber asal.');
-                loadBilalDataFromSheet();
-                return;
-            }
-            
-            if (confirm(`Adakah anda pasti ingin mengosongkan semua data ${type}? Tindakan ini tidak boleh dibatalkan.`)) {
-                siakData = [];
-                localStorage.setItem('siakData', JSON.stringify(siakData));
-                displaySiak();
-                
-                updateStatistics();
-                alert('✅ Semua data telah dikosongkan!');
-            }
+            const confirmClear = document.createElement('div');
+            confirmClear.className = 'fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50';
+            confirmClear.innerHTML = `
+                <div class="bg-white rounded-lg p-6 max-w-sm mx-4">
+                    <h3 class="text-lg font-bold mb-4">Pengesahan Kosongkan</h3>
+                    <p class="text-gray-600 mb-6">Adakah anda pasti ingin mengosongkan semua data ${type}? Tindakan ini tidak boleh dibatalkan.</p>
+                    <div class="flex gap-3">
+                        <button onclick="this.closest('.fixed').remove()" class="flex-1 bg-gray-300 text-gray-700 py-2 px-4 rounded-lg hover:bg-gray-400">
+                            Batal
+                        </button>
+                        <button onclick="confirmClearAction(); this.closest('.fixed').remove()" class="flex-1 bg-red-500 text-white py-2 px-4 rounded-lg hover:bg-red-600">
+                            Kosongkan
+                        </button>
+                    </div>
+                </div>
+            `;
+            document.body.appendChild(confirmClear);
+        }
+        
+        function confirmClearAction() {
+            siakData = [];
+            displaySiak();
+            updateStatistics();
+            updateFilterDropdowns();
+            showNotification('✅ Semua data telah dikosongkan!', 'success');
         }
 
-        // Export to PDF
+        // PDF Preview and Export functionality
+        let currentPdfData = null;
+        let currentPdfType = '';
+
         function exportToPDF(type) {
-            const { jsPDF } = window.jspdf;
-            const doc = new jsPDF('landscape'); // Set to landscape orientation
-            
-            // Add title
-            doc.setFontSize(20);
-            doc.text(`Laporan ${type.charAt(0).toUpperCase() + type.slice(1)}`, 20, 20);
-            
-            // Add date
-            doc.setFontSize(12);
-            doc.text(`Tarikh: ${new Date().toLocaleDateString('ms-MY')}`, 20, 35);
-            
-            let tableData = [];
-            let headers = [];
-            
-            if (type === 'imam') {
-                headers = ['Masjid', 'Daerah', 'Nama Imam', 'No. K/P', 'Pekerjaan', 'Alamat', 'No. Tel', 'Umur', 'Mula Khidmat', 'Catatan'];
-                tableData = imamData.map((imam, index) => [
-                    imam.masjid,
-                    imam.daerah,
-                    imam.nama,
-                    imam.nokp,
-                    imam.pekerjaan,
-                    imam.alamat,
-                    imam.telefon,
-                    imam.umur,
-                    new Date(imam.mulaKhidmat).toLocaleDateString('ms-MY'),
-                    imam.catatan || '-'
-                ]);
-            } else if (type === 'bilal') {
-                headers = ['Masjid', 'Daerah', 'Nama Bilal', 'No. K/P', 'Pekerjaan', 'Alamat', 'No. Tel', 'Umur', 'Mula Khidmat', 'Catatan'];
-                tableData = bilalData.map((bilal, index) => [
-                    bilal.masjid,
-                    bilal.daerah,
-                    bilal.nama,
-                    bilal.nokp,
-                    bilal.pekerjaan,
-                    bilal.alamat,
-                    bilal.telefon,
-                    bilal.umur,
-                    new Date(bilal.mulaKhidmat).toLocaleDateString('ms-MY'),
-                    bilal.catatan || '-'
-                ]);
-            } else {
-                headers = ['Bil', 'Nama Siak', 'No. K/P', 'No. Gaji', 'No. Akaun BSN', 'Pekerjaan', 'Alamat', 'No. Tel', 'Mula Khidmat'];
-                tableData = siakData.map((siak, index) => [
-                    index + 1,
-                    siak.nama,
-                    siak.nokp,
-                    siak.noGaji,
-                    siak.noAkaun,
-                    siak.pekerjaan,
-                    siak.alamat,
-                    siak.telefon,
-                    new Date(siak.mulaKhidmat).toLocaleDateString('ms-MY')
-                ]);
-            }
-            
-            doc.autoTable({
-                head: [headers],
-                body: tableData,
-                startY: 45,
-                styles: {
-                    fontSize: 10,
-                    cellPadding: 3
-                },
-                headStyles: {
-                    fillColor: [30, 41, 59],
-                    textColor: 255
-                }
-            });
-            
-            doc.save(`laporan-${type}-${new Date().toISOString().split('T')[0]}.pdf`);
+            currentPdfType = type;
+            showPdfPreview(type);
         }
 
-        // Generate and preview PDF report
-        function generateReport(type) {
-            const { jsPDF } = window.jspdf;
-            const doc = new jsPDF('landscape'); // Set to landscape orientation
-            
-            // Add title
-            doc.setFontSize(20);
-            doc.text(`Laporan ${type.charAt(0).toUpperCase() + type.slice(1)}`, 20, 20);
-            
-            // Add date and time
-            doc.setFontSize(12);
-            doc.text(`Tarikh: ${new Date().toLocaleDateString('ms-MY')}`, 20, 35);
-            doc.text(`Masa: ${new Date().toLocaleTimeString('ms-MY')}`, 20, 45);
-            
+        function showPdfPreview(type) {
             let tableData = [];
             let headers = [];
-            let totalCount = 0;
+            let title = '';
             
             if (type === 'imam') {
+                title = 'Laporan Imam';
                 headers = ['Masjid', 'Daerah', 'Nama Imam', 'No. K/P', 'Pekerjaan', 'Alamat', 'No. Tel', 'Umur', 'Mula Khidmat', 'Catatan'];
                 tableData = imamData.map((imam, index) => [
                     imam.masjid,
@@ -1158,8 +1060,8 @@
                     new Date(imam.mulaKhidmat).toLocaleDateString('ms-MY'),
                     imam.catatan || '-'
                 ]);
-                totalCount = imamData.length;
             } else if (type === 'bilal') {
+                title = 'Laporan Bilal';
                 headers = ['Masjid', 'Daerah', 'Nama Bilal', 'No. K/P', 'Pekerjaan', 'Alamat', 'No. Tel', 'Umur', 'Mula Khidmat', 'Catatan'];
                 tableData = bilalData.map((bilal, index) => [
                     bilal.masjid,
@@ -1173,8 +1075,8 @@
                     new Date(bilal.mulaKhidmat).toLocaleDateString('ms-MY'),
                     bilal.catatan || '-'
                 ]);
-                totalCount = bilalData.length;
             } else {
+                title = 'Laporan Siak';
                 headers = ['Bil', 'Nama Siak', 'No. K/P', 'No. Gaji', 'No. Akaun BSN', 'Pekerjaan', 'Alamat', 'No. Tel', 'Mula Khidmat'];
                 tableData = siakData.map((siak, index) => [
                     index + 1,
@@ -1187,45 +1089,107 @@
                     siak.telefon,
                     new Date(siak.mulaKhidmat).toLocaleDateString('ms-MY')
                 ]);
-                totalCount = siakData.length;
+            }
+
+            currentPdfData = { headers, tableData, title, type };
+
+            // Generate preview HTML
+            const previewHtml = `
+                <div class="text-center mb-4">
+                    <h2 class="text-xl font-bold">${title}</h2>
+                    <p class="text-gray-600">Tarikh: ${new Date().toLocaleDateString('ms-MY')}</p>
+                    <p class="text-gray-600">Jumlah Rekod: ${tableData.length}</p>
+                </div>
+                <div class="overflow-x-auto">
+                    <table class="w-full border-collapse border border-gray-300 text-sm">
+                        <thead>
+                            <tr class="bg-gray-100">
+                                ${headers.map(header => `<th class="border border-gray-300 px-2 py-1 text-left font-semibold">${header}</th>`).join('')}
+                            </tr>
+                        </thead>
+                        <tbody>
+                            ${tableData.map(row => `
+                                <tr class="hover:bg-gray-50">
+                                    ${row.map(cell => `<td class="border border-gray-300 px-2 py-1">${cell}</td>`).join('')}
+                                </tr>
+                            `).join('')}
+                        </tbody>
+                    </table>
+                </div>
+            `;
+
+            document.getElementById('pdfPreviewTitle').textContent = `Pratonton ${title}`;
+            document.getElementById('pdfPreviewContent').innerHTML = previewHtml;
+            document.getElementById('pdfPreviewModal').classList.remove('hidden');
+            document.getElementById('pdfPreviewModal').classList.add('flex');
+        }
+
+        function closePdfPreview() {
+            document.getElementById('pdfPreviewModal').classList.add('hidden');
+            document.getElementById('pdfPreviewModal').classList.remove('flex');
+            currentPdfData = null;
+            currentPdfType = '';
+        }
+
+        function confirmPdfDownload() {
+            if (!currentPdfData) return;
+
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF('landscape');
+            
+            doc.setFontSize(20);
+            doc.text(currentPdfData.title, 20, 20);
+            
+            if (currentPdfData.type === 'hasil-carian') {
+                doc.setFontSize(14);
+                doc.text(`Kata Kunci Carian: "${currentPdfData.searchTerm}"`, 20, 35);
+                
+                doc.setFontSize(12);
+                doc.text(`Tarikh: ${new Date().toLocaleDateString('ms-MY')}`, 20, 45);
+                doc.text(`Masa: ${new Date().toLocaleTimeString('ms-MY')}`, 20, 55);
+                doc.text(`Jumlah Keputusan: ${currentPdfData.tableData.length} rekod`, 20, 65);
+                
+                doc.autoTable({
+                    head: [currentPdfData.headers],
+                    body: currentPdfData.tableData,
+                    startY: 75,
+                    styles: {
+                        fontSize: 9,
+                        cellPadding: 2
+                    },
+                    headStyles: {
+                        fillColor: [30, 41, 59],
+                        textColor: 255,
+                        fontSize: 10,
+                        fontStyle: 'bold'
+                    }
+                });
+                
+                doc.save(`hasil-carian-${currentPdfData.searchTerm.replace(/\s+/g, '-')}-${new Date().toISOString().split('T')[0]}.pdf`);
+                showNotification('✅ Laporan hasil carian berjaya dimuat turun!', 'success');
+            } else {
+                doc.setFontSize(12);
+                doc.text(`Tarikh: ${new Date().toLocaleDateString('ms-MY')}`, 20, 35);
+                
+                doc.autoTable({
+                    head: [currentPdfData.headers],
+                    body: currentPdfData.tableData,
+                    startY: 45,
+                    styles: {
+                        fontSize: 10,
+                        cellPadding: 3
+                    },
+                    headStyles: {
+                        fillColor: [30, 41, 59],
+                        textColor: 255
+                    }
+                });
+                
+                doc.save(`laporan-${currentPdfData.type}-${new Date().toISOString().split('T')[0]}.pdf`);
+                showNotification(`✅ Laporan ${currentPdfData.type} berjaya dimuat turun!`, 'success');
             }
             
-            // Add total count
-            doc.text(`Jumlah ${type.charAt(0).toUpperCase() + type.slice(1)}: ${totalCount} orang`, 20, 55);
-            
-            doc.autoTable({
-                head: [headers],
-                body: tableData,
-                startY: 65,
-                styles: {
-                    fontSize: 9,
-                    cellPadding: 2
-                },
-                headStyles: {
-                    fillColor: [30, 41, 59],
-                    textColor: 255,
-                    fontSize: 10,
-                    fontStyle: 'bold'
-                },
-                columnStyles: {
-                    0: { cellWidth: 15 }, // Bil
-                    1: { cellWidth: 40 }, // Nama
-                    2: { cellWidth: 35 }, // No. K/P
-                    3: { cellWidth: 25 }, // No. Gaji
-                    4: { cellWidth: 30 }, // No. Akaun BSN
-                    5: { cellWidth: 30 }, // Pekerjaan
-                    6: { cellWidth: 50 }, // Alamat
-                    7: { cellWidth: 30 }, // No. Tel
-                    8: { cellWidth: 25 }  // Mula Khidmat
-                }
-            });
-            
-            // Convert PDF to blob and show preview
-            const pdfBlob = doc.output('blob');
-            const pdfUrl = URL.createObjectURL(pdfBlob);
-            
-            // Show PDF preview modal
-            showPDFPreview(pdfUrl, type);
+            closePdfPreview();
         }
 
         // Generate report
@@ -1233,339 +1197,76 @@
             exportToPDF(type);
         }
 
-        // Peletakan form submissions
-        document.getElementById('peletakanImamForm').addEventListener('submit', function(e) {
-            e.preventDefault();
-            
-            const selectedImam = document.getElementById('pilihImam').value;
-            
-            if (!selectedImam) {
-                alert('Sila pilih imam!');
-                return;
-            }
-            
-            const imam = imamData.find(i => i.id == selectedImam);
-            
-            const perletakanItem = {
-                id: Date.now(),
-                nama: imam.nama,
-                jenis: 'Imam',
-                peletakan: 'Imam Masjid',
-                jadualBidang: 'Solat 5 Waktu & Jumaat',
-                masjid: 'Masjid Utama',
-                catatan: document.getElementById('catatanImam').value || '-'
-            };
-            
-            peletakanData.push(perletakanItem);
-            localStorage.setItem('peletakanData', JSON.stringify(peletakanData));
-            
-            this.reset();
-            displayPeletakan();
-            updateStatistics();
-            
-            alert('✅ Perletakan imam berjaya ditetapkan!');
-        });
-
-        document.getElementById('peletakanBilalForm').addEventListener('submit', function(e) {
-            e.preventDefault();
-            
-            const selectedBilal = document.getElementById('pilihBilal').value;
-            
-            if (!selectedBilal) {
-                alert('Sila pilih bilal!');
-                return;
-            }
-            
-            const bilal = bilalData.find(b => b.id == selectedBilal);
-            
-            const perletakanItem = {
-                id: Date.now(),
-                nama: bilal.nama,
-                jenis: 'Bilal',
-                peletakan: 'Bilal Masjid',
-                jadualBidang: 'Solat 5 Waktu & Jumaat',
-                masjid: 'Masjid Utama',
-                catatan: document.getElementById('catatanBilal').value || '-'
-            };
-            
-            peletakanData.push(perletakanItem);
-            localStorage.setItem('peletakanData', JSON.stringify(peletakanData));
-            
-            this.reset();
-            displayPeletakan();
-            updateStatistics();
-            
-            alert('✅ Perletakan bilal berjaya ditetapkan!');
-        });
-
-        document.getElementById('peletakanSiakForm').addEventListener('submit', function(e) {
-            e.preventDefault();
-            
-            const selectedSiak = document.getElementById('pilihSiak').value;
-            
-            if (!selectedSiak) {
-                alert('Sila pilih siak!');
-                return;
-            }
-            
-            const siak = siakData.find(s => s.id == selectedSiak);
-            
-            const perletakanItem = {
-                id: Date.now(),
-                nama: siak.nama,
-                jenis: 'Siak',
-                peletakan: 'Siak Masjid',
-                jadualBidang: 'Pengurusan Masjid',
-                masjid: 'Masjid Utama',
-                catatan: document.getElementById('catatanSiak').value || '-'
-            };
-            
-            peletakanData.push(perletakanItem);
-            localStorage.setItem('peletakanData', JSON.stringify(peletakanData));
-            
-            this.reset();
-            displayPeletakan();
-            updateStatistics();
-            
-            alert('✅ Perletakan siak berjaya ditetapkan!');
-        });
-
-        // Update peletakan dropdowns
-        function updatePeletakanDropdowns() {
-            // Update Imam dropdown
-            const pilihImam = document.getElementById('pilihImam');
-            pilihImam.innerHTML = '<option value="">Pilih Imam</option>';
-            imamData.forEach(imam => {
-                pilihImam.innerHTML += `<option value="${imam.id}">${imam.nama}</option>`;
-            });
-
-            // Update Bilal dropdown
-            const pilihBilal = document.getElementById('pilihBilal');
-            pilihBilal.innerHTML = '<option value="">Pilih Bilal</option>';
-            bilalData.forEach(bilal => {
-                pilihBilal.innerHTML += `<option value="${bilal.id}">${bilal.nama}</option>`;
-            });
-
-            // Update Siak dropdown
-            const pilihSiak = document.getElementById('pilihSiak');
-            pilihSiak.innerHTML = '<option value="">Pilih Siak</option>';
-            siakData.forEach(siak => {
-                pilihSiak.innerHTML += `<option value="${siak.id}">${siak.nama}</option>`;
-            });
-        }
-
-        // Display peletakan
-        function displayPeletakan() {
-            const tbody = document.getElementById('peletakanList');
-            
-            if (peletakanData.length === 0) {
-                tbody.innerHTML = `
-                    <tr>
-                        <td colspan="7" class="text-center py-8 text-gray-500">
-                            <div class="text-4xl mb-2">📍</div>
-                            Tiada perletakan ditetapkan lagi
-                        </td>
-                    </tr>
-                `;
-                return;
-            }
-            
-            tbody.innerHTML = peletakanData.map((perletakan, index) => `
-                <tr class="table-row border-b hover:bg-blue-50 transition-colors">
-                    <td class="py-3 px-4">${index + 1}</td>
-                    <td class="py-3 px-4 font-medium">${perletakan.nama}</td>
-                    <td class="py-3 px-4">${perletakan.jenis}</td>
-                    <td class="py-3 px-4">${perletakan.peletakan}</td>
-                    <td class="py-3 px-4">${perletakan.jadualBidang}</td>
-                    <td class="py-3 px-4">${perletakan.masjid}</td>
-                    <td class="py-3 px-4">${perletakan.catatan || '-'}</td>
-                    <td class="py-3 px-4">
-                        <button onclick="deletePeletakan(${index})" class="text-red-600 hover:text-red-800 text-sm">
-                            🗑️ Hapus
-                        </button>
-                    </td>
-                </tr>
-            `).join('');
-        }
-
-        // Delete perletakan
-        function deletePeletakan(index) {
-            if (confirm('Adakah anda pasti ingin menghapus perletakan ini?')) {
-                peletakanData.splice(index, 1);
-                localStorage.setItem('peletakanData', JSON.stringify(peletakanData));
-                displayPeletakan();
-                updateStatistics();
-                alert('✅ Perletakan berjaya dihapus!');
-            }
-        }
-
-        // Clear all perletakan
-        function clearAllPeletakan() {
-            if (confirm('Adakah anda pasti ingin mengosongkan semua perletakan? Tindakan ini tidak boleh dibatalkan.')) {
-                peletakanData = [];
-                localStorage.setItem('peletakanData', JSON.stringify(peletakanData));
-                displayPeletakan();
-                updateStatistics();
-                alert('✅ Semua perletakan telah dikosongkan!');
-            }
-        }
-
-        // Export perletakan to PDF
-        function exportPeletakanToPDF() {
-            const { jsPDF } = window.jspdf;
-            const doc = new jsPDF('landscape'); // Set to landscape orientation
-            
-            // Add title
-            doc.setFontSize(20);
-            doc.text('Laporan Perletakan Pegawai', 20, 20);
-            
-            // Add date
-            doc.setFontSize(12);
-            doc.text(`Tarikh: ${new Date().toLocaleDateString('ms-MY')}`, 20, 35);
-            
-            const headers = ['Bil', 'Nama', 'Jenis', 'Perletakan', 'Jadual/Bidang', 'Masjid', 'Catatan'];
-            const tableData = peletakanData.map((perletakan, index) => [
-                index + 1,
-                perletakan.nama,
-                perletakan.jenis,
-                perletakan.peletakan,
-                perletakan.jadualBidang,
-                perletakan.masjid,
-                perletakan.catatan || '-'
-            ]);
-            
-            doc.autoTable({
-                head: [headers],
-                body: tableData,
-                startY: 45,
-                styles: {
-                    fontSize: 10,
-                    cellPadding: 3
-                },
-                headStyles: {
-                    fillColor: [30, 41, 59],
-                    textColor: 255
-                }
-            });
-            
-            doc.save(`laporan-perletakan-${new Date().toISOString().split('T')[0]}.pdf`);
-        }
-
-        // PDF Preview Functions
-        let currentPDFBlob = null;
-        let currentPDFType = '';
-
-        function showPDFPreview(pdfUrl, type) {
-            document.getElementById('pdfModalTitle').textContent = `Pratonton Laporan ${type.charAt(0).toUpperCase() + type.slice(1)}`;
-            document.getElementById('pdfViewer').src = pdfUrl;
-            document.getElementById('pdfPreviewModal').classList.remove('hidden');
-            document.getElementById('pdfPreviewModal').classList.add('flex');
-            
-            // Store current PDF info for download/print
-            currentPDFType = type;
-            
-            // Convert URL to blob for download
-            fetch(pdfUrl)
-                .then(response => response.blob())
-                .then(blob => {
-                    currentPDFBlob = blob;
-                });
-        }
-
-        function closePDFModal() {
-            document.getElementById('pdfPreviewModal').classList.add('hidden');
-            document.getElementById('pdfPreviewModal').classList.remove('flex');
-            document.getElementById('pdfViewer').src = '';
-            
-            // Clean up blob URL
-            if (currentPDFBlob) {
-                URL.revokeObjectURL(document.getElementById('pdfViewer').src);
-                currentPDFBlob = null;
-            }
-        }
-
-        function downloadCurrentPDF() {
-            if (currentPDFBlob) {
-                const url = URL.createObjectURL(currentPDFBlob);
-                const a = document.createElement('a');
-                a.href = url;
-                a.download = `laporan-${currentPDFType}-${new Date().toISOString().split('T')[0]}.pdf`;
-                document.body.appendChild(a);
-                a.click();
-                document.body.removeChild(a);
-                URL.revokeObjectURL(url);
-            }
-        }
-
-        function printCurrentPDF() {
-            if (document.getElementById('pdfViewer').src) {
-                const printWindow = window.open(document.getElementById('pdfViewer').src, '_blank');
-                printWindow.onload = function() {
-                    printWindow.print();
-                };
-            }
-        }
-
         // Global search functionality
+        let currentSearchResults = [];
+        let currentSearchTerm = '';
+
         function performGlobalSearch() {
             const searchTerm = document.getElementById('globalSearch').value.toLowerCase().trim();
-            
-            if (!searchTerm) {
-                alert('Sila masukkan nama atau no. K/P untuk carian!');
-                return;
-            }
+            const filterMasjid = document.getElementById('filterMasjid').value;
+            const filterJawatan = document.getElementById('filterJawatan').value;
             
             const results = [];
             
             // Search in Imam data
-            imamData.forEach((imam, index) => {
-                if (imam.nama.toLowerCase().includes(searchTerm) || imam.nokp.includes(searchTerm)) {
-                    results.push({
-                        type: 'Imam',
-                        data: imam,
-                        index: index,
-                        icon: '🕌'
-                    });
-                }
-            });
+            if (!filterJawatan || filterJawatan === 'imam') {
+                imamData.forEach((imam, index) => {
+                    const matchesSearch = !searchTerm || imam.nama.toLowerCase().includes(searchTerm) || imam.nokp.includes(searchTerm);
+                    const matchesMasjid = !filterMasjid || imam.masjid === filterMasjid;
+                    
+                    if (matchesSearch && matchesMasjid) {
+                        results.push({
+                            type: 'Imam',
+                            data: imam,
+                            index: index,
+                            icon: '🕌'
+                        });
+                    }
+                });
+            }
             
             // Search in Bilal data
-            bilalData.forEach((bilal, index) => {
-                if (bilal.nama.toLowerCase().includes(searchTerm) || bilal.nokp.includes(searchTerm)) {
-                    results.push({
-                        type: 'Bilal',
-                        data: bilal,
-                        index: index,
-                        icon: '📢'
-                    });
-                }
-            });
+            if (!filterJawatan || filterJawatan === 'bilal') {
+                bilalData.forEach((bilal, index) => {
+                    const matchesSearch = !searchTerm || bilal.nama.toLowerCase().includes(searchTerm) || bilal.nokp.includes(searchTerm);
+                    const matchesMasjid = !filterMasjid || bilal.masjid === filterMasjid;
+                    
+                    if (matchesSearch && matchesMasjid) {
+                        results.push({
+                            type: 'Bilal',
+                            data: bilal,
+                            index: index,
+                            icon: '📢'
+                        });
+                    }
+                });
+            }
             
             // Search in Siak data
-            siakData.forEach((siak, index) => {
-                if (siak.nama.toLowerCase().includes(searchTerm) || siak.nokp.includes(searchTerm)) {
-                    results.push({
-                        type: 'Siak',
-                        data: siak,
-                        index: index,
-                        icon: '📋'
-                    });
-                }
-            });
+            if (!filterJawatan || filterJawatan === 'siak') {
+                siakData.forEach((siak, index) => {
+                    const matchesSearch = !searchTerm || siak.nama.toLowerCase().includes(searchTerm) || siak.nokp.includes(searchTerm);
+                    const matchesMasjid = !filterMasjid || siak.masjid === filterMasjid;
+                    
+                    if (matchesSearch && matchesMasjid) {
+                        results.push({
+                            type: 'Siak',
+                            data: siak,
+                            index: index,
+                            icon: '📋'
+                        });
+                    }
+                });
+            }
             
-            displayGlobalSearchResults(results, searchTerm);
+            displayGlobalSearchResults(results, searchTerm || 'filter');
         }
-        
-        // Store search results globally for PDF export
-        let currentSearchResults = [];
-        let currentSearchTerm = '';
 
         function displayGlobalSearchResults(results, searchTerm) {
             const resultsContainer = document.getElementById('globalSearchResults');
             const resultsContent = document.getElementById('searchResultsContent');
             const exportBtn = document.getElementById('exportSearchBtn');
             
-            // Store results for PDF export
             currentSearchResults = results;
             currentSearchTerm = searchTerm;
             
@@ -1573,8 +1274,8 @@
                 resultsContent.innerHTML = `
                     <div class="text-center py-8 text-gray-500">
                         <div class="text-4xl mb-2">🔍</div>
-                        <p>Tiada keputusan ditemui untuk "<strong>${searchTerm}</strong>"</p>
-                        <p class="text-sm mt-2">Cuba cari menggunakan nama penuh atau no. K/P yang tepat</p>
+                        <p>Tiada keputusan ditemui untuk carian ini</p>
+                        <p class="text-sm mt-2">Cuba ubah kriteria carian anda</p>
                     </div>
                 `;
                 exportBtn.classList.add('hidden');
@@ -1592,7 +1293,6 @@
                                     <div><strong>Masjid:</strong> ${result.data.masjid}</div>
                                     <div><strong>Daerah:</strong> ${result.data.daerah}</div>
                                     <div><strong>No. K/P:</strong> ${result.data.nokp}</div>
-
                                     <div><strong>Pekerjaan:</strong> ${result.data.pekerjaan}</div>
                                     <div class="col-span-2"><strong>Alamat:</strong> ${result.data.alamat}</div>
                                     <div><strong>No. Tel:</strong> ${result.data.telefon}</div>
@@ -1602,9 +1302,7 @@
                                 </div>
                             </div>
                             <div class="flex flex-col gap-2 ml-4">
-                                <button onclick="editItem('${result.type.toLowerCase()}', ${result.index})" class="text-blue-600 hover:text-blue-800 text-sm px-3 py-1 border border-blue-300 rounded-lg hover:bg-blue-50 transition-colors">
-                                    ✏️ Edit
-                                </button>
+                                ${result.type === 'Siak' ? `<button onclick="editItem('${result.type.toLowerCase()}', ${result.index})" class="text-blue-600 hover:text-blue-800 text-sm px-3 py-1 border border-blue-300 rounded-lg hover:bg-blue-50 transition-colors">✏️ Edit</button>` : ''}
                                 <button onclick="goToTab('${result.type.toLowerCase()}')" class="text-green-600 hover:text-green-800 text-sm px-3 py-1 border border-green-300 rounded-lg hover:bg-green-50 transition-colors">
                                     👁️ Lihat
                                 </button>
@@ -1616,36 +1314,17 @@
             }
             
             resultsContainer.classList.remove('hidden');
-            
-            // Scroll to results
             resultsContainer.scrollIntoView({ behavior: 'smooth', block: 'start' });
         }
 
-        // Export search results to PDF
+        // Export search results to PDF with preview
         function exportSearchResultsToPDF() {
             if (currentSearchResults.length === 0) {
-                alert('Tiada hasil carian untuk dicetak!');
+                showNotification('Tiada hasil carian untuk dicetak!', 'warning');
                 return;
             }
 
-            const { jsPDF } = window.jspdf;
-            const doc = new jsPDF('landscape'); // Landscape orientation
-            
-            // Add title
-            doc.setFontSize(20);
-            doc.text('Laporan Hasil Carian Pegawai Masjid', 20, 20);
-            
-            // Add search term
-            doc.setFontSize(14);
-            doc.text(`Kata Kunci Carian: "${currentSearchTerm}"`, 20, 35);
-            
-            // Add date and time
-            doc.setFontSize(12);
-            doc.text(`Tarikh: ${new Date().toLocaleDateString('ms-MY')}`, 20, 45);
-            doc.text(`Masa: ${new Date().toLocaleTimeString('ms-MY')}`, 20, 55);
-            doc.text(`Jumlah Keputusan: ${currentSearchResults.length} rekod`, 20, 65);
-            
-            // Prepare table data
+            const title = 'Laporan Hasil Carian Pegawai Masjid';
             const headers = ['Bil', 'Jenis', 'Nama', 'No. K/P', 'Pekerjaan', 'Masjid', 'Daerah', 'No. Tel', 'Umur', 'Mula Khidmat'];
             const tableData = currentSearchResults.map((result, index) => [
                 index + 1,
@@ -1659,89 +1338,52 @@
                 result.data.umur || '-',
                 new Date(result.data.mulaKhidmat).toLocaleDateString('ms-MY')
             ]);
-            
-            doc.autoTable({
-                head: [headers],
-                body: tableData,
-                startY: 75,
-                styles: {
-                    fontSize: 9,
-                    cellPadding: 2
-                },
-                headStyles: {
-                    fillColor: [30, 41, 59],
-                    textColor: 255,
-                    fontSize: 10,
-                    fontStyle: 'bold'
-                },
-                columnStyles: {
-                    0: { cellWidth: 15 }, // Bil
-                    1: { cellWidth: 20 }, // Jenis
-                    2: { cellWidth: 40 }, // Nama
-                    3: { cellWidth: 35 }, // No. K/P
-                    4: { cellWidth: 25 }, // No. Gaji
-                    5: { cellWidth: 30 }, // No. Akaun BSN
-                    6: { cellWidth: 30 }, // Pekerjaan
-                    7: { cellWidth: 35 }, // Masjid
-                    8: { cellWidth: 25 }, // Daerah
-                    9: { cellWidth: 25 }, // No. Tel
-                    10: { cellWidth: 25 } // Mula Khidmat
-                }
-            });
-            
-            // Add detailed information on new page if needed
-            if (currentSearchResults.length <= 10) {
-                doc.addPage();
-                doc.setFontSize(16);
-                doc.text('Maklumat Terperinci', 20, 20);
-                
-                let yPosition = 35;
-                currentSearchResults.forEach((result, index) => {
-                    if (yPosition > 180) {
-                        doc.addPage();
-                        yPosition = 20;
-                    }
-                    
-                    doc.setFontSize(12);
-                    doc.setFont(undefined, 'bold');
-                    doc.text(`${index + 1}. ${result.data.nama} (${result.type})`, 20, yPosition);
-                    
-                    doc.setFont(undefined, 'normal');
-                    doc.setFontSize(10);
-                    yPosition += 8;
-                    
-                    let details = [
-                        `Masjid: ${result.data.masjid}`,
-                        `Daerah: ${result.data.daerah}`,
-                        `No. K/P: ${result.data.nokp}`,
-                        `Pekerjaan: ${result.data.pekerjaan}`,
-                        `Alamat: ${result.data.alamat}`,
-                        `No. Tel: ${result.data.telefon}`,
-                        `Umur: ${result.data.umur || '-'}`,
-                        `Mula Khidmat: ${new Date(result.data.mulaKhidmat).toLocaleDateString('ms-MY')}`,
-                        `Catatan: ${result.data.catatan || '-'}`
-                    ];
-                    
-                    // Add specific fields for Bilal and Siak
-                    if (result.type === 'Bilal' || result.type === 'Siak') {
-                        details.splice(3, 0, `No. Gaji: ${result.data.noGaji}`);
-                        details.splice(4, 0, `No. Akaun BSN: ${result.data.noAkaun}`);
-                    }
-                    
-                    details.forEach(detail => {
-                        doc.text(detail, 25, yPosition);
-                        yPosition += 5;
-                    });
-                    
-                    yPosition += 5; // Extra space between records
-                });
-            }
-            
-            doc.save(`hasil-carian-${currentSearchTerm.replace(/\s+/g, '-')}-${new Date().toISOString().split('T')[0]}.pdf`);
+
+            currentPdfData = { 
+                headers, 
+                tableData, 
+                title, 
+                type: 'hasil-carian',
+                searchTerm: currentSearchTerm
+            };
+
+            // Generate preview HTML for search results
+            const previewHtml = `
+                <div class="text-center mb-4">
+                    <h2 class="text-xl font-bold">${title}</h2>
+                    <p class="text-gray-600">Kata Kunci Carian: "${currentSearchTerm}"</p>
+                    <p class="text-gray-600">Tarikh: ${new Date().toLocaleDateString('ms-MY')}</p>
+                    <p class="text-gray-600">Masa: ${new Date().toLocaleTimeString('ms-MY')}</p>
+                    <p class="text-gray-600">Jumlah Keputusan: ${tableData.length} rekod</p>
+                </div>
+                <div class="overflow-x-auto">
+                    <table class="w-full border-collapse border border-gray-300 text-sm">
+                        <thead>
+                            <tr class="bg-gray-100">
+                                ${headers.map(header => `<th class="border border-gray-300 px-2 py-1 text-left font-semibold">${header}</th>`).join('')}
+                            </tr>
+                        </thead>
+                        <tbody>
+                            ${tableData.map(row => `
+                                <tr class="hover:bg-gray-50">
+                                    ${row.map(cell => `<td class="border border-gray-300 px-2 py-1">${cell}</td>`).join('')}
+                                </tr>
+                            `).join('')}
+                        </tbody>
+                    </table>
+                </div>
+            `;
+
+            document.getElementById('pdfPreviewTitle').textContent = `Pratonton ${title}`;
+            document.getElementById('pdfPreviewContent').innerHTML = previewHtml;
+            document.getElementById('pdfPreviewModal').classList.remove('hidden');
+            document.getElementById('pdfPreviewModal').classList.add('flex');
         }
         
         function clearGlobalSearch() {
             document.getElementById('globalSearch').value = '';
+            document.getElementById('filterMasjid').value = '';
+            document.getElementById('filterJawatan').value = '';
             document.getElementById('globalSearchResults').classList.add('hidden');
             document.getElementById('exportSearchBtn').classList.add('hidden');
             currentSearchResults = [];
@@ -1750,7 +1392,6 @@
         
         function goToTab(type) {
             showTab(type);
-            // Scroll to the tab content
             document.getElementById(type + '-tab').scrollIntoView({ behavior: 'smooth', block: 'start' });
         }
 
@@ -1841,6 +1482,6 @@
                 closeModal();
             }
         });
-    </script>
- <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'98f48f7fc7c9e454',t:'MTc2MDU4NjI5Ni4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+    </script> 
+ <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'98f4e06dc5c71685',t:'MTc2MDU4OTYxMS4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>
