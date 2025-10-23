@@ -644,7 +644,6 @@
         // Function to load Imam data from Google Sheets
         async function loadImamDataFromSheet() {
             console.log('🔄 Memuat data imam dari Google Sheets...');
-            showNotification('🔄 Sedang memuat data imam dari Google Sheets...', 'info');
             
             try {
                 const response = await fetch(IMAM_SHEET_URL, {
@@ -701,8 +700,6 @@
                 updateStatistics();
                 updateFilterDropdowns();
                 
-                // Data loaded silently without notification
-                
             } catch (error) {
                 console.error('❌ Ralat memuat data imam:', error);
                 showNotification(`⚠️ Sambungan Google Sheets gagal: ${error.message}. Sila cuba lagi.`, 'warning');
@@ -712,7 +709,6 @@
         // Function to load Bilal data from Google Sheets
         async function loadBilalDataFromSheet() {
             console.log('🔄 Memuat data bilal dari Google Sheets...');
-            showNotification('🔄 Sedang memuat data bilal dari Google Sheets...', 'info');
             
             try {
                 const response = await fetch(BILAL_SHEET_URL, {
@@ -769,8 +765,6 @@
                 updateStatistics();
                 updateFilterDropdowns();
                 
-                // Data loaded silently without notification
-                
             } catch (error) {
                 console.error('❌ Ralat memuat data bilal:', error);
                 showNotification(`⚠️ Sambungan Google Sheets gagal: ${error.message}. Sila cuba lagi.`, 'warning');
@@ -780,7 +774,6 @@
         // Function to load Siak data from Google Sheets
         async function loadSiakDataFromSheet() {
             console.log('🔄 Memuat data siak dari Google Sheets...');
-            showNotification('🔄 Sedang memuat data siak dari Google Sheets...', 'info');
             
             try {
                 const response = await fetch(SIAK_SHEET_URL, {
@@ -836,8 +829,6 @@
                 displaySiak();
                 updateStatistics();
                 updateFilterDropdowns();
-                
-                // Data loaded silently without notification
                 
             } catch (error) {
                 console.error('❌ Ralat memuat data siak:', error);
@@ -1103,7 +1094,7 @@
 
         function exportToPDF(type) {
             currentPdfType = type;
-            showPdfPreview(type);
+            generatePDFDirectly(type);
         }
 
         function showPdfPreview(type) {
@@ -1204,6 +1195,115 @@
             document.getElementById('pdfPreviewModal').classList.remove('flex');
             currentPdfData = null;
             currentPdfType = '';
+        }
+
+        function generatePDFDirectly(type) {
+            let tableData = [];
+            let headers = [];
+            let title = 'Senarai Pegawai Masjid';
+            let kategori = '';
+            let masjidList = [];
+            
+            if (type === 'imam') {
+                kategori = 'IMAM';
+                headers = ['Bil', 'Nama Imam', 'No. K/P', 'Pekerjaan', 'Alamat', 'No. Tel', 'Umur', 'Mula Khidmat'];
+                tableData = imamData.map((imam, index) => [
+                    index + 1,
+                    imam.nama,
+                    imam.nokp,
+                    imam.pekerjaan,
+                    imam.alamat,
+                    imam.telefon,
+                    imam.umur,
+                    new Date(imam.mulaKhidmat).toLocaleDateString('ms-MY')
+                ]);
+                masjidList = [...new Set(imamData.map(imam => `${imam.masjid} (${imam.daerah})`))];
+            } else if (type === 'bilal') {
+                kategori = 'BILAL';
+                headers = ['Bil', 'Nama Bilal', 'No. K/P', 'Pekerjaan', 'Alamat', 'No. Tel', 'Umur', 'Mula Khidmat'];
+                tableData = bilalData.map((bilal, index) => [
+                    index + 1,
+                    bilal.nama,
+                    bilal.nokp,
+                    bilal.pekerjaan,
+                    bilal.alamat,
+                    bilal.telefon,
+                    bilal.umur,
+                    new Date(bilal.mulaKhidmat).toLocaleDateString('ms-MY')
+                ]);
+                masjidList = [...new Set(bilalData.map(bilal => `${bilal.masjid} (${bilal.daerah})`))];
+            } else {
+                kategori = 'SIAK';
+                headers = ['Bil', 'Nama Siak', 'No. K/P', 'Pekerjaan', 'Alamat', 'No. Tel', 'Umur', 'Mula Khidmat'];
+                tableData = siakData.map((siak, index) => [
+                    index + 1,
+                    siak.nama,
+                    siak.nokp,
+                    siak.pekerjaan,
+                    siak.alamat,
+                    siak.telefon,
+                    siak.umur,
+                    new Date(siak.mulaKhidmat).toLocaleDateString('ms-MY')
+                ]);
+                masjidList = [...new Set(siakData.map(siak => `${siak.masjid} (${siak.daerah})`))];
+            }
+
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF('portrait');
+            
+            // Header for regular reports
+            doc.setFontSize(18);
+            doc.text(title, 105, 20, { align: 'center' });
+            
+            doc.setFontSize(16);
+            doc.text(kategori, 105, 35, { align: 'center' });
+            
+            // Masjid list
+            doc.setFontSize(12);
+            doc.text('Masjid Terlibat:', 20, 50);
+            
+            let yPosition = 60;
+            masjidList.forEach((masjid, index) => {
+                doc.setFontSize(10);
+                doc.text(`• ${masjid}`, 25, yPosition);
+                yPosition += 8;
+            });
+            
+            // Date and count info
+            yPosition += 10;
+            doc.setFontSize(10);
+            doc.text(`Tarikh: ${new Date().toLocaleDateString('ms-MY')}`, 20, yPosition);
+            doc.text(`Jumlah Rekod: ${tableData.length}`, 20, yPosition + 10);
+            
+            // Table
+            doc.autoTable({
+                head: [headers],
+                body: tableData,
+                startY: yPosition + 20,
+                styles: {
+                    fontSize: 8,
+                    cellPadding: 2
+                },
+                headStyles: {
+                    fillColor: [30, 41, 59],
+                    textColor: 255,
+                    fontSize: 9,
+                    fontStyle: 'bold'
+                },
+                columnStyles: {
+                    0: { cellWidth: 15 }, // Bil
+                    1: { cellWidth: 35 }, // Nama
+                    2: { cellWidth: 30 }, // No. K/P
+                    3: { cellWidth: 25 }, // Pekerjaan
+                    4: { cellWidth: 40 }, // Alamat
+                    5: { cellWidth: 25 }, // No. Tel
+                    6: { cellWidth: 15 }, // Umur
+                    7: { cellWidth: 25 }  // Mula Khidmat
+                }
+            });
+            
+            doc.save(`senarai-pegawai-${type}-${new Date().toISOString().split('T')[0]}.pdf`);
+            showNotification(`✅ Senarai Pegawai ${kategori} berjaya dicetak!`, 'success');
         }
 
         function confirmPdfDownload() {
@@ -1450,7 +1550,7 @@
             
             // Determine category based on search results
             const categories = [...new Set(currentSearchResults.map(result => result.type.toUpperCase()))];
-            const kategori = categories.length === 1 ? categories[0] : categories.join(', ');
+            const kategori = `HASIL CARIAN - ${categories.length === 1 ? categories[0] : categories.join(', ')}`;
             
             // Get unique mosques from search results
             const masjidList = [...new Set(currentSearchResults.map(result => `${result.data.masjid} (${result.data.daerah})`))];
@@ -1469,21 +1569,22 @@
                 new Date(result.data.mulaKhidmat).toLocaleDateString('ms-MY')
             ]);
 
+            // Set current PDF data for preview
             currentPdfData = { 
                 headers, 
                 tableData, 
                 title, 
-                type: 'hasil-carian',
-                searchTerm: currentSearchTerm,
-                kategori: kategori,
-                masjidList: masjidList
+                type: 'hasil-carian', 
+                kategori, 
+                masjidList,
+                searchTerm: currentSearchTerm
             };
 
-            // Generate preview HTML for search results
+            // Generate preview HTML
             const previewHtml = `
                 <div class="text-center mb-6">
                     <h1 class="text-2xl font-bold mb-2">${title}</h1>
-                    <h2 class="text-xl font-semibold text-blue-600 mb-3">${kategori}</h2>
+                    <h2 class="text-xl font-semibold text-purple-600 mb-3">${kategori}</h2>
                     <div class="text-left mb-4">
                         <h3 class="text-lg font-semibold mb-2">Masjid Terlibat:</h3>
                         <ul class="list-disc list-inside text-sm text-gray-700 space-y-1">
@@ -1491,7 +1592,7 @@
                         </ul>
                     </div>
                     <div class="text-center text-gray-600 text-sm">
-                        <p>Kata Kunci Carian: "${currentSearchTerm}"</p>
+                        <p><strong>Kata Kunci Carian:</strong> "${currentSearchTerm}"</p>
                         <p>Tarikh: ${new Date().toLocaleDateString('ms-MY')}</p>
                         <p>Jumlah Rekod: ${tableData.length}</p>
                     </div>
@@ -1587,5 +1688,5 @@
             }
         }
     </script>
- <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'992df22147e31be4',t:'MTc2MTE4ODAyNC4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+ <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'992e0339e6ce9103',t:'MTc2MTE4ODcyNS4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>
