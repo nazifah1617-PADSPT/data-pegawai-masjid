@@ -1203,31 +1203,124 @@
             resultsContainer.scrollIntoView({ behavior: 'smooth', block: 'start' });
         }
 
-        // Export search results to PDF
+        // Export search results to PDF with preview
         function exportSearchResultsToPDF() {
             if (currentSearchResults.length === 0) {
                 showNotification('Tiada hasil carian untuk dicetak!', 'warning');
                 return;
             }
 
-            const title = 'Data Pegawai Masjid';
+            // Show preview modal
+            showSearchResultsPDFPreview();
+        }
+
+        function showSearchResultsPDFPreview() {
+            const modal = document.getElementById('pdfPreviewModal');
+            const title = document.getElementById('pdfPreviewTitle');
+            const content = document.getElementById('pdfPreviewContent');
             
             // Determine category based on search results
             const categories = [...new Set(currentSearchResults.map(result => result.type.toUpperCase()))];
             const kategori = categories.length === 1 ? categories[0] : categories.join(', ');
             
-            const headers = ['Bil', 'Jawatan', 'Nama', 'No. K/P', 'Pekerjaan', 'Masjid', 'No. Tel', 'Umur'];
-            const tableData = currentSearchResults.map((result, index) => [
-                index + 1,
-                result.type,
-                result.data.nama,
-                result.data.nokp,
-                result.data.pekerjaan,
-                result.data.masjid,
-                result.data.telefon,
-                result.data.umur || '-'
-            ]);
+            title.textContent = `Pratonton Laporan Hasil Carian - ${kategori}`;
+            
+            // Generate preview content
+            const previewHTML = `
+                <div class="bg-white p-6 border border-gray-300 rounded-lg">
+                    <div class="text-center mb-6">
+                        <div class="flex items-center justify-center mb-4">
+                            <img src="https://i.postimg.cc/c4LmQcHK/logo-penangpng.png" alt="Logo" class="w-12 h-12 mr-4" onerror="this.style.display='none';">
+                            <div>
+                                <h1 class="text-xl font-bold text-gray-800">SISTEM CARIAN MAKLUMAT PEGAWAI MASJID</h1>
+                                <h2 class="text-lg font-semibold text-blue-600">${kategori}</h2>
+                            </div>
+                        </div>
+                        <div class="text-sm text-gray-600 mb-4">
+                            <p><strong>Tarikh:</strong> ${new Date().toLocaleDateString('ms-MY')}</p>
+                            <p><strong>Jumlah Rekod:</strong> ${currentSearchResults.length}</p>
+                            <p><strong>Kriteria Carian:</strong> ${currentSearchTerm}</p>
+                        </div>
+                    </div>
+                    
+                    <div class="overflow-x-auto">
+                        <table class="w-full border-collapse border border-gray-300 text-sm">
+                            <thead>
+                                <tr class="bg-gray-100">
+                                    <th class="border border-gray-300 px-2 py-2 text-left font-semibold">Bil</th>
+                                    <th class="border border-gray-300 px-2 py-2 text-left font-semibold">Jawatan</th>
+                                    <th class="border border-gray-300 px-2 py-2 text-left font-semibold">Nama</th>
+                                    <th class="border border-gray-300 px-2 py-2 text-left font-semibold">No. K/P</th>
+                                    <th class="border border-gray-300 px-2 py-2 text-left font-semibold">Pekerjaan</th>
+                                    <th class="border border-gray-300 px-2 py-2 text-left font-semibold">Masjid</th>
+                                    <th class="border border-gray-300 px-2 py-2 text-left font-semibold">No. Tel</th>
+                                    <th class="border border-gray-300 px-2 py-2 text-left font-semibold">Umur</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                ${currentSearchResults.map((result, index) => `
+                                    <tr class="hover:bg-gray-50">
+                                        <td class="border border-gray-300 px-2 py-2">${index + 1}</td>
+                                        <td class="border border-gray-300 px-2 py-2">${result.type}</td>
+                                        <td class="border border-gray-300 px-2 py-2 font-medium">${result.data.nama}</td>
+                                        <td class="border border-gray-300 px-2 py-2">${result.data.nokp}</td>
+                                        <td class="border border-gray-300 px-2 py-2">${result.data.pekerjaan}</td>
+                                        <td class="border border-gray-300 px-2 py-2">${result.data.masjid}</td>
+                                        <td class="border border-gray-300 px-2 py-2">${result.data.telefon}</td>
+                                        <td class="border border-gray-300 px-2 py-2">${result.data.umur || '-'}</td>
+                                    </tr>
+                                `).join('')}
+                            </tbody>
+                        </table>
+                    </div>
+                    
+                    <div class="mt-6 text-center text-xs text-gray-500">
+                        <p>© 2024 Sistem Pengurusan Pegawai Masjid - Laporan Hasil Carian</p>
+                        <p>Dokumen ini dijana secara automatik pada ${new Date().toLocaleString('ms-MY')}</p>
+                    </div>
+                </div>
+            `;
+            
+            content.innerHTML = previewHTML;
+            
+            // Store current data for PDF generation
+            currentPdfData = {
+                type: 'search-results',
+                title: 'Data Pegawai Masjid',
+                kategori: kategori,
+                headers: ['Bil', 'Jawatan', 'Nama', 'No. K/P', 'Pekerjaan', 'Masjid', 'No. Tel', 'Umur'],
+                data: currentSearchResults.map((result, index) => [
+                    index + 1,
+                    result.type,
+                    result.data.nama,
+                    result.data.nokp,
+                    result.data.pekerjaan,
+                    result.data.masjid,
+                    result.data.telefon,
+                    result.data.umur || '-'
+                ])
+            };
+            
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+        }
 
+        function confirmPdfDownload() {
+            if (!currentPdfData) {
+                showNotification('Tiada data untuk dicetak!', 'warning');
+                return;
+            }
+
+            if (currentPdfData.type === 'search-results') {
+                generateSearchResultsPDF();
+            } else {
+                generatePDFDirectly(currentPdfType);
+            }
+            
+            closePdfPreview();
+        }
+
+        function generateSearchResultsPDF() {
             const { jsPDF } = window.jspdf;
             const doc = new jsPDF('landscape');
             
@@ -1241,20 +1334,21 @@
             
             // Header for search results
             doc.setFontSize(18);
-            doc.text(title, 148, 25, { align: 'center' });
+            doc.text(currentPdfData.title, 148, 25, { align: 'center' });
             
             doc.setFontSize(16);
-            doc.text(kategori, 148, 40, { align: 'center' });
+            doc.text(currentPdfData.kategori, 148, 40, { align: 'center' });
             
             // Date and count info
             doc.setFontSize(10);
             doc.text(`Tarikh: ${new Date().toLocaleDateString('ms-MY')}`, 20, 55);
-            doc.text(`Jumlah Rekod: ${tableData.length}`, 20, 65);
+            doc.text(`Jumlah Rekod: ${currentPdfData.data.length}`, 20, 65);
+            doc.text(`Kriteria Carian: ${currentSearchTerm}`, 20, 75);
             
             doc.autoTable({
-                head: [headers],
-                body: tableData,
-                startY: 75,
+                head: [currentPdfData.headers],
+                body: currentPdfData.data,
+                startY: 85,
                 styles: {
                     fontSize: 8,
                     cellPadding: 2
@@ -1338,5 +1432,5 @@
             }
         }
     </script>
- <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'992fcb6b16088066',t:'MTc2MTIwNzQxMC4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+ <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'993006eed4028066',t:'MTc2MTIwOTg0OC4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>
