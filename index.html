@@ -216,7 +216,7 @@
      <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
       <div><label class="block text-sm font-medium text-gray-700 mb-2">Pilih Masjid</label> <select id="filterMasjid" class="search-input w-full px-4 py-3 border border-gray-300 rounded-lg"> <option value="">Semua Masjid</option> </select>
       </div>
-      <div><label class="block text-sm font-medium text-gray-700 mb-2">Pilih Jawatan</label> <select id="filterJawatan" class="search-input w-full px-4 py-3 border border-gray-300 rounded-lg"> <option value="">Semua Jawatan</option> <option value="jawatankuasa-masjid">Jawatankuasa Masjid</option> <option value="pegawai-masjid">Pegawai Masjid</option> <option value="imam">Imam</option> <option value="pengerusi">Pengerusi</option> <option value="timbalan pengerusi">Timbalan Pengerusi</option> <option value="setiausaha">Setiausaha</option> <option value="bendahari">Bendahari</option> <option value="ahli jawatankuasa">Ahli Jawatankuasa</option> <option value="pemeriksa kira-kira">Pemeriksa Kira-kira</option> <option value="bilal">Bilal</option> <option value="siak">Siak</option> </select>
+      <div><label class="block text-sm font-medium text-gray-700 mb-2">Pilih Jawatan</label> <select id="filterJawatan" class="search-input w-full px-4 py-3 border border-gray-300 rounded-lg"> <option value="">Semua Jawatan</option> <option value="pegawai-masjid">Pegawai Masjid</option> <option value="imam">Imam</option> <option value="bilal">Bilal</option> <option value="siak">Siak</option> </select>
       </div>
       <div class="md:col-span-1"><label class="block text-sm font-medium text-gray-700 mb-2">Carian (Nama atau No. K/P)</label> <input type="text" id="globalSearch" placeholder="🔍 Cari nama atau no. k/p..." class="search-input w-full px-4 py-3 border border-gray-300 rounded-lg">
       </div>
@@ -232,7 +232,7 @@
     </div>
    </div><!-- Navigation Tabs -->
    <div class="mb-12">
-    <div class="flex flex-wrap gap-3 bg-white p-3 rounded-lg shadow-sm border border-gray-200"><button onclick="showTab('imam')" id="tab-imam" class="tab-btn btn-primary text-white px-6 py-3 rounded-lg font-medium transition-all"> <span class="text-lg mr-2">🕌</span> Imam </button> <button onclick="showTab('jawatankuasa')" id="tab-jawatankuasa" class="tab-btn bg-gray-100 text-gray-700 px-6 py-3 rounded-lg font-medium transition-all hover:bg-gray-200"> <span class="text-lg mr-2">👥</span> Jawatankuasa Kariah </button> <button onclick="showTab('bilal')" id="tab-bilal" class="tab-btn bg-gray-100 text-gray-700 px-6 py-3 rounded-lg font-medium transition-all hover:bg-gray-200"> <span class="text-lg mr-2">📢</span> Bilal </button> <button onclick="showTab('siak')" id="tab-siak" class="tab-btn bg-gray-100 text-gray-700 px-6 py-3 rounded-lg font-medium transition-all hover:bg-gray-200"> <span class="text-lg mr-2">📋</span> Siak </button> <button onclick="showTab('laporan')" id="tab-laporan" class="tab-btn bg-gray-100 text-gray-700 px-6 py-3 rounded-lg font-medium transition-all hover:bg-gray-200"> <span class="text-lg mr-2">📊</span> Laporan </button>
+    <div class="flex flex-wrap gap-3 bg-white p-3 rounded-lg shadow-sm border border-gray-200"><button onclick="showTab('imam')" id="tab-imam" class="tab-btn btn-primary text-white px-6 py-3 rounded-lg font-medium transition-all"> <span class="text-lg mr-2">🕌</span> Imam </button> <button onclick="showTab('bilal')" id="tab-bilal" class="tab-btn bg-gray-100 text-gray-700 px-6 py-3 rounded-lg font-medium transition-all hover:bg-gray-200"> <span class="text-lg mr-2">📢</span> Bilal </button> <button onclick="showTab('siak')" id="tab-siak" class="tab-btn bg-gray-100 text-gray-700 px-6 py-3 rounded-lg font-medium transition-all hover:bg-gray-200"> <span class="text-lg mr-2">📋</span> Siak </button> <button onclick="showTab('laporan')" id="tab-laporan" class="tab-btn bg-gray-100 text-gray-700 px-6 py-3 rounded-lg font-medium transition-all hover:bg-gray-200"> <span class="text-lg mr-2">📊</span> Laporan </button>
     </div>
    </div><!-- Imam Tab -->
    <div id="imam-tab" class="tab-content fade-in"><!-- Control Buttons -->
@@ -268,45 +268,6 @@
             <div class="text-4xl mb-2">
              🕌
             </div> tiada imam didaftarkan lagi</td>
-          </tr>
-         </tbody>
-        </table>
-       </div>
-      </div>
-     </div>
-    </div>
-   </div><!-- Jawatankuasa Kariah Tab -->
-   <div id="jawatankuasa-tab" class="tab-content hidden"><!-- Control Buttons -->
-    <div class="mb-6 flex gap-4"><button onclick="toggleJawatankuasaList()" id="toggleJawatankuasaListBtn" class="btn-secondary text-white px-6 py-3 rounded-lg font-medium"> 📋 Lihat Senarai Jawatankuasa Kariah </button>
-    </div>
-    <div class="grid lg:grid-cols-1 gap-8"><!-- Senarai Jawatankuasa Kariah -->
-     <div id="jawatankuasaListSection" class="lg:col-span-1 hidden">
-      <div class="card-hover rounded-2xl p-6 shadow-xl">
-       <div class="flex justify-between items-center mb-6">
-        <h2 class="text-2xl font-bold text-gray-800 flex items-center"><span class="text-2xl mr-3">👥</span> Senarai Jawatankuasa Kariah</h2>
-        <div class="flex gap-2"><button onclick="exportToPDF('jawatankuasa')" class="btn-purple text-white px-4 py-2 rounded-lg font-medium text-sm"> 🖨️ Cetak PDF </button>
-        </div>
-       </div>
-       <div class="overflow-x-auto">
-        <table class="w-full">
-         <thead>
-          <tr class="bg-gray-50 border-b">
-           <th class="text-left py-3 px-4 font-semibold text-gray-700">Masjid</th>
-           <th class="text-left py-3 px-4 font-semibold text-gray-700">Jawatan</th>
-           <th class="text-left py-3 px-4 font-semibold text-gray-700">Nama</th>
-           <th class="text-left py-3 px-4 font-semibold text-gray-700">No. K/P</th>
-           <th class="text-left py-3 px-4 font-semibold text-gray-700">No. Tel</th>
-           <th class="text-left py-3 px-4 font-semibold text-gray-700">Alamat</th>
-           <th class="text-left py-3 px-4 font-semibold text-gray-700">Pekerjaan</th>
-           <th class="text-left py-3 px-4 font-semibold text-gray-700">Umur</th>
-          </tr>
-         </thead>
-         <tbody id="jawatankuasaList">
-          <tr>
-           <td colspan="8" class="text-center py-8 text-gray-500">
-            <div class="text-4xl mb-2">
-             👥
-            </div> Tiada jawatankuasa kariah didaftarkan lagi</td>
           </tr>
          </tbody>
         </table>
@@ -400,7 +361,7 @@
     </div>
    </div><!-- Laporan Tab -->
    <div id="laporan-tab" class="tab-content hidden">
-    <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-6 mb-12"><!-- Statistik Cards -->
+    <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12"><!-- Statistik Cards -->
      <div class="card-hover rounded-lg p-6 shadow-sm text-center border border-gray-200 bg-blue-50">
       <div class="inline-flex items-center justify-center w-16 h-16 bg-blue-500 rounded-lg mb-4"><span class="text-2xl text-white">🕌</span>
       </div>
@@ -408,15 +369,6 @@
       <p class="text-3xl font-bold text-blue-600" id="totalImam">0</p>
       <div class="mt-3 text-sm text-gray-600">
        Pegawai Imam Terdaftar
-      </div>
-     </div>
-     <div class="card-hover rounded-lg p-6 shadow-sm text-center border border-gray-200 bg-orange-50">
-      <div class="inline-flex items-center justify-center w-16 h-16 bg-orange-500 rounded-lg mb-4"><span class="text-2xl text-white">👥</span>
-      </div>
-      <h3 class="text-lg font-bold text-gray-800 mb-2">Jumlah Jawatankuasa</h3>
-      <p class="text-3xl font-bold text-orange-600" id="totalJawatankuasa">0</p>
-      <div class="mt-3 text-sm text-gray-600">
-       Jawatankuasa Kariah Terdaftar
       </div>
      </div>
      <div class="card-hover rounded-lg p-6 shadow-sm text-center border border-gray-200 bg-green-50">
@@ -445,11 +397,9 @@
       <h2 class="text-2xl font-bold text-gray-800 mb-2">Laporan Terperinci</h2>
       <p class="text-gray-600">Muat turun laporan lengkap dalam format PDF</p>
      </div>
-     <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-6"><button onclick="generateReport('imam')" class="btn-primary text-white p-6 rounded-lg text-center group hover:shadow-md transition-all">
+     <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6"><button onclick="generateReport('imam')" class="btn-primary text-white p-6 rounded-lg text-center group hover:shadow-md transition-all">
        <div class="inline-flex items-center justify-center w-12 h-12 bg-white/20 rounded-lg mb-3"><span class="text-2xl">🕌</span>
-       </div><h3 class="font-bold text-lg mb-2">Cetak Laporan Imam</h3><p class="text-sm opacity-90">Senarai lengkap imam masjid dengan maklumat terperinci</p></button> <button onclick="generateReport('jawatankuasa')" class="bg-orange-500 hover:bg-orange-600 text-white p-6 rounded-lg text-center group hover:shadow-md transition-all">
-       <div class="inline-flex items-center justify-center w-12 h-12 bg-white/20 rounded-lg mb-3"><span class="text-2xl">👥</span>
-       </div><h3 class="font-bold text-lg mb-2">Cetak Laporan Jawatankuasa</h3><p class="text-sm opacity-90">Senarai lengkap jawatankuasa kariah dengan maklumat terperinci</p></button> <button onclick="generateReport('bilal')" class="btn-success text-white p-6 rounded-lg text-center group hover:shadow-md transition-all">
+       </div><h3 class="font-bold text-lg mb-2">Cetak Laporan Imam</h3><p class="text-sm opacity-90">Senarai lengkap imam masjid dengan maklumat terperinci</p></button> <button onclick="generateReport('bilal')" class="btn-success text-white p-6 rounded-lg text-center group hover:shadow-md transition-all">
        <div class="inline-flex items-center justify-center w-12 h-12 bg-white/20 rounded-lg mb-3"><span class="text-2xl">📢</span>
        </div><h3 class="font-bold text-lg mb-2">Cetak Laporan Bilal</h3><p class="text-sm opacity-90">Senarai lengkap bilal masjid dengan maklumat terperinci</p></button> <button onclick="generateReport('siak')" class="btn-purple text-white p-6 rounded-lg text-center group hover:shadow-md transition-all">
        <div class="inline-flex items-center justify-center w-12 h-12 bg-white/20 rounded-lg mb-3"><span class="text-2xl">📋</span>
@@ -479,7 +429,6 @@
   <script>
         // Data storage
         let imamData = [];
-        let jawatankuasaData = [];
         let bilalData = [];
         let siakData = [];
         let isAuthenticated = false;
@@ -487,7 +436,6 @@
 
         // Google Sheets CSV URLs
         const IMAM_SHEET_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTMdVbauPNjDdm5PjpJ9757hQAjohDd0rtXxHUfzFOZwbVovFSD6P8x41wsjfzxjw/pub?gid=1151842269&single=true&output=csv';
-        const JAWATANKUASA_SHEET_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQbaidIqA7QCvVDjYHDTWHn2j5js2IU-Y9AIkq-7HQm1rcvphwRjFV_AUm_wvxaAQ/pub?output=csv';
         const BILAL_SHEET_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQ9-yKvr5cPnPV6iTD0RSRph69RGm1J7rwR6dwVaKHR0mG6Eb3wZMXeJu9O4-mgIg/pub?output=csv';
         const SIAK_SHEET_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQDy3scnQAEvhEXgi6w_zWw7AkIyh7du4EHnXJjn4BJGhHHBGY-wnR_6Ow70oDxjw/pub?gid=654609828&single=true&output=csv';
 
@@ -580,72 +528,6 @@
             } catch (error) {
                 console.error('❌ Ralat memuat data imam:', error);
                 showNotification(`⚠️ Sambungan Google Sheets gagal: ${error.message}. Sila cuba lagi.`, 'warning');
-            }
-        }
-
-        // Function to load Jawatankuasa data from Google Sheets
-        async function loadJawatankuasaDataFromSheet() {
-            console.log('🔄 Memuat data jawatankuasa dari Google Sheets...');
-            
-            try {
-                const response = await fetch(JAWATANKUASA_SHEET_URL, {
-                    method: 'GET',
-                    mode: 'cors',
-                    headers: {
-                        'Accept': 'text/csv,text/plain,*/*'
-                    }
-                });
-                
-                if (!response.ok) {
-                    throw new Error(`HTTP ${response.status}: ${response.statusText}`);
-                }
-                
-                const csvText = await response.text();
-                console.log('📄 Jawatankuasa CSV data received:', csvText.substring(0, 200) + '...');
-                
-                const lines = csvText.split('\n').filter(line => line.trim());
-                console.log(`📊 Found ${lines.length} lines in Jawatankuasa CSV`);
-                
-                jawatankuasaData = [];
-                
-                for (let i = 1; i < lines.length; i++) {
-                    const line = lines[i].trim();
-                    if (line) {
-                        const values = parseCSVLine(line);
-                        console.log(`Jawatankuasa Row ${i}:`, values);
-                        
-                        if (values.length >= 6) {
-                            const nokp = values[3] || '';
-                            const providedAge = values[7] || '';
-                            const calculatedAge = calculateAgeFromIC(nokp);
-                            const finalAge = providedAge || calculatedAge;
-                            
-                            const jawatankuasa = {
-                                id: Date.now() + i + 500,
-                                masjid: values[0] || '',
-                                jawatan: values[1] || '',
-                                nama: values[2] || '',
-                                nokp: nokp,
-                                telefon: values[4] || '',
-                                alamat: values[5] || '',
-                                pekerjaan: values[6] || '',
-                                umur: finalAge,
-                                mulaKhidmat: new Date().toISOString().split('T')[0],
-                                catatan: ''
-                            };
-                            jawatankuasaData.push(jawatankuasa);
-                        }
-                    }
-                }
-                
-                console.log(`✅ Berjaya memuat ${jawatankuasaData.length} data jawatankuasa`);
-                displayJawatankuasa();
-                updateStatistics();
-                updateFilterDropdowns();
-                
-            } catch (error) {
-                console.error('❌ Ralat memuat data jawatankuasa:', error);
-                showNotification(`⚠️ Sambungan Google Sheets Jawatankuasa gagal: ${error.message}. Sila cuba lagi.`, 'warning');
             }
         }
 
@@ -908,7 +790,6 @@
             
             // Load data automatically in background
             loadImamDataFromSheet();
-            loadJawatankuasaDataFromSheet();
             loadBilalDataFromSheet();
             loadSiakDataFromSheet();
             
@@ -974,36 +855,6 @@
                     <td class="py-3 px-4">${imam.umur}</td>
                     <td class="py-3 px-4">${new Date(imam.mulaKhidmat).toLocaleDateString('ms-MY')}</td>
                     <td class="py-3 px-4">${imam.catatan || '-'}</td>
-                </tr>
-            `).join('');
-        }
-
-        // Display jawatankuasa (new structure)
-        function displayJawatankuasa() {
-            const tbody = document.getElementById('jawatankuasaList');
-            
-            if (jawatankuasaData.length === 0) {
-                tbody.innerHTML = `
-                    <tr>
-                        <td colspan="8" class="text-center py-8 text-gray-500">
-                            <div class="text-4xl mb-2">👥</div>
-                            Tiada jawatankuasa kariah didaftarkan lagi
-                        </td>
-                    </tr>
-                `;
-                return;
-            }
-            
-            tbody.innerHTML = jawatankuasaData.map((jawatankuasa, index) => `
-                <tr class="table-row border-b hover:bg-blue-50 transition-colors">
-                    <td class="py-3 px-4">${jawatankuasa.masjid}</td>
-                    <td class="py-3 px-4">${jawatankuasa.jawatan}</td>
-                    <td class="py-3 px-4 font-medium">${jawatankuasa.nama}</td>
-                    <td class="py-3 px-4">${jawatankuasa.nokp}</td>
-                    <td class="py-3 px-4">${jawatankuasa.telefon}</td>
-                    <td class="py-3 px-4">${jawatankuasa.alamat}</td>
-                    <td class="py-3 px-4">${jawatankuasa.pekerjaan}</td>
-                    <td class="py-3 px-4">${jawatankuasa.umur}</td>
                 </tr>
             `).join('');
         }
@@ -1075,14 +926,13 @@
         // Update statistics
         function updateStatistics() {
             document.getElementById('totalImam').textContent = imamData.length;
-            document.getElementById('totalJawatankuasa').textContent = jawatankuasaData.length;
             document.getElementById('totalBilal').textContent = bilalData.length;
             document.getElementById('totalSiak').textContent = siakData.length;
         }
 
         // Update filter dropdowns
         function updateFilterDropdowns() {
-            const allData = [...imamData, ...jawatankuasaData, ...bilalData, ...siakData];
+            const allData = [...imamData, ...bilalData, ...siakData];
             
             // Update Masjid filter
             const masjidSet = new Set();
@@ -1119,115 +969,10 @@
             generatePDFDirectly(type);
         }
 
-        function showPdfPreview(type) {
-            let tableData = [];
-            let headers = [];
-            let title = 'Data Jawatankuasa dan Pegawai Masjid';
-            let kategori = '';
-            
-            if (type === 'imam') {
-                kategori = 'IMAM';
-                headers = ['Bil', 'Nama Imam', 'No. K/P', 'Pekerjaan', 'Alamat', 'No. Tel', 'Umur', 'Mula Khidmat'];
-                tableData = imamData.map((imam, index) => [
-                    index + 1,
-                    imam.nama,
-                    imam.nokp,
-                    imam.pekerjaan,
-                    imam.alamat,
-                    imam.telefon,
-                    imam.umur,
-                    new Date(imam.mulaKhidmat).toLocaleDateString('ms-MY')
-                ]);
-            } else if (type === 'jawatankuasa') {
-                kategori = 'JAWATANKUASA KARIAH';
-                headers = ['Bil', 'Masjid', 'Jawatan', 'Nama', 'No. K/P', 'No. Tel', 'Alamat', 'Pekerjaan', 'Umur'];
-                tableData = jawatankuasaData.map((jawatankuasa, index) => [
-                    index + 1,
-                    jawatankuasa.masjid,
-                    jawatankuasa.jawatan,
-                    jawatankuasa.nama,
-                    jawatankuasa.nokp,
-                    jawatankuasa.telefon,
-                    jawatankuasa.alamat,
-                    jawatankuasa.pekerjaan,
-                    jawatankuasa.umur
-                ]);
-            } else if (type === 'bilal') {
-                kategori = 'BILAL';
-                headers = ['Bil', 'Nama Bilal', 'No. K/P', 'Pekerjaan', 'Alamat', 'No. Tel', 'Umur', 'Mula Khidmat'];
-                tableData = bilalData.map((bilal, index) => [
-                    index + 1,
-                    bilal.nama,
-                    bilal.nokp,
-                    bilal.pekerjaan,
-                    bilal.alamat,
-                    bilal.telefon,
-                    bilal.umur,
-                    new Date(bilal.mulaKhidmat).toLocaleDateString('ms-MY')
-                ]);
-            } else {
-                kategori = 'SIAK';
-                headers = ['Bil', 'Nama Siak', 'No. K/P', 'Pekerjaan', 'Alamat', 'No. Tel', 'Umur', 'Mula Khidmat'];
-                tableData = siakData.map((siak, index) => [
-                    index + 1,
-                    siak.nama,
-                    siak.nokp,
-                    siak.pekerjaan,
-                    siak.alamat,
-                    siak.telefon,
-                    siak.umur,
-                    new Date(siak.mulaKhidmat).toLocaleDateString('ms-MY')
-                ]);
-            }
-
-            currentPdfData = { headers, tableData, title, type, kategori };
-
-            // Generate preview HTML
-            const previewHtml = `
-                <div class="text-center mb-6">
-                    <img src="https://i.postimg.cc/c4LmQcHK/logo-penangpng.png" alt="Logo Pulau Pinang" class="w-16 h-16 object-contain mx-auto mb-4" onerror="this.style.display='none';">
-                    <h1 class="text-2xl font-bold mb-2">${title}</h1>
-                    <h2 class="text-xl font-semibold text-blue-600 mb-3">${kategori}</h2>
-                    <div class="text-center text-gray-600 text-sm">
-                        <p>Tarikh: ${new Date().toLocaleDateString('ms-MY')}</p>
-                        <p>Jumlah Rekod: ${tableData.length}</p>
-                    </div>
-                </div>
-                <div class="overflow-x-auto">
-                    <table class="w-full border-collapse border border-gray-300 text-sm">
-                        <thead>
-                            <tr class="bg-gray-100">
-                                ${headers.map(header => `<th class="border border-gray-300 px-2 py-1 text-left font-semibold">${header}</th>`).join('')}
-                            </tr>
-                        </thead>
-                        <tbody>
-                            ${tableData.map(row => `
-                                <tr class="hover:bg-gray-50">
-                                    ${row.map(cell => `<td class="border border-gray-300 px-2 py-1">${cell}</td>`).join('')}
-                                </tr>
-                            `).join('')}
-                        </tbody>
-                    </table>
-                </div>
-            `;
-
-            document.getElementById('pdfPreviewTitle').textContent = `Pratonton ${title} - ${kategori}`;
-            document.getElementById('pdfPreviewContent').innerHTML = previewHtml;
-            document.getElementById('pdfPreviewModal').classList.remove('hidden');
-            document.getElementById('pdfPreviewModal').classList.add('flex');
-        }
-
-        function closePdfPreview() {
-            document.getElementById('pdfPreviewModal').classList.add('hidden');
-            document.getElementById('pdfPreviewModal').classList.remove('flex');
-            currentPdfData = null;
-            currentPdfType = '';
-        }
-
         function generatePDFDirectly(type) {
             let tableData = [];
             let headers = [];
-            let title = 'Data Jawatankuasa dan Pegawai Masjid';
+            let title = 'Data Pegawai Masjid';
             let kategori = '';
             
             if (type === 'imam') {
@@ -1242,20 +987,6 @@
                     imam.telefon,
                     imam.umur,
                     new Date(imam.mulaKhidmat).toLocaleDateString('ms-MY')
-                ]);
-            } else if (type === 'jawatankuasa') {
-                kategori = 'JAWATANKUASA KARIAH';
-                headers = ['Bil', 'Masjid', 'Jawatan', 'Nama', 'No. K/P', 'No. Tel', 'Alamat', 'Pekerjaan', 'Umur'];
-                tableData = jawatankuasaData.map((jawatankuasa, index) => [
-                    index + 1,
-                    jawatankuasa.masjid,
-                    jawatankuasa.jawatan,
-                    jawatankuasa.nama,
-                    jawatankuasa.nokp,
-                    jawatankuasa.telefon,
-                    jawatankuasa.alamat,
-                    jawatankuasa.pekerjaan,
-                    jawatankuasa.umur
                 ]);
             } else if (type === 'bilal') {
                 kategori = 'BILAL';
@@ -1329,86 +1060,11 @@
             showNotification(`✅ Data Pegawai ${kategori} berjaya dicetak!`, 'success');
         }
 
-        function confirmPdfDownload() {
-            if (!currentPdfData) return;
-
-            const { jsPDF } = window.jspdf;
-            const doc = new jsPDF('landscape');
-            
-            // Add logo
-            const logoUrl = 'https://i.postimg.cc/c4LmQcHK/logo-penangpng.png';
-            try {
-                doc.addImage(logoUrl, 'PNG', 20, 10, 30, 30);
-            } catch (error) {
-                console.log('Logo tidak dapat dimuatkan');
-            }
-            
-            if (currentPdfData.type === 'hasil-carian') {
-                // Header for search results
-                doc.setFontSize(18);
-                doc.text(currentPdfData.title, 148, 25, { align: 'center' });
-                
-                doc.setFontSize(16);
-                doc.text(currentPdfData.kategori, 148, 40, { align: 'center' });
-                
-                // Date and count info
-                doc.setFontSize(10);
-                doc.text(`Tarikh: ${new Date().toLocaleDateString('ms-MY')}`, 20, 55);
-                doc.text(`Jumlah Rekod: ${currentPdfData.tableData.length}`, 20, 65);
-                
-                doc.autoTable({
-                    head: [currentPdfData.headers],
-                    body: currentPdfData.tableData,
-                    startY: 75,
-                    styles: {
-                        fontSize: 8,
-                        cellPadding: 2
-                    },
-                    headStyles: {
-                        fillColor: [30, 41, 59],
-                        textColor: 255,
-                        fontSize: 9,
-                        fontStyle: 'bold'
-                    }
-                });
-                
-                doc.save(`data-pegawai-hasil-carian-${currentPdfData.searchTerm.replace(/\s+/g, '-')}-${new Date().toISOString().split('T')[0]}.pdf`);
-                showNotification('✅ Data Pegawai Masjid hasil carian berjaya dicetak!', 'success');
-            } else {
-                // Header for regular reports
-                doc.setFontSize(18);
-                doc.text(currentPdfData.title, 148, 25, { align: 'center' });
-                
-                doc.setFontSize(16);
-                doc.text(currentPdfData.kategori, 148, 40, { align: 'center' });
-                
-                // Date and count info
-                doc.setFontSize(10);
-                doc.text(`Tarikh: ${new Date().toLocaleDateString('ms-MY')}`, 20, 55);
-                doc.text(`Jumlah Rekod: ${currentPdfData.tableData.length}`, 20, 65);
-                
-                // Table
-                doc.autoTable({
-                    head: [currentPdfData.headers],
-                    body: currentPdfData.tableData,
-                    startY: 75,
-                    styles: {
-                        fontSize: 8,
-                        cellPadding: 2
-                    },
-                    headStyles: {
-                        fillColor: [30, 41, 59],
-                        textColor: 255,
-                        fontSize: 9,
-                        fontStyle: 'bold'
-                    }
-                });
-                
-                doc.save(`data-pegawai-${currentPdfData.type}-${new Date().toISOString().split('T')[0]}.pdf`);
-                showNotification(`✅ Data Pegawai ${currentPdfData.kategori} berjaya dicetak!`, 'success');
-            }
-            
-            closePdfPreview();
+        function closePdfPreview() {
+            document.getElementById('pdfPreviewModal').classList.add('hidden');
+            document.getElementById('pdfPreviewModal').classList.remove('flex');
+            currentPdfData = null;
+            currentPdfType = '';
         }
 
         // Generate report
@@ -1439,25 +1095,6 @@
                             data: imam,
                             index: index,
                             icon: '🕌'
-                        });
-                    }
-                });
-            }
-            
-            // Search in Jawatankuasa data
-            const jawatankuasaPositions = ['pengerusi', 'timbalan pengerusi', 'setiausaha', 'bendahari', 'ahli jawatankuasa', 'pemeriksa kira-kira'];
-            if (!filterJawatan || jawatankuasaPositions.includes(filterJawatan) || filterJawatan === 'jawatankuasa-masjid') {
-                jawatankuasaData.forEach((jawatankuasa, index) => {
-                    const matchesSearch = !searchTerm || jawatankuasa.nama.toLowerCase().includes(searchTerm) || jawatankuasa.nokp.includes(searchTerm);
-                    const matchesMasjid = !filterMasjid || jawatankuasa.masjid === filterMasjid;
-                    const matchesPosition = !filterJawatan || filterJawatan === 'jawatankuasa-masjid' || jawatankuasa.jawatan.toLowerCase() === filterJawatan.toLowerCase();
-                    
-                    if (matchesSearch && matchesMasjid && matchesPosition) {
-                        results.push({
-                            type: jawatankuasa.jawatan, // Use actual position from data
-                            data: jawatankuasa,
-                            index: index,
-                            icon: '👥'
                         });
                     }
                 });
@@ -1523,8 +1160,6 @@
                     let tabName = '';
                     if (['Imam'].includes(result.type)) {
                         tabName = 'imam';
-                    } else if (['Pengerusi', 'Timbalan Pengerusi', 'Setiausaha', 'Bendahari', 'Ahli Jawatankuasa', 'Pemeriksa Kira-kira'].includes(result.type)) {
-                        tabName = 'jawatankuasa';
                     } else if (['Bilal'].includes(result.type)) {
                         tabName = 'bilal';
                     } else if (['Siak'].includes(result.type)) {
@@ -1544,7 +1179,6 @@
                                         <div><strong>Masjid:</strong> ${result.data.masjid}</div>
                                         ${result.data.daerah ? `<div><strong>Daerah:</strong> ${result.data.daerah}</div>` : ''}
                                         <div><strong>No. K/P:</strong> ${result.data.nokp}</div>
-                                        ${result.data.jawatan ? `<div><strong>Jawatan:</strong> ${result.data.jawatan}</div>` : ''}
                                         <div><strong>Pekerjaan:</strong> ${result.data.pekerjaan}</div>
                                         <div class="col-span-2"><strong>Alamat:</strong> ${result.data.alamat}</div>
                                         <div><strong>No. Tel:</strong> ${result.data.telefon}</div>
@@ -1569,14 +1203,14 @@
             resultsContainer.scrollIntoView({ behavior: 'smooth', block: 'start' });
         }
 
-        // Export search results to PDF with preview
+        // Export search results to PDF
         function exportSearchResultsToPDF() {
             if (currentSearchResults.length === 0) {
                 showNotification('Tiada hasil carian untuk dicetak!', 'warning');
                 return;
             }
 
-            const title = 'Data Jawatankuasa dan Pegawai Masjid';
+            const title = 'Data Pegawai Masjid';
             
             // Determine category based on search results
             const categories = [...new Set(currentSearchResults.map(result => result.type.toUpperCase()))];
@@ -1594,49 +1228,47 @@
                 result.data.umur || '-'
             ]);
 
-            // Set current PDF data for preview
-            currentPdfData = { 
-                headers, 
-                tableData, 
-                title, 
-                type: 'hasil-carian', 
-                kategori,
-                searchTerm: currentSearchTerm
-            };
-
-            // Generate preview HTML
-            const previewHtml = `
-                <div class="text-center mb-6">
-                    <img src="https://i.postimg.cc/c4LmQcHK/logo-penangpng.png" alt="Logo Pulau Pinang" class="w-16 h-16 object-contain mx-auto mb-4" onerror="this.style.display='none';">
-                    <h1 class="text-2xl font-bold mb-2">${title}</h1>
-                    <h2 class="text-xl font-semibold text-purple-600 mb-3">${kategori}</h2>
-                    <div class="text-center text-gray-600 text-sm">
-                        <p>Tarikh: ${new Date().toLocaleDateString('ms-MY')}</p>
-                        <p>Jumlah Rekod: ${tableData.length}</p>
-                    </div>
-                </div>
-                <div class="overflow-x-auto">
-                    <table class="w-full border-collapse border border-gray-300 text-sm">
-                        <thead>
-                            <tr class="bg-gray-100">
-                                ${headers.map(header => `<th class="border border-gray-300 px-2 py-1 text-left font-semibold">${header}</th>`).join('')}
-                            </tr>
-                        </thead>
-                        <tbody>
-                            ${tableData.map(row => `
-                                <tr class="hover:bg-gray-50">
-                                    ${row.map(cell => `<td class="border border-gray-300 px-2 py-1">${cell}</td>`).join('')}
-                                </tr>
-                            `).join('')}
-                        </tbody>
-                    </table>
-                </div>
-            `;
-
-            document.getElementById('pdfPreviewTitle').textContent = `Pratonton ${title} - ${kategori}`;
-            document.getElementById('pdfPreviewContent').innerHTML = previewHtml;
-            document.getElementById('pdfPreviewModal').classList.remove('hidden');
-            document.getElementById('pdfPreviewModal').classList.add('flex');
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF('landscape');
+            
+            // Add logo
+            const logoUrl = 'https://i.postimg.cc/c4LmQcHK/logo-penangpng.png';
+            try {
+                doc.addImage(logoUrl, 'PNG', 20, 10, 30, 30);
+            } catch (error) {
+                console.log('Logo tidak dapat dimuatkan');
+            }
+            
+            // Header for search results
+            doc.setFontSize(18);
+            doc.text(title, 148, 25, { align: 'center' });
+            
+            doc.setFontSize(16);
+            doc.text(kategori, 148, 40, { align: 'center' });
+            
+            // Date and count info
+            doc.setFontSize(10);
+            doc.text(`Tarikh: ${new Date().toLocaleDateString('ms-MY')}`, 20, 55);
+            doc.text(`Jumlah Rekod: ${tableData.length}`, 20, 65);
+            
+            doc.autoTable({
+                head: [headers],
+                body: tableData,
+                startY: 75,
+                styles: {
+                    fontSize: 8,
+                    cellPadding: 2
+                },
+                headStyles: {
+                    fillColor: [30, 41, 59],
+                    textColor: 255,
+                    fontSize: 9,
+                    fontStyle: 'bold'
+                }
+            });
+            
+            doc.save(`data-pegawai-hasil-carian-${currentSearchTerm.replace(/\s+/g, '-')}-${new Date().toISOString().split('T')[0]}.pdf`);
+            showNotification('✅ Data Pegawai Masjid hasil carian berjaya dicetak!', 'success');
         }
         
         function clearGlobalSearch() {
@@ -1705,23 +1337,6 @@
                 listBtn.innerHTML = '📋 Lihat Senarai Siak';
             }
         }
-        
-        function toggleJawatankuasaList() {
-            const listSection = document.getElementById('jawatankuasaListSection');
-            const listBtn = document.getElementById('toggleJawatankuasaListBtn');
-            
-            if (listSection.classList.contains('hidden')) {
-                listSection.classList.remove('hidden');
-                listBtn.classList.remove('btn-secondary');
-                listBtn.classList.add('btn-primary');
-                listBtn.innerHTML = '❌ Tutup Senarai';
-            } else {
-                listSection.classList.add('hidden');
-                listBtn.classList.remove('btn-primary');
-                listBtn.classList.add('btn-secondary');
-                listBtn.innerHTML = '📋 Lihat Senarai Jawatankuasa Kariah';
-            }
-        }
     </script>
- <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'992f0135258d1be4',t:'MTc2MTE5OTEyOC4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+ <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'992fcb6b16088066',t:'MTc2MTIwNzQxMC4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>
