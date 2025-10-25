@@ -394,7 +394,7 @@
     </div>
     <div id="pdfPreviewContent" class="overflow-y-auto max-h-[60vh] mb-6 border border-gray-200 rounded-lg p-4 bg-gray-50"><!-- Preview content will be inserted here -->
     </div>
-    <div class="flex gap-4"><button onclick="closePdfPreview()" class="flex-1 btn-secondary text-white py-3 px-6 rounded-lg font-medium"> ❌ Tutup </button> <button onclick="confirmPdfDownload()" class="flex-1 btn-primary text-white py-3 px-6 rounded-lg font-medium"> 🖨️ Cetak PDF </button>
+    <div class="flex gap-4"><button onclick="closePdfPreview()" class="flex-1 btn-secondary text-white py-3 px-6 rounded-lg font-medium"> ❌ Tutup </button> <button onclick="confirmDirectPrint()" class="flex-1 btn-primary text-white py-3 px-6 rounded-lg font-medium"> 🖨️ Terus Cetak </button>
     </div>
    </div>
   </div>
@@ -1245,6 +1245,161 @@
             closePdfPreview();
         }
 
+        function confirmDirectPrint() {
+            if (!currentPdfData) {
+                showNotification('Tiada data untuk dicetak!', 'warning');
+                return;
+            }
+
+            if (currentPdfData.type === 'search-results') {
+                generateAndPrintSearchResults();
+            } else {
+                generateAndPrintPDF(currentPdfType);
+            }
+            
+            closePdfPreview();
+        }
+
+        function generateAndPrintPDF(type) {
+            let tableData = [];
+            let headers = [];
+            let title = 'Data Pegawai Masjid';
+            let kategori = '';
+            
+            if (type === 'imam') {
+                kategori = 'IMAM';
+                headers = ['Bil', 'Nama Imam', 'No. K/P', 'Pekerjaan', 'Alamat', 'No. Tel', 'Umur', 'Mula Khidmat'];
+                tableData = imamData.map((imam, index) => [
+                    index + 1,
+                    imam.nama,
+                    imam.nokp,
+                    imam.pekerjaan,
+                    imam.alamat,
+                    imam.telefon,
+                    imam.umur,
+                    new Date(imam.mulaKhidmat).toLocaleDateString('ms-MY')
+                ]);
+            } else if (type === 'bilal') {
+                kategori = 'BILAL';
+                headers = ['Bil', 'Nama Bilal', 'No. K/P', 'Pekerjaan', 'Alamat', 'No. Tel', 'Umur', 'Mula Khidmat'];
+                tableData = bilalData.map((bilal, index) => [
+                    index + 1,
+                    bilal.nama,
+                    bilal.nokp,
+                    bilal.pekerjaan,
+                    bilal.alamat,
+                    bilal.telefon,
+                    bilal.umur,
+                    new Date(bilal.mulaKhidmat).toLocaleDateString('ms-MY')
+                ]);
+            } else {
+                kategori = 'SIAK';
+                headers = ['Bil', 'Nama Siak', 'No. K/P', 'Pekerjaan', 'Alamat', 'No. Tel', 'Umur', 'Mula Khidmat'];
+                tableData = siakData.map((siak, index) => [
+                    index + 1,
+                    siak.nama,
+                    siak.nokp,
+                    siak.pekerjaan,
+                    siak.alamat,
+                    siak.telefon,
+                    siak.umur,
+                    new Date(siak.mulaKhidmat).toLocaleDateString('ms-MY')
+                ]);
+            }
+
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF('landscape');
+            
+            // Add logo
+            const logoUrl = 'https://i.postimg.cc/c4LmQcHK/logo-penangpng.png';
+            try {
+                doc.addImage(logoUrl, 'PNG', 20, 10, 30, 30);
+            } catch (error) {
+                console.log('Logo tidak dapat dimuatkan');
+            }
+            
+            // Header for regular reports
+            doc.setFontSize(18);
+            doc.text(title, 148, 25, { align: 'center' });
+            
+            doc.setFontSize(16);
+            doc.text(kategori, 148, 40, { align: 'center' });
+            
+            // Date and count info
+            doc.setFontSize(10);
+            doc.text(`Tarikh: ${new Date().toLocaleDateString('ms-MY')}`, 20, 55);
+            doc.text(`Jumlah Rekod: ${tableData.length}`, 20, 65);
+            
+            // Table
+            doc.autoTable({
+                head: [headers],
+                body: tableData,
+                startY: 75,
+                styles: {
+                    fontSize: 8,
+                    cellPadding: 2
+                },
+                headStyles: {
+                    fillColor: [30, 41, 59],
+                    textColor: 255,
+                    fontSize: 9,
+                    fontStyle: 'bold'
+                }
+            });
+            
+            // Open print dialog directly
+            doc.autoPrint();
+            window.open(doc.output('bloburl'), '_blank');
+            showNotification(`✅ Data Pegawai ${kategori} siap untuk dicetak!`, 'success');
+        }
+
+        function generateAndPrintSearchResults() {
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF('landscape');
+            
+            // Add logo
+            const logoUrl = 'https://i.postimg.cc/c4LmQcHK/logo-penangpng.png';
+            try {
+                doc.addImage(logoUrl, 'PNG', 20, 10, 30, 30);
+            } catch (error) {
+                console.log('Logo tidak dapat dimuatkan');
+            }
+            
+            // Header for search results
+            doc.setFontSize(18);
+            doc.text(currentPdfData.title, 148, 25, { align: 'center' });
+            
+            doc.setFontSize(16);
+            doc.text(currentPdfData.kategori, 148, 40, { align: 'center' });
+            
+            // Date and count info
+            doc.setFontSize(10);
+            doc.text(`Tarikh: ${new Date().toLocaleDateString('ms-MY')}`, 20, 55);
+            doc.text(`Jumlah Rekod: ${currentPdfData.data.length}`, 20, 65);
+            doc.text(`Kriteria Carian: ${currentSearchTerm}`, 20, 75);
+            
+            doc.autoTable({
+                head: [currentPdfData.headers],
+                body: currentPdfData.data,
+                startY: 85,
+                styles: {
+                    fontSize: 8,
+                    cellPadding: 2
+                },
+                headStyles: {
+                    fillColor: [30, 41, 59],
+                    textColor: 255,
+                    fontSize: 9,
+                    fontStyle: 'bold'
+                }
+            });
+            
+            // Open print dialog directly
+            doc.autoPrint();
+            window.open(doc.output('bloburl'), '_blank');
+            showNotification('✅ Data Pegawai Masjid hasil carian siap untuk dicetak!', 'success');
+        }
+
         function generateSearchResultsPDF() {
             const { jsPDF } = window.jspdf;
             const doc = new jsPDF('landscape');
@@ -1361,5 +1516,5 @@
             }
         }
     </script>
- <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'993e549914540c6d',t:'MTc2MTM1OTgzMC4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+ <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'993e674d462f0c6d',t:'MTc2MTM2MDU5Ni4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>
