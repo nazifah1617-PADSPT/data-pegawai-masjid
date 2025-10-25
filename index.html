@@ -369,13 +369,13 @@
       <h2 class="text-2xl font-bold text-gray-800 mb-2">Laporan Terperinci</h2>
       <p class="text-gray-600">Muat turun laporan lengkap dalam format PDF</p>
      </div>
-     <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6"><button onclick="generateReport('imam')" class="btn-primary text-white p-6 rounded-lg text-center group hover:shadow-md transition-all">
+     <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6"><button onclick="generateAndPrintPDF('imam')" class="btn-primary text-white p-6 rounded-lg text-center group hover:shadow-md transition-all">
        <div class="inline-flex items-center justify-center w-12 h-12 bg-white/20 rounded-lg mb-3"><span class="text-2xl">🕌</span>
-       </div><h3 class="font-bold text-lg mb-2">Cetak Laporan Imam</h3><p class="text-sm opacity-90">Senarai lengkap imam masjid dengan maklumat terperinci</p></button> <button onclick="generateReport('bilal')" class="btn-success text-white p-6 rounded-lg text-center group hover:shadow-md transition-all">
+       </div><h3 class="font-bold text-lg mb-2">🖨️ Terus Cetak Laporan Imam</h3><p class="text-sm opacity-90">Senarai lengkap imam masjid dengan maklumat terperinci</p></button> <button onclick="generateAndPrintPDF('bilal')" class="btn-success text-white p-6 rounded-lg text-center group hover:shadow-md transition-all">
        <div class="inline-flex items-center justify-center w-12 h-12 bg-white/20 rounded-lg mb-3"><span class="text-2xl">📢</span>
-       </div><h3 class="font-bold text-lg mb-2">Cetak Laporan Bilal</h3><p class="text-sm opacity-90">Senarai lengkap bilal masjid dengan maklumat terperinci</p></button> <button onclick="generateReport('siak')" class="btn-purple text-white p-6 rounded-lg text-center group hover:shadow-md transition-all">
+       </div><h3 class="font-bold text-lg mb-2">🖨️ Terus Cetak Laporan Bilal</h3><p class="text-sm opacity-90">Senarai lengkap bilal masjid dengan maklumat terperinci</p></button> <button onclick="generateAndPrintPDF('siak')" class="btn-purple text-white p-6 rounded-lg text-center group hover:shadow-md transition-all">
        <div class="inline-flex items-center justify-center w-12 h-12 bg-white/20 rounded-lg mb-3"><span class="text-2xl">📋</span>
-       </div><h3 class="font-bold text-lg mb-2">Cetak Laporan Siak</h3><p class="text-sm opacity-90">Senarai lengkap siak masjid dengan maklumat terperinci</p></button>
+       </div><h3 class="font-bold text-lg mb-2">🖨️ Terus Cetak Laporan Siak</h3><p class="text-sm opacity-90">Senarai lengkap siak masjid dengan maklumat terperinci</p></button>
      </div>
     </div>
    </div>
@@ -497,7 +497,7 @@
                 
             } catch (error) {
                 console.error('❌ Ralat memuat data imam:', error);
-                showNotification(`⚠️ Sambungan Google Sheets gagal: ${error.message}. Sila cuba lagi.`, 'warning');
+                showNotification('Gagal memuat data imam dari Google Sheets. Sila semak sambungan internet.', 'error');
             }
         }
 
@@ -562,7 +562,7 @@
                 
             } catch (error) {
                 console.error('❌ Ralat memuat data bilal:', error);
-                showNotification(`⚠️ Sambungan Google Sheets gagal: ${error.message}. Sila cuba lagi.`, 'warning');
+                showNotification('Gagal memuat data bilal dari Google Sheets. Sila semak sambungan internet.', 'error');
             }
         }
 
@@ -627,7 +627,7 @@
                 
             } catch (error) {
                 console.error('❌ Ralat memuat data siak:', error);
-                showNotification(`⚠️ Sambungan Google Sheets gagal: ${error.message}. Sila cuba lagi.`, 'warning');
+                showNotification('Gagal memuat data siak dari Google Sheets. Sila semak sambungan internet.', 'error');
             }
         }
 
@@ -684,43 +684,37 @@
             document.getElementById('tab-' + tabName).classList.add('btn-primary', 'text-white');
         }
         
-        // Notification function
+        // Notification function (error only)
         function showNotification(message, type = 'info') {
-            const notification = document.createElement('div');
-            notification.className = `fixed top-4 right-4 z-50 px-6 py-4 rounded-lg shadow-lg text-white font-medium transform transition-all duration-300 translate-x-full`;
-            
-            switch(type) {
-                case 'success':
-                    notification.classList.add('bg-green-500');
-                    break;
-                case 'warning':
-                    notification.classList.add('bg-yellow-500');
-                    break;
-                case 'error':
-                    notification.classList.add('bg-red-500');
-                    break;
-                default:
-                    notification.classList.add('bg-blue-500');
+            // Only show error notifications
+            if (type === 'error') {
+                alert(`❌ RALAT: ${message}`);
             }
-            
-            notification.textContent = message;
-            document.body.appendChild(notification);
-            
-            setTimeout(() => {
-                notification.classList.remove('translate-x-full');
-            }, 100);
-            
-            setTimeout(() => {
-                notification.classList.add('translate-x-full');
-                setTimeout(() => {
-                    if (notification.parentNode) {
-                        notification.parentNode.removeChild(notification);
-                    }
-                }, 300);
-            }, 5000);
+            console.log(`${type.toUpperCase()}: ${message}`);
         }
 
 
+
+        // Auto refresh data every 1 minute
+        function startAutoRefresh() {
+            console.log('🔄 Memulakan muat turun automatik setiap 1 minit...');
+            
+            // Initial load
+            loadAllData();
+            
+            // Set interval for auto refresh every 1 minute (60000 ms)
+            setInterval(() => {
+                console.log('🔄 Muat turun automatik data...');
+                loadAllData();
+            }, 60000); // 60 seconds = 1 minute
+        }
+
+        // Function to load all data
+        function loadAllData() {
+            loadImamDataFromSheet();
+            loadBilalDataFromSheet();
+            loadSiakDataFromSheet();
+        }
 
         // Initialize
         document.addEventListener('DOMContentLoaded', function() {
@@ -729,10 +723,8 @@
             updateDateTime();
             setInterval(updateDateTime, 1000);
             
-            // Load data automatically in background
-            loadImamDataFromSheet();
-            loadBilalDataFromSheet();
-            loadSiakDataFromSheet();
+            // Start auto refresh system
+            startAutoRefresh();
             
             updateStatistics();
             updateFilterDropdowns();
@@ -982,7 +974,6 @@
             });
             
             doc.save(`data-pegawai-${type}-${new Date().toISOString().split('T')[0]}.pdf`);
-            showNotification(`✅ Data Pegawai ${kategori} berjaya dicetak!`, 'success');
         }
 
         function closePdfPreview() {
@@ -1131,7 +1122,7 @@
         // Export search results to PDF with preview
         function exportSearchResultsToPDF() {
             if (currentSearchResults.length === 0) {
-                showNotification('Tiada hasil carian untuk dicetak!', 'warning');
+                showNotification('Tiada data untuk dicetak. Sila lakukan carian terlebih dahulu.', 'error');
                 return;
             }
 
@@ -1232,7 +1223,6 @@
 
         function confirmPdfDownload() {
             if (!currentPdfData) {
-                showNotification('Tiada data untuk dicetak!', 'warning');
                 return;
             }
 
@@ -1247,7 +1237,6 @@
 
         function confirmDirectPrint() {
             if (!currentPdfData) {
-                showNotification('Tiada data untuk dicetak!', 'warning');
                 return;
             }
 
@@ -1350,7 +1339,6 @@
             // Open print dialog directly
             doc.autoPrint();
             window.open(doc.output('bloburl'), '_blank');
-            showNotification(`✅ Data Pegawai ${kategori} siap untuk dicetak!`, 'success');
         }
 
         function generateAndPrintSearchResults() {
@@ -1397,7 +1385,6 @@
             // Open print dialog directly
             doc.autoPrint();
             window.open(doc.output('bloburl'), '_blank');
-            showNotification('✅ Data Pegawai Masjid hasil carian siap untuk dicetak!', 'success');
         }
 
         function generateSearchResultsPDF() {
@@ -1442,7 +1429,6 @@
             });
             
             doc.save(`data-pegawai-hasil-carian-${currentSearchTerm.replace(/\s+/g, '-')}-${new Date().toISOString().split('T')[0]}.pdf`);
-            showNotification('✅ Data Pegawai Masjid hasil carian berjaya dicetak!', 'success');
         }
         
         function clearGlobalSearch() {
@@ -1516,5 +1502,5 @@
             }
         }
     </script>
- <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'993e674d462f0c6d',t:'MTc2MTM2MDU5Ni4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+ <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'993e752d64f50c6d',t:'MTc2MTM2MTE2NC4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>
